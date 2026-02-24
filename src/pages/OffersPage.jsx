@@ -67,8 +67,7 @@ export default function OffersPage() {
     return () => clearInterval(interval)
   }, [])
 
-  const toggle = (key, active) => {
-    if (!active) return
+  const toggle = (key) => {
     setExpanded(prev => prev === key ? null : key)
   }
 
@@ -107,12 +106,11 @@ export default function OffersPage() {
                   borderRadius: 14,
                   overflow: 'hidden',
                   transition: 'all 0.3s ease',
-                  opacity: active ? 1 : 0.5,
                 }}
               >
                 {/* Clickable Category Header */}
                 <button
-                  onClick={() => toggle(catKey, active)}
+                  onClick={() => toggle(catKey)}
                   style={{
                     width: '100%',
                     display: 'flex',
@@ -121,7 +119,7 @@ export default function OffersPage() {
                     padding: 'var(--space-24) var(--space-32)',
                     background: 'transparent',
                     border: 'none',
-                    cursor: active ? 'pointer' : 'not-allowed',
+                    cursor: 'pointer',
                     textAlign: 'left',
                     color: 'inherit',
                     transition: 'background 0.2s ease',
@@ -168,29 +166,27 @@ export default function OffersPage() {
                       )}
                     </div>
                   </div>
-                  {active && (
-                    <div style={{
-                      width: 36, height: 36, borderRadius: 8,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      background: isOpen ? `${meta.color}20` : 'transparent',
-                      transition: 'all 0.3s ease',
-                      flexShrink: 0
-                    }}>
-                      <ChevronDown
-                        size={20}
-                        style={{
-                          color: isOpen ? meta.color : 'var(--color-gray-2)',
-                          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                          transition: 'transform 0.3s ease, color 0.3s ease'
-                        }}
-                      />
-                    </div>
-                  )}
+                  <div style={{
+                    width: 36, height: 36, borderRadius: 8,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: isOpen ? `${meta.color}20` : 'transparent',
+                    transition: 'all 0.3s ease',
+                    flexShrink: 0
+                  }}>
+                    <ChevronDown
+                      size={20}
+                      style={{
+                        color: isOpen ? meta.color : 'var(--color-gray-2)',
+                        transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.3s ease, color 0.3s ease'
+                      }}
+                    />
+                  </div>
                 </button>
 
                 {/* Expandable Deal List */}
                 <div style={{
-                  maxHeight: isOpen && active ? `${catData.deals.length * 120 + 40}px` : '0px',
+                  maxHeight: isOpen ? `${catData.deals.length * 120 + 40}px` : '0px',
                   overflow: 'hidden',
                   transition: 'max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}>
@@ -233,9 +229,22 @@ export default function OffersPage() {
                           <div style={{ fontWeight: 800, fontSize: 18, color: 'var(--color-orange)', marginBottom: 6 }}>
                             PKR {deal.price.toLocaleString()}
                           </div>
-                          <Link to="/menu" className="btn-primary btn-sm" style={{ fontSize: 11, padding: '6px 16px' }}>
-                            Order
-                          </Link>
+                          {active ? (
+                            <Link to="/menu" className="btn-primary btn-sm" style={{ fontSize: 11, padding: '6px 16px' }}>
+                              Order
+                            </Link>
+                          ) : (
+                            <button
+                              disabled
+                              className="btn-primary btn-sm"
+                              style={{
+                                fontSize: 11, padding: '6px 16px',
+                                opacity: 0.4, cursor: 'not-allowed',
+                              }}
+                            >
+                              Order
+                            </button>
+                          )}
                         </div>
                       </div>
                     ))}
