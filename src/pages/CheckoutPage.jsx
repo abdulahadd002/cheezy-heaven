@@ -69,15 +69,33 @@ export default function CheckoutPage() {
     )
   }
 
+  const finalTotal = subtotal + tax
+
   const handlePlaceOrder = () => {
     const id = Math.floor(10000 + Math.random() * 90000).toString()
+    const order = {
+      id,
+      items: items.map(item => ({
+        name: item.name,
+        qty: item.qty,
+        size: item.size,
+        customizations: item.customizations,
+        price: item.price,
+      })),
+      subtotal,
+      tax,
+      total: finalTotal,
+      address,
+      phone,
+      payment: PAYMENT_METHODS.find(m => m.id === paymentMethod)?.name,
+      placedAt: new Date().toISOString(),
+    }
+    localStorage.setItem(`order_${id}`, JSON.stringify(order))
     setOrderId(id)
     setOrderPlaced(true)
     clearCart()
     addToast('Order placed successfully!', 'success')
   }
-
-  const finalTotal = subtotal + tax
 
   return (
     <div className="checkout-page">
