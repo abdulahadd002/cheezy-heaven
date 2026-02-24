@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Clock, Moon, Sun, Flame, Crown, Utensils, Plus } from 'lucide-react'
+import { Clock, Moon, Sun, Flame, Crown, Utensils, Plus, ChevronDown } from 'lucide-react'
 import deals from '../data/deals.json'
 
 const CATEGORY_META = {
@@ -26,6 +27,12 @@ const grouped = deals.reduce((acc, deal) => {
 }, {})
 
 export default function OffersPage() {
+  const [expanded, setExpanded] = useState(null)
+
+  const toggle = (key) => {
+    setExpanded(prev => prev === key ? null : key)
+  }
+
   return (
     <div style={{ padding: 'var(--space-32) 0 var(--space-96)' }}>
       <div className="container">
@@ -45,88 +52,133 @@ export default function OffersPage() {
           Free Home Delivery | Call: 051-5122227 / 0349-5479437
         </p>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-48)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-16)' }}>
           {Object.entries(grouped).map(([catKey, catData]) => {
             const meta = CATEGORY_META[catKey] || { icon: Utensils, color: '#8B2020' }
             const Icon = meta.icon
+            const isOpen = expanded === catKey
+
             return (
-              <div key={catKey}>
-                {/* Category Header */}
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: 'var(--space-16)',
-                  marginBottom: 'var(--space-24)'
-                }}>
+              <div
+                key={catKey}
+                style={{
+                  background: 'var(--color-surface)',
+                  border: `1px solid ${isOpen ? meta.color + '60' : 'var(--color-border)'}`,
+                  borderRadius: 14,
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                {/* Clickable Category Header */}
+                <button
+                  onClick={() => toggle(catKey)}
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 'var(--space-16)',
+                    padding: 'var(--space-24) var(--space-32)',
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    color: 'inherit',
+                    transition: 'background 0.2s ease',
+                  }}
+                >
                   <div style={{
-                    width: 44, height: 44, borderRadius: 10,
-                    background: `${meta.color}15`,
+                    width: 48, height: 48, borderRadius: 12,
+                    background: `${meta.color}18`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     flexShrink: 0
                   }}>
-                    <Icon size={22} style={{ color: meta.color }} />
+                    <Icon size={24} style={{ color: meta.color }} />
                   </div>
-                  <div>
-                    <h2 style={{ fontWeight: 700, fontSize: 24, color: 'var(--color-white)' }}>
+                  <div style={{ flex: 1 }}>
+                    <h2 style={{ fontWeight: 700, fontSize: 20, color: 'var(--color-white)', lineHeight: 1.3 }}>
                       {catData.title}
                     </h2>
-                    {catData.time && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--color-gray-2)', marginTop: 2 }}>
-                        <Clock size={12} /> {catData.time}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Deal Cards Grid */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                  gap: 'var(--space-16)'
-                }}>
-                  {catData.deals.map(deal => (
-                    <div
-                      key={deal.id}
-                      style={{
-                        background: 'var(--color-surface)',
-                        border: '1px solid var(--color-border)',
-                        borderRadius: 12,
-                        padding: 'var(--space-24)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'space-between',
-                        transition: 'all 0.3s ease',
-                        cursor: 'default'
-                      }}
-                      onMouseEnter={e => {
-                        e.currentTarget.style.borderColor = '#8B202040'
-                        e.currentTarget.style.boxShadow = '0 0 20px #8B202015'
-                      }}
-                      onMouseLeave={e => {
-                        e.currentTarget.style.borderColor = 'var(--color-border)'
-                        e.currentTarget.style.boxShadow = 'none'
-                      }}
-                    >
-                      <div>
-                        <h3 style={{ fontWeight: 600, fontSize: 16, color: 'var(--color-white)', marginBottom: 8 }}>
-                          {deal.title}
-                        </h3>
-                        <p style={{ fontSize: 14, color: 'var(--color-gray-1)', lineHeight: 1.6 }}>
-                          {deal.description}
-                        </p>
-                      </div>
-                      <div style={{
-                        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                        marginTop: 'var(--space-16)', paddingTop: 'var(--space-12)',
-                        borderTop: '1px solid var(--color-border)'
-                      }}>
-                        <span style={{ fontWeight: 800, fontSize: 20, color: 'var(--color-orange)' }}>
-                          PKR {deal.price.toLocaleString()}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 4 }}>
+                      {catData.time && (
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, color: 'var(--color-gray-2)' }}>
+                          <Clock size={12} /> {catData.time}
                         </span>
-                        <Link to="/menu" className="btn-primary btn-sm">
-                          Order
-                        </Link>
-                      </div>
+                      )}
+                      <span style={{ fontSize: 13, color: 'var(--color-gray-2)' }}>
+                        {catData.deals.length} {catData.deals.length === 1 ? 'deal' : 'deals'}
+                      </span>
                     </div>
-                  ))}
+                  </div>
+                  <div style={{
+                    width: 36, height: 36, borderRadius: 8,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: isOpen ? `${meta.color}20` : 'transparent',
+                    transition: 'all 0.3s ease',
+                    flexShrink: 0
+                  }}>
+                    <ChevronDown
+                      size={20}
+                      style={{
+                        color: isOpen ? meta.color : 'var(--color-gray-2)',
+                        transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.3s ease, color 0.3s ease'
+                      }}
+                    />
+                  </div>
+                </button>
+
+                {/* Expandable Deal List */}
+                <div style={{
+                  maxHeight: isOpen ? `${catData.deals.length * 120 + 40}px` : '0px',
+                  overflow: 'hidden',
+                  transition: 'max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                }}>
+                  <div style={{
+                    padding: '0 var(--space-32) var(--space-24)',
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                    gap: 'var(--space-12)'
+                  }}>
+                    {catData.deals.map(deal => (
+                      <div
+                        key={deal.id}
+                        style={{
+                          background: 'var(--color-bg)',
+                          border: '1px solid var(--color-border)',
+                          borderRadius: 10,
+                          padding: 'var(--space-16) var(--space-24)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: 'var(--space-16)',
+                          transition: 'all 0.2s ease',
+                        }}
+                        onMouseEnter={e => {
+                          e.currentTarget.style.borderColor = '#8B202040'
+                        }}
+                        onMouseLeave={e => {
+                          e.currentTarget.style.borderColor = 'var(--color-border)'
+                        }}
+                      >
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <h3 style={{ fontWeight: 600, fontSize: 15, color: 'var(--color-white)', marginBottom: 4 }}>
+                            {deal.title}
+                          </h3>
+                          <p style={{ fontSize: 13, color: 'var(--color-gray-1)', lineHeight: 1.5 }}>
+                            {deal.description}
+                          </p>
+                        </div>
+                        <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                          <div style={{ fontWeight: 800, fontSize: 18, color: 'var(--color-orange)', marginBottom: 6 }}>
+                            PKR {deal.price.toLocaleString()}
+                          </div>
+                          <Link to="/menu" className="btn-primary btn-sm" style={{ fontSize: 11, padding: '6px 16px' }}>
+                            Order
+                          </Link>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             )
