@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { MapPin, CreditCard, ClipboardCheck, ChevronLeft, ChevronRight, Check, Banknote, Smartphone, Wallet } from 'lucide-react'
+import { MapPin, Phone, CreditCard, ClipboardCheck, ChevronLeft, ChevronRight, Check, Banknote, Smartphone, Wallet } from 'lucide-react'
 import StepIndicator from '../components/ui/StepIndicator'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
@@ -28,6 +28,7 @@ export default function CheckoutPage() {
 
   const [selectedAddress, setSelectedAddress] = useState(0)
   const [newAddress, setNewAddress] = useState('')
+  const [phone, setPhone] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('cod')
 
   const addresses = isLoggedIn && user?.addresses?.length > 0
@@ -120,6 +121,21 @@ export default function CheckoutPage() {
                     onChange={e => setNewAddress(e.target.value)}
                   />
                 </div>
+
+                <div className="form-group">
+                  <label className="form-label">Mobile Number</label>
+                  <div className="phone-input-wrapper">
+                    <Phone size={18} className="phone-input-icon" />
+                    <input
+                      type="tel"
+                      className="form-input phone-input"
+                      placeholder="03XX-XXXXXXX"
+                      value={phone}
+                      onChange={e => setPhone(e.target.value)}
+                    />
+                  </div>
+                  <span className="form-hint">We'll contact you for delivery updates</span>
+                </div>
               </>
             )}
 
@@ -172,6 +188,7 @@ export default function CheckoutPage() {
 
                 <div style={{ fontSize: '14px', color: 'var(--color-gray-1)', marginBottom: 'var(--space-16)' }}>
                   <p><strong style={{ color: 'var(--color-white)' }}>Address:</strong> {newAddress || addresses[selectedAddress]?.address}</p>
+                  <p><strong style={{ color: 'var(--color-white)' }}>Phone:</strong> {phone || 'Not provided'}</p>
                   <p><strong style={{ color: 'var(--color-white)' }}>Delivery:</strong> Free Delivery</p>
                   <p><strong style={{ color: 'var(--color-white)' }}>Payment:</strong> {PAYMENT_METHODS.find(m => m.id === paymentMethod)?.name}</p>
                 </div>

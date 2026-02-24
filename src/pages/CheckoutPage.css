@@ -98,49 +98,29 @@
   color: var(--color-gray-1);
 }
 
-/* Delivery Options */
-.delivery-options {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-16);
-  margin-bottom: var(--space-24);
+/* Phone Input */
+.phone-input-wrapper {
+  position: relative;
 }
 
-.delivery-option {
-  padding: var(--space-24);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-align: center;
-  background: transparent;
+.phone-input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-gray-2);
+  pointer-events: none;
 }
 
-.delivery-option:hover {
-  border-color: #8B202040;
+.phone-input {
+  padding-left: 42px !important;
 }
 
-.delivery-option.selected {
-  border-color: var(--color-orange);
-  background: rgba(139, 32, 32, 0.05);
-}
-
-.delivery-option-title {
-  font-weight: 600;
-  font-size: 16px;
-  color: var(--color-white);
-  margin-bottom: 4px;
-}
-
-.delivery-option-desc {
-  font-size: 13px;
-  color: var(--color-gray-1);
-  margin-bottom: var(--space-8);
-}
-
-.delivery-option-price {
-  font-weight: 700;
-  color: var(--color-orange);
+.form-hint {
+  display: block;
+  font-size: 12px;
+  color: var(--color-gray-2);
+  margin-top: 6px;
 }
 
 /* Payment Methods */
@@ -285,8 +265,3 @@
   }
 }
 
-@media (max-width: 768px) {
-  .delivery-options {
-    grid-template-columns: 1fr;
-  }
-}
