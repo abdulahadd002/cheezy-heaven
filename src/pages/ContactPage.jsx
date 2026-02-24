@@ -52,7 +52,7 @@ export default function ContactPage() {
                 <div key={item.title} style={{ display: 'flex', gap: 'var(--space-16)', alignItems: 'flex-start' }}>
                   <div style={{
                     width: 44, height: 44, borderRadius: 10,
-                    background: 'rgba(255, 117, 31, 0.1)',
+                    background: 'rgba(139, 32, 32, 0.1)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     flexShrink: 0
                   }}>

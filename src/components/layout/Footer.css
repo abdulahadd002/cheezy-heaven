@@ -91,7 +91,7 @@
 .footer-social a:hover {
   border-color: var(--color-orange);
   color: var(--color-orange);
-  background: rgba(255, 117, 31, 0.05);
+  background: rgba(139, 32, 32, 0.05);
 }
 
 .footer-bottom {

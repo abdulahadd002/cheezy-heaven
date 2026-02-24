@@ -1,20 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="40" viewBox="0 0 200 40">
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="50" viewBox="0 0 220 50">
   <defs>
-    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#FF751F"/>
-      <stop offset="100%" stop-color="#FF9A5C"/>
+    <linearGradient id="maroon-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B2020"/>
+      <stop offset="100%" stop-color="#5C1010"/>
     </linearGradient>
   </defs>
-  <!-- Background -->
-  <rect width="200" height="40" fill="transparent"/>
-  <!-- CH letters with accent -->
-  <text x="0" y="30" font-family="'Montserrat', sans-serif" font-size="28" font-weight="800" fill="#FFFFFF">C</text>
-  <text x="20" y="30" font-family="'Montserrat', sans-serif" font-size="28" font-weight="800" fill="url(#accent)">H</text>
-  <!-- Dot accent -->
-  <circle cx="47" cy="12" r="4" fill="#FF751F"/>
-  <!-- Full name -->
-  <text x="56" y="22" font-family="'Montserrat', sans-serif" font-size="11" font-weight="600" fill="#FFFFFF" letter-spacing="1">CHEESY</text>
-  <text x="56" y="34" font-family="'Montserrat', sans-serif" font-size="11" font-weight="600" fill="#FF751F" letter-spacing="1">HEAVEN</text>
-  <!-- Underline accent -->
-  <line x1="56" y1="37" x2="120" y2="37" stroke="#FF751F" stroke-width="2" opacity="0.5"/>
+  <!-- Circular badge -->
+  <circle cx="25" cy="25" r="24" fill="url(#maroon-grad)" stroke="#A52D2D" stroke-width="1.5"/>
+  <!-- CH monogram inside circle -->
+  <text x="25" y="22" font-family="'Montserrat', sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">CH</text>
+  <text x="25" y="33" font-family="'Montserrat', sans-serif" font-size="5.5" font-weight="600" fill="#D4A574" text-anchor="middle" letter-spacing="0.3">EST.</text>
+  <!-- Brand name -->
+  <text x="60" y="22" font-family="'Montserrat', sans-serif" font-size="14" font-weight="800" fill="#FFFFFF" letter-spacing="2">CHEEZY</text>
+  <text x="60" y="38" font-family="'Montserrat', sans-serif" font-size="14" font-weight="800" fill="#8B2020" letter-spacing="2">HEAVEN</text>
+  <!-- Decorative underline -->
+  <line x1="60" y1="43" x2="158" y2="43" stroke="#8B2020" stroke-width="1.5" opacity="0.5"/>
 </svg>

@@ -50,12 +50,12 @@
 }
 
 .address-card:hover {
-  border-color: #FF751F40;
+  border-color: #8B202040;
 }
 
 .address-card.selected {
   border-color: var(--color-orange);
-  background: rgba(255, 117, 31, 0.05);
+  background: rgba(139, 32, 32, 0.05);
 }
 
 .address-card-radio {
@@ -117,12 +117,12 @@
 }
 
 .delivery-option:hover {
-  border-color: #FF751F40;
+  border-color: #8B202040;
 }
 
 .delivery-option.selected {
   border-color: var(--color-orange);
-  background: rgba(255, 117, 31, 0.05);
+  background: rgba(139, 32, 32, 0.05);
 }
 
 .delivery-option-title {
@@ -166,12 +166,12 @@
 }
 
 .payment-method:hover {
-  border-color: #FF751F40;
+  border-color: #8B202040;
 }
 
 .payment-method.selected {
   border-color: var(--color-orange);
-  background: rgba(255, 117, 31, 0.05);
+  background: rgba(139, 32, 32, 0.05);
 }
 
 .payment-method-icon {
@@ -272,7 +272,7 @@
   font-size: 20px;
   font-weight: 700;
   color: var(--color-orange);
-  background: rgba(255, 117, 31, 0.1);
+  background: rgba(139, 32, 32, 0.1);
   padding: var(--space-12) var(--space-24);
   border-radius: 8px;
   display: inline-block;

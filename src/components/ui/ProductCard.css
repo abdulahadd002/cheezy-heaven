@@ -10,7 +10,7 @@
 }
 
 .product-card:hover {
-  border-color: #FF751F40;
+  border-color: #8B202040;
   box-shadow: var(--shadow-orange-glow);
   transform: translateY(-2px);
 }
@@ -19,7 +19,7 @@
   width: 100%;
   aspect-ratio: 1;
   overflow: hidden;
-  background: linear-gradient(135deg, #1F1F1F, #0D0D0D);
+  background: linear-gradient(135deg, #2A1515, #140A0A);
   position: relative;
   cursor: pointer;
 }

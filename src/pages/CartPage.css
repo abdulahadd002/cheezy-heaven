@@ -36,7 +36,7 @@
 }
 
 .cart-item:hover {
-  border-color: #FF751F20;
+  border-color: #8B202020;
 }
 
 .cart-item-image {
@@ -44,7 +44,7 @@
   height: 80px;
   border-radius: 8px;
   overflow: hidden;
-  background: linear-gradient(135deg, #1A1A1A, #0D0D0D);
+  background: linear-gradient(135deg, #2A1515, #140A0A);
 }
 
 .cart-item-image img {

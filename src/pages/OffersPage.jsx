@@ -3,13 +3,13 @@ import { ArrowRight, Clock, Moon, Sun, Flame, Crown, Utensils, Plus } from 'luci
 import deals from '../data/deals.json'
 
 const CATEGORY_META = {
-  midnight: { icon: Moon, color: '#8B5CF6' },
-  lunch: { icon: Sun, color: '#F59E0B' },
-  pizzamania: { icon: Flame, color: '#EF4444' },
-  premium: { icon: Crown, color: '#FF751F' },
-  doubletrouble: { icon: Flame, color: '#EF4444' },
-  combos: { icon: Utensils, color: '#10B981' },
-  addon: { icon: Plus, color: '#3B82F6' },
+  midnight: { icon: Moon, color: '#6B3A3A' },
+  lunch: { icon: Sun, color: '#A85C32' },
+  pizzamania: { icon: Flame, color: '#8B2020' },
+  premium: { icon: Crown, color: '#9B3030' },
+  doubletrouble: { icon: Flame, color: '#A52D2D' },
+  combos: { icon: Utensils, color: '#6B4030' },
+  addon: { icon: Plus, color: '#5C3030' },
 }
 
 // Group deals by category
@@ -47,7 +47,7 @@ export default function OffersPage() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-48)' }}>
           {Object.entries(grouped).map(([catKey, catData]) => {
-            const meta = CATEGORY_META[catKey] || { icon: Utensils, color: '#FF751F' }
+            const meta = CATEGORY_META[catKey] || { icon: Utensils, color: '#8B2020' }
             const Icon = meta.icon
             return (
               <div key={catKey}>
@@ -97,8 +97,8 @@ export default function OffersPage() {
                         cursor: 'default'
                       }}
                       onMouseEnter={e => {
-                        e.currentTarget.style.borderColor = '#FF751F40'
-                        e.currentTarget.style.boxShadow = '0 0 20px #FF751F15'
+                        e.currentTarget.style.borderColor = '#8B202040'
+                        e.currentTarget.style.boxShadow = '0 0 20px #8B202015'
                       }}
                       onMouseLeave={e => {
                         e.currentTarget.style.borderColor = 'var(--color-border)'

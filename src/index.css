@@ -4,21 +4,21 @@
 
 /* CSS Custom Properties */
 :root {
-  --color-bg: #000000;
-  --color-surface: #0D0D0D;
-  --color-surface-2: #141414;
-  --color-border: #1F1F1F;
-  --color-orange: #FF751F;
-  --color-orange-glow: #FF751F33;
-  --color-orange-hover: #FF9A3C;
+  --color-bg: #0A0404;
+  --color-surface: #140A0A;
+  --color-surface-2: #1C0E0E;
+  --color-border: #2A1515;
+  --color-orange: #8B2020;
+  --color-orange-glow: #8B202033;
+  --color-orange-hover: #A52D2D;
   --color-white: #FFFFFF;
-  --color-gray-1: #A0A0A0;
-  --color-gray-2: #606060;
+  --color-gray-1: #B8A0A0;
+  --color-gray-2: #6B5555;
 
-  --gradient-orange: linear-gradient(135deg, #FF751F, #FF9A3C);
+  --gradient-orange: linear-gradient(135deg, #8B2020, #A52D2D);
 
-  --shadow-orange-glow: 0 0 20px #FF751F15;
-  --shadow-card-hover: 0 8px 32px #00000040;
+  --shadow-orange-glow: 0 0 20px #8B202015;
+  --shadow-card-hover: 0 8px 32px #0A040440;
 
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -60,21 +60,22 @@ body {
   color: var(--color-gray-1);
   background-color: var(--color-bg);
   background-image:
+    radial-gradient(ellipse at 50% 0%, #1C0E0E 0%, transparent 70%),
     repeating-linear-gradient(
       0deg,
       transparent,
       transparent 2px,
-      rgba(255, 255, 255, 0.04) 2px,
-      rgba(255, 255, 255, 0.04) 4px
+      rgba(139, 32, 32, 0.03) 2px,
+      rgba(139, 32, 32, 0.03) 4px
     ),
     repeating-linear-gradient(
       90deg,
       transparent,
       transparent 2px,
-      rgba(255, 255, 255, 0.04) 2px,
-      rgba(255, 255, 255, 0.04) 4px
+      rgba(139, 32, 32, 0.03) 2px,
+      rgba(139, 32, 32, 0.03) 4px
     );
-  background-size: 20px 20px;
+  background-size: 100% 100%, 20px 20px, 20px 20px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -221,7 +222,7 @@ input, textarea, select {
 }
 
 .btn-secondary:hover {
-  background: #FF751F10;
+  background: #8B202010;
   box-shadow: var(--shadow-orange-glow);
 }
 
@@ -297,7 +298,7 @@ input, textarea, select {
 .form-select:focus {
   outline: none;
   border-color: var(--color-orange);
-  box-shadow: 0 0 12px #FF751F15;
+  box-shadow: 0 0 12px #8B202015;
 }
 
 .form-textarea {

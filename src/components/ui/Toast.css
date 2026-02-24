@@ -42,7 +42,7 @@
 .toast-info {
   background: var(--color-orange);
   color: white;
-  border-left: 4px solid #e06000;
+  border-left: 4px solid #6B1818;
 }
 
 .toast-close {
