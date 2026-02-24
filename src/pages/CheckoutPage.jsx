@@ -26,14 +26,10 @@ export default function CheckoutPage() {
   const [orderPlaced, setOrderPlaced] = useState(false)
   const [orderId, setOrderId] = useState('')
 
-  const [selectedAddress, setSelectedAddress] = useState(0)
-  const [newAddress, setNewAddress] = useState('')
+  const [address, setAddress] = useState('')
   const [phone, setPhone] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('cod')
-
-  const addresses = isLoggedIn && user?.addresses?.length > 0
-    ? user.addresses
-    : [{ id: 1, label: 'Home', address: '123 Main Street, DHA Phase 5, Karachi' }]
+  const [errors, setErrors] = useState({})
 
   if (items.length === 0 && !orderPlaced) {
     return (
@@ -94,47 +90,33 @@ export default function CheckoutPage() {
             {/* Step 0: Address */}
             {step === 0 && (
               <>
-                <h2>Delivery Address</h2>
-                <div className="address-cards">
-                  {addresses.map((addr, i) => (
-                    <div
-                      key={addr.id}
-                      className={`address-card ${selectedAddress === i ? 'selected' : ''}`}
-                      onClick={() => setSelectedAddress(i)}
-                    >
-                      <div className="address-card-radio" />
-                      <div className="address-card-info">
-                        <div className="address-card-label">{addr.label}</div>
-                        <div className="address-card-text">{addr.address}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <h2>Delivery Details</h2>
 
                 <div className="form-group">
-                  <label className="form-label">Or enter a new address</label>
+                  <label className="form-label">Delivery Address <span className="required">*</span></label>
                   <input
                     type="text"
-                    className="form-input"
+                    className={`form-input ${errors.address ? 'form-input-error' : ''}`}
                     placeholder="Enter your full delivery address"
-                    value={newAddress}
-                    onChange={e => setNewAddress(e.target.value)}
+                    value={address}
+                    onChange={e => { setAddress(e.target.value); setErrors(prev => ({ ...prev, address: '' })) }}
                   />
+                  {errors.address && <span className="form-error">{errors.address}</span>}
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Mobile Number</label>
+                  <label className="form-label">Mobile Number <span className="required">*</span></label>
                   <div className="phone-input-wrapper">
                     <Phone size={18} className="phone-input-icon" />
                     <input
                       type="tel"
-                      className="form-input phone-input"
+                      className={`form-input phone-input ${errors.phone ? 'form-input-error' : ''}`}
                       placeholder="03XX-XXXXXXX"
                       value={phone}
-                      onChange={e => setPhone(e.target.value)}
+                      onChange={e => { setPhone(e.target.value); setErrors(prev => ({ ...prev, phone: '' })) }}
                     />
                   </div>
-                  <span className="form-hint">We'll contact you for delivery updates</span>
+                  {errors.phone ? <span className="form-error">{errors.phone}</span> : <span className="form-hint">We'll contact you for delivery updates</span>}
                 </div>
               </>
             )}
@@ -187,8 +169,8 @@ export default function CheckoutPage() {
                 </div>
 
                 <div style={{ fontSize: '14px', color: 'var(--color-gray-1)', marginBottom: 'var(--space-16)' }}>
-                  <p><strong style={{ color: 'var(--color-white)' }}>Address:</strong> {newAddress || addresses[selectedAddress]?.address}</p>
-                  <p><strong style={{ color: 'var(--color-white)' }}>Phone:</strong> {phone || 'Not provided'}</p>
+                  <p><strong style={{ color: 'var(--color-white)' }}>Address:</strong> {address}</p>
+                  <p><strong style={{ color: 'var(--color-white)' }}>Phone:</strong> {phone}</p>
                   <p><strong style={{ color: 'var(--color-white)' }}>Delivery:</strong> Free Delivery</p>
                   <p><strong style={{ color: 'var(--color-white)' }}>Payment:</strong> {PAYMENT_METHODS.find(m => m.id === paymentMethod)?.name}</p>
                 </div>
@@ -208,7 +190,18 @@ export default function CheckoutPage() {
               )}
 
               {step < 2 ? (
-                <button className="btn-primary" onClick={() => setStep(s => s + 1)}>
+                <button className="btn-primary" onClick={() => {
+                  if (step === 0) {
+                    const newErrors = {}
+                    if (!address.trim()) newErrors.address = 'Delivery address is required'
+                    if (!phone.trim()) newErrors.phone = 'Mobile number is required'
+                    if (Object.keys(newErrors).length > 0) {
+                      setErrors(newErrors)
+                      return
+                    }
+                  }
+                  setStep(s => s + 1)
+                }}>
                   Continue <ChevronRight size={16} />
                 </button>
               ) : (
