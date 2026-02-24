@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { MapPin, Truck, CreditCard, ClipboardCheck, ChevronLeft, ChevronRight, Check, Banknote, Smartphone, Wallet } from 'lucide-react'
+import { MapPin, CreditCard, ClipboardCheck, ChevronLeft, ChevronRight, Check, Banknote, Smartphone, Wallet } from 'lucide-react'
 import StepIndicator from '../components/ui/StepIndicator'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import './CheckoutPage.css'
 
-const STEPS = ['Address', 'Delivery', 'Payment', 'Review']
+const STEPS = ['Address', 'Payment', 'Review']
 
 const PAYMENT_METHODS = [
   { id: 'cod', name: 'Cash on Delivery', desc: 'Pay when your order arrives', icon: Banknote },
@@ -28,7 +28,6 @@ export default function CheckoutPage() {
 
   const [selectedAddress, setSelectedAddress] = useState(0)
   const [newAddress, setNewAddress] = useState('')
-  const [deliveryMethod, setDeliveryMethod] = useState('standard')
   const [paymentMethod, setPaymentMethod] = useState('cod')
 
   const addresses = isLoggedIn && user?.addresses?.length > 0
@@ -81,8 +80,7 @@ export default function CheckoutPage() {
     addToast('Order placed successfully!', 'success')
   }
 
-  const actualDeliveryFee = deliveryMethod === 'express' ? 350 : 200
-  const finalTotal = subtotal + actualDeliveryFee + tax
+  const finalTotal = subtotal + tax
 
   return (
     <div className="checkout-page">
@@ -125,33 +123,8 @@ export default function CheckoutPage() {
               </>
             )}
 
-            {/* Step 1: Delivery */}
+            {/* Step 1: Payment */}
             {step === 1 && (
-              <>
-                <h2>Delivery Method</h2>
-                <div className="delivery-options">
-                  <button
-                    className={`delivery-option ${deliveryMethod === 'standard' ? 'selected' : ''}`}
-                    onClick={() => setDeliveryMethod('standard')}
-                  >
-                    <div className="delivery-option-title">Standard</div>
-                    <div className="delivery-option-desc">30-45 minutes</div>
-                    <div className="delivery-option-price">PKR 200</div>
-                  </button>
-                  <button
-                    className={`delivery-option ${deliveryMethod === 'express' ? 'selected' : ''}`}
-                    onClick={() => setDeliveryMethod('express')}
-                  >
-                    <div className="delivery-option-title">Express</div>
-                    <div className="delivery-option-desc">15-20 minutes</div>
-                    <div className="delivery-option-price">PKR 350</div>
-                  </button>
-                </div>
-              </>
-            )}
-
-            {/* Step 2: Payment */}
-            {step === 2 && (
               <>
                 <h2>Payment Method</h2>
                 <div className="payment-methods">
@@ -174,8 +147,8 @@ export default function CheckoutPage() {
               </>
             )}
 
-            {/* Step 3: Review */}
-            {step === 3 && (
+            {/* Step 2: Review */}
+            {step === 2 && (
               <>
                 <h2>Review Your Order</h2>
                 <div className="review-items">
@@ -199,7 +172,7 @@ export default function CheckoutPage() {
 
                 <div style={{ fontSize: '14px', color: 'var(--color-gray-1)', marginBottom: 'var(--space-16)' }}>
                   <p><strong style={{ color: 'var(--color-white)' }}>Address:</strong> {newAddress || addresses[selectedAddress]?.address}</p>
-                  <p><strong style={{ color: 'var(--color-white)' }}>Delivery:</strong> {deliveryMethod === 'express' ? 'Express (15-20 min)' : 'Standard (30-45 min)'}</p>
+                  <p><strong style={{ color: 'var(--color-white)' }}>Delivery:</strong> Free Delivery</p>
                   <p><strong style={{ color: 'var(--color-white)' }}>Payment:</strong> {PAYMENT_METHODS.find(m => m.id === paymentMethod)?.name}</p>
                 </div>
               </>
@@ -217,7 +190,7 @@ export default function CheckoutPage() {
                 </Link>
               )}
 
-              {step < 3 ? (
+              {step < 2 ? (
                 <button className="btn-primary" onClick={() => setStep(s => s + 1)}>
                   Continue <ChevronRight size={16} />
                 </button>
@@ -237,7 +210,7 @@ export default function CheckoutPage() {
             </div>
             <div className="order-summary-row">
               <span>Delivery Fee</span>
-              <span>PKR {actualDeliveryFee.toLocaleString()}</span>
+              <span style={{ color: '#4CAF50', fontWeight: 600 }}>FREE</span>
             </div>
             <div className="order-summary-row">
               <span>Tax (16% GST)</span>

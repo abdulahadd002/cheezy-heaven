@@ -111,17 +111,23 @@ export default function MenuPage() {
               aria-label="Search menu"
             />
           </div>
-          <select
-            className="form-select menu-sort-select"
-            value={sort}
-            onChange={e => setSort(e.target.value)}
-            aria-label="Sort products"
-          >
-            <option value="popular">Most Popular</option>
-            <option value="rating">Highest Rated</option>
-            <option value="price-low">Price: Low to High</option>
-            <option value="price-high">Price: High to Low</option>
-          </select>
+        </div>
+
+        <div className="menu-sort-buttons">
+          {[
+            { value: 'popular', label: 'Most Popular' },
+            { value: 'rating', label: 'Highest Rated' },
+            { value: 'price-low', label: 'Price: Low to High' },
+            { value: 'price-high', label: 'Price: High to Low' },
+          ].map(option => (
+            <button
+              key={option.value}
+              className={`sort-btn ${sort === option.value ? 'active' : ''}`}
+              onClick={() => setSort(option.value)}
+            >
+              {option.label}
+            </button>
+          ))}
         </div>
 
         <div className="menu-layout">

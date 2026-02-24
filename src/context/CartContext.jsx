@@ -80,9 +80,9 @@ export function CartProvider({ children }) {
 
   const itemCount = items.reduce((sum, item) => sum + item.qty, 0)
   const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0)
-  const deliveryFee = subtotal > 0 ? 200 : 0
+  const deliveryFee = 0
   const tax = Math.round(subtotal * 0.16)
-  const total = subtotal + deliveryFee + tax
+  const total = subtotal + tax
 
   return (
     <CartContext.Provider value={{
