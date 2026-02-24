@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Clock, Moon, Sun, Flame, Crown, Utensils, Plus, ChevronDown } from 'lucide-react'
+import { Clock, Moon, Sun, Flame, Crown, Utensils, Plus, ChevronDown, Lock } from 'lucide-react'
 import deals from '../data/deals.json'
 
 const CATEGORY_META = {
@@ -11,6 +11,37 @@ const CATEGORY_META = {
   doubletrouble: { icon: Flame, color: '#A52D2D' },
   combos: { icon: Utensils, color: '#6B4030' },
   addon: { icon: Plus, color: '#5C3030' },
+}
+
+function parseTime12(str) {
+  const match = str.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i)
+  if (!match) return null
+  let h = parseInt(match[1])
+  const m = parseInt(match[2])
+  const period = match[3].toUpperCase()
+  if (period === 'AM' && h === 12) h = 0
+  else if (period === 'PM' && h !== 12) h += 12
+  return h * 60 + m
+}
+
+function isActiveNow(timeStr) {
+  if (!timeStr || timeStr === 'All Day') return true
+
+  const parts = timeStr.split(/\s+to\s+/i)
+  if (parts.length !== 2) return true
+
+  const start = parseTime12(parts[0])
+  const end = parseTime12(parts[1])
+  if (start === null || end === null) return true
+
+  const now = new Date()
+  const current = now.getHours() * 60 + now.getMinutes()
+
+  // Handle overnight ranges (e.g. 11:00 PM to 3:00 AM)
+  if (start > end) {
+    return current >= start || current < end
+  }
+  return current >= start && current < end
 }
 
 // Group deals by category
@@ -28,8 +59,16 @@ const grouped = deals.reduce((acc, deal) => {
 
 export default function OffersPage() {
   const [expanded, setExpanded] = useState(null)
+  const [now, setNow] = useState(new Date())
 
-  const toggle = (key) => {
+  // Update time every minute to keep active status current
+  useEffect(() => {
+    const interval = setInterval(() => setNow(new Date()), 60000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const toggle = (key, active) => {
+    if (!active) return
     setExpanded(prev => prev === key ? null : key)
   }
 
@@ -57,21 +96,23 @@ export default function OffersPage() {
             const meta = CATEGORY_META[catKey] || { icon: Utensils, color: '#8B2020' }
             const Icon = meta.icon
             const isOpen = expanded === catKey
+            const active = isActiveNow(catData.time)
 
             return (
               <div
                 key={catKey}
                 style={{
                   background: 'var(--color-surface)',
-                  border: `1px solid ${isOpen ? meta.color + '60' : 'var(--color-border)'}`,
+                  border: `1px solid ${isOpen && active ? meta.color + '60' : 'var(--color-border)'}`,
                   borderRadius: 14,
                   overflow: 'hidden',
                   transition: 'all 0.3s ease',
+                  opacity: active ? 1 : 0.5,
                 }}
               >
                 {/* Clickable Category Header */}
                 <button
-                  onClick={() => toggle(catKey)}
+                  onClick={() => toggle(catKey, active)}
                   style={{
                     width: '100%',
                     display: 'flex',
@@ -80,7 +121,7 @@ export default function OffersPage() {
                     padding: 'var(--space-24) var(--space-32)',
                     background: 'transparent',
                     border: 'none',
-                    cursor: 'pointer',
+                    cursor: active ? 'pointer' : 'not-allowed',
                     textAlign: 'left',
                     color: 'inherit',
                     transition: 'background 0.2s ease',
@@ -92,13 +133,13 @@ export default function OffersPage() {
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     flexShrink: 0
                   }}>
-                    <Icon size={24} style={{ color: meta.color }} />
+                    <Icon size={24} style={{ color: active ? meta.color : 'var(--color-gray-2)' }} />
                   </div>
                   <div style={{ flex: 1 }}>
-                    <h2 style={{ fontWeight: 700, fontSize: 20, color: 'var(--color-white)', lineHeight: 1.3 }}>
+                    <h2 style={{ fontWeight: 700, fontSize: 20, color: active ? 'var(--color-white)' : 'var(--color-gray-2)', lineHeight: 1.3 }}>
                       {catData.title}
                     </h2>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 4 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 4, flexWrap: 'wrap' }}>
                       {catData.time && (
                         <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, color: 'var(--color-gray-2)' }}>
                           <Clock size={12} /> {catData.time}
@@ -107,29 +148,49 @@ export default function OffersPage() {
                       <span style={{ fontSize: 13, color: 'var(--color-gray-2)' }}>
                         {catData.deals.length} {catData.deals.length === 1 ? 'deal' : 'deals'}
                       </span>
+                      {active ? (
+                        <span style={{
+                          fontSize: 11, fontWeight: 600,
+                          padding: '2px 10px', borderRadius: 20,
+                          background: 'rgba(16, 185, 129, 0.15)', color: '#10B981',
+                        }}>
+                          ACTIVE NOW
+                        </span>
+                      ) : (
+                        <span style={{
+                          display: 'flex', alignItems: 'center', gap: 4,
+                          fontSize: 11, fontWeight: 600,
+                          padding: '2px 10px', borderRadius: 20,
+                          background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444',
+                        }}>
+                          <Lock size={10} /> UNAVAILABLE
+                        </span>
+                      )}
                     </div>
                   </div>
-                  <div style={{
-                    width: 36, height: 36, borderRadius: 8,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: isOpen ? `${meta.color}20` : 'transparent',
-                    transition: 'all 0.3s ease',
-                    flexShrink: 0
-                  }}>
-                    <ChevronDown
-                      size={20}
-                      style={{
-                        color: isOpen ? meta.color : 'var(--color-gray-2)',
-                        transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                        transition: 'transform 0.3s ease, color 0.3s ease'
-                      }}
-                    />
-                  </div>
+                  {active && (
+                    <div style={{
+                      width: 36, height: 36, borderRadius: 8,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      background: isOpen ? `${meta.color}20` : 'transparent',
+                      transition: 'all 0.3s ease',
+                      flexShrink: 0
+                    }}>
+                      <ChevronDown
+                        size={20}
+                        style={{
+                          color: isOpen ? meta.color : 'var(--color-gray-2)',
+                          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                          transition: 'transform 0.3s ease, color 0.3s ease'
+                        }}
+                      />
+                    </div>
+                  )}
                 </button>
 
                 {/* Expandable Deal List */}
                 <div style={{
-                  maxHeight: isOpen ? `${catData.deals.length * 120 + 40}px` : '0px',
+                  maxHeight: isOpen && active ? `${catData.deals.length * 120 + 40}px` : '0px',
                   overflow: 'hidden',
                   transition: 'max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}>
