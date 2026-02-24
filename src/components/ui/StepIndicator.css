@@ -1,0 +1,77 @@
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-48);
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.step-number {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  border: 2px solid var(--color-border);
+  color: var(--color-gray-2);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.step.active .step-number {
+  background: var(--color-orange);
+  border-color: var(--color-orange);
+  color: var(--color-white);
+}
+
+.step.completed .step-number {
+  background: #10B981;
+  border-color: #10B981;
+  color: var(--color-white);
+}
+
+.step-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-gray-2);
+  transition: color 0.3s ease;
+}
+
+.step.active .step-title {
+  color: var(--color-white);
+}
+
+.step.completed .step-title {
+  color: var(--color-gray-1);
+}
+
+.step-divider {
+  width: 60px;
+  height: 2px;
+  background: var(--color-border);
+  margin: 0 var(--space-16);
+  transition: background 0.3s ease;
+}
+
+.step-divider.completed {
+  background: #10B981;
+}
+
+@media (max-width: 768px) {
+  .step-title {
+    display: none;
+  }
+
+  .step-divider {
+    width: 32px;
+    margin: 0 var(--space-8);
+  }
+}

@@ -1,0 +1,282 @@
+[
+  {
+    "id": 1,
+    "category": "midnight",
+    "categoryTitle": "Midnight Deals",
+    "categoryTime": "11:00 PM to 3:00 AM",
+    "title": "Midnight Deal 2",
+    "description": "1 Zinger Burger + 1 Regular Drink",
+    "price": 550,
+    "type": "combo"
+  },
+  {
+    "id": 2,
+    "category": "midnight",
+    "categoryTitle": "Midnight Deals",
+    "categoryTime": "11:00 PM to 3:00 AM",
+    "title": "Midnight Deal 2",
+    "description": "2 Patty Burgers + 2 Regular Drinks",
+    "price": 750,
+    "type": "combo"
+  },
+  {
+    "id": 3,
+    "category": "midnight",
+    "categoryTitle": "Midnight Deals",
+    "categoryTime": "11:00 PM to 3:00 AM",
+    "title": "Midnight Deal 3",
+    "description": "1 Ultimate Burger + 1 Regular Drink",
+    "price": 700,
+    "type": "combo"
+  },
+  {
+    "id": 4,
+    "category": "midnight",
+    "categoryTitle": "Midnight Deals",
+    "categoryTime": "11:00 PM to 3:00 AM",
+    "title": "Midnight Deal 4",
+    "description": "1 Cheezy Pizza (Med) + 2 Regular Drinks",
+    "price": 1250,
+    "type": "combo"
+  },
+  {
+    "id": 5,
+    "category": "lunch",
+    "categoryTitle": "Lunch Deals",
+    "categoryTime": "11:00 AM to 5:00 PM",
+    "title": "Lunch Deal 1",
+    "description": "2 Zinger Burgers + 2 Reg Drinks",
+    "price": 1040,
+    "type": "combo"
+  },
+  {
+    "id": 6,
+    "category": "lunch",
+    "categoryTitle": "Lunch Deals",
+    "categoryTime": "11:00 AM to 5:00 PM",
+    "title": "Lunch Deal 2",
+    "description": "1 Medium Pizza",
+    "price": 1100,
+    "type": "combo"
+  },
+  {
+    "id": 7,
+    "category": "lunch",
+    "categoryTitle": "Lunch Deals",
+    "categoryTime": "11:00 AM to 5:00 PM",
+    "title": "Lunch Deal 3",
+    "description": "2 Pasta",
+    "price": 1500,
+    "type": "combo"
+  },
+  {
+    "id": 8,
+    "category": "lunch",
+    "categoryTitle": "Lunch Deals",
+    "categoryTime": "11:00 AM to 5:00 PM",
+    "title": "Lunch Deal 4",
+    "description": "1 CH Special (Medium)",
+    "price": 1650,
+    "type": "combo"
+  },
+  {
+    "id": 9,
+    "category": "pizzamania",
+    "categoryTitle": "Pizza Mania",
+    "categoryTime": "All Day",
+    "title": "Small Pizza Mania",
+    "description": "1 Small Pizza + 1 Reg Drink",
+    "price": 600,
+    "type": "combo"
+  },
+  {
+    "id": 10,
+    "category": "pizzamania",
+    "categoryTitle": "Pizza Mania",
+    "categoryTime": "All Day",
+    "title": "Medium Pizza Mania",
+    "description": "1 Medium Pizza + 2 Reg Drinks",
+    "price": 1300,
+    "type": "combo"
+  },
+  {
+    "id": 11,
+    "category": "pizzamania",
+    "categoryTitle": "Pizza Mania",
+    "categoryTime": "All Day",
+    "title": "Large Pizza Mania",
+    "description": "1 Large Pizza + 1 Ltr Drink",
+    "price": 1650,
+    "type": "combo"
+  },
+  {
+    "id": 12,
+    "category": "pizzamania",
+    "categoryTitle": "Pizza Mania",
+    "categoryTime": "All Day",
+    "title": "XL Pizza Mania",
+    "description": "1 XL Pizza + 1.5 Ltr Drink",
+    "price": 2650,
+    "type": "combo"
+  },
+  {
+    "id": 13,
+    "category": "premium",
+    "categoryTitle": "Premium Deals",
+    "categoryTime": "",
+    "title": "Premium Deal 1",
+    "description": "1 Cheezy Pizza (Med) + 6 Chicken Wings + 1 Ltr Drink",
+    "price": 1800,
+    "type": "combo"
+  },
+  {
+    "id": 14,
+    "category": "premium",
+    "categoryTitle": "Premium Deals",
+    "categoryTime": "",
+    "title": "Premium Deal 2",
+    "description": "2 Cheezy Pizza (Med) + 1.5 Ltr Drink",
+    "price": 2450,
+    "type": "combo"
+  },
+  {
+    "id": 15,
+    "category": "premium",
+    "categoryTitle": "Premium Deals",
+    "categoryTime": "",
+    "title": "Premium Deal 3",
+    "description": "1 Cheezy Pizza (Lrg) + Any Pasta + 1.5 Ltr Drink",
+    "price": 2500,
+    "type": "combo"
+  },
+  {
+    "id": 16,
+    "category": "premium",
+    "categoryTitle": "Premium Deals",
+    "categoryTime": "",
+    "title": "Premium Deal 4",
+    "description": "1 Cheezy Pizza (Party) + 6 Chicken Wings + 1.5 Ltr Drink",
+    "price": 3550,
+    "type": "combo"
+  },
+  {
+    "id": 17,
+    "category": "premium",
+    "categoryTitle": "Premium Deals",
+    "categoryTime": "",
+    "title": "Premium Deal 5",
+    "description": "2 Cheezy Pizza (Lrg) + 1.5 Ltr Drink",
+    "price": 3300,
+    "type": "combo"
+  },
+  {
+    "id": 18,
+    "category": "doubletrouble",
+    "categoryTitle": "Double Trouble",
+    "categoryTime": "All Day",
+    "title": "Double Trouble 1",
+    "description": "3 Zinger Burgers + Large Fries + 1 Ltr Drink",
+    "price": 1700,
+    "type": "combo"
+  },
+  {
+    "id": 19,
+    "category": "doubletrouble",
+    "categoryTitle": "Double Trouble",
+    "categoryTime": "All Day",
+    "title": "Double Trouble 2",
+    "description": "3 Zinger Burgers + 3 Chicken Piece + Large Fries + 1.5 Ltr Drinks",
+    "price": 2250,
+    "type": "combo"
+  },
+  {
+    "id": 20,
+    "category": "doubletrouble",
+    "categoryTitle": "Double Trouble",
+    "categoryTime": "All Day",
+    "title": "Double Trouble 3",
+    "description": "5 Zinger Burgers + 1.5 Ltr Drink + 4 Chicken Pieces + Large Fries",
+    "price": 2450,
+    "type": "combo"
+  },
+  {
+    "id": 21,
+    "category": "doubletrouble",
+    "categoryTitle": "Double Trouble",
+    "categoryTime": "All Day",
+    "title": "Double Trouble 4",
+    "description": "6 Zinger Burgers + 1.5 Reg Drinks + 4 Chicken Piece + Large Fries",
+    "price": 2650,
+    "type": "combo"
+  },
+  {
+    "id": 22,
+    "category": "doubletrouble",
+    "categoryTitle": "Double Trouble",
+    "categoryTime": "All Day",
+    "title": "Double Trouble 5",
+    "description": "2 Zinger Burgers + 2 Reg Drinks + 2 Chicken Piece + Large Fries",
+    "price": 1550,
+    "type": "combo"
+  },
+  {
+    "id": 23,
+    "category": "doubletrouble",
+    "categoryTitle": "Double Trouble",
+    "categoryTime": "All Day",
+    "title": "Double Trouble 6",
+    "description": "2 Zinger Burger + Reg Fries + Reg Drinks",
+    "price": 1199,
+    "type": "combo"
+  },
+  {
+    "id": 24,
+    "category": "combos",
+    "categoryTitle": "Combos",
+    "categoryTime": "",
+    "title": "Combo 1",
+    "description": "Patty Burger + Reg Drinks + Chicken Piece",
+    "price": 600,
+    "type": "combo"
+  },
+  {
+    "id": 25,
+    "category": "combos",
+    "categoryTitle": "Combos",
+    "categoryTime": "",
+    "title": "Combo 2",
+    "description": "Zinger Burger + Reg Drinks + Chicken Piece",
+    "price": 800,
+    "type": "combo"
+  },
+  {
+    "id": 26,
+    "category": "combos",
+    "categoryTitle": "Combos",
+    "categoryTime": "",
+    "title": "Combo 3",
+    "description": "5 Chicken Pieces (Legs & Wings) + 2 Reg Drinks",
+    "price": 1150,
+    "type": "combo"
+  },
+  {
+    "id": 27,
+    "category": "combos",
+    "categoryTitle": "Combos",
+    "categoryTime": "",
+    "title": "Combo 4",
+    "description": "Zinger Burger + Reg Drinks + Chicken Piece + Reg Fries",
+    "price": 950,
+    "type": "combo"
+  },
+  {
+    "id": 28,
+    "category": "addon",
+    "categoryTitle": "Make It A Combo",
+    "categoryTime": "",
+    "title": "Make It A Combo",
+    "description": "Add Fries + Drink (345ml) to any item",
+    "price": 250,
+    "type": "addon"
+  }
+]

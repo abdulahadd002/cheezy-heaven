@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="40" viewBox="0 0 200 40">
+  <defs>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF751F"/>
+      <stop offset="100%" stop-color="#FF9A5C"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="200" height="40" fill="transparent"/>
+  <!-- CH letters with accent -->
+  <text x="0" y="30" font-family="'Montserrat', sans-serif" font-size="28" font-weight="800" fill="#FFFFFF">C</text>
+  <text x="20" y="30" font-family="'Montserrat', sans-serif" font-size="28" font-weight="800" fill="url(#accent)">H</text>
+  <!-- Dot accent -->
+  <circle cx="47" cy="12" r="4" fill="#FF751F"/>
+  <!-- Full name -->
+  <text x="56" y="22" font-family="'Montserrat', sans-serif" font-size="11" font-weight="600" fill="#FFFFFF" letter-spacing="1">CHEESY</text>
+  <text x="56" y="34" font-family="'Montserrat', sans-serif" font-size="11" font-weight="600" fill="#FF751F" letter-spacing="1">HEAVEN</text>
+  <!-- Underline accent -->
+  <line x1="56" y1="37" x2="120" y2="37" stroke="#FF751F" stroke-width="2" opacity="0.5"/>
+</svg>

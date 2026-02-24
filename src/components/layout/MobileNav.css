@@ -1,0 +1,50 @@
+.mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  z-index: 1000;
+  display: none;
+}
+
+.mobile-nav-icons {
+  display: flex;
+  justify-content: space-around;
+  padding: var(--space-8) 0;
+}
+
+.mobile-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: var(--space-8) 0;
+  color: var(--color-gray-2);
+  font-size: 11px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  position: relative;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.mobile-nav-item:hover,
+.mobile-nav-item.active {
+  color: var(--color-orange);
+}
+
+.mobile-nav-item .cart-badge {
+  position: absolute;
+  top: 2px;
+  right: calc(50% - 20px);
+}
+
+@media (max-width: 768px) {
+  .mobile-nav {
+    display: block;
+  }
+}

@@ -1,0 +1,225 @@
+.menu-page {
+  padding: var(--space-32) 0 var(--space-96);
+}
+
+.menu-header {
+  margin-bottom: var(--space-32);
+}
+
+.menu-header h1 {
+  font-weight: 700;
+  font-size: clamp(32px, 5vw, 48px);
+  color: var(--color-white);
+  letter-spacing: -0.02em;
+}
+
+.menu-header p {
+  color: var(--color-gray-1);
+  margin-top: var(--space-8);
+}
+
+/* Search Bar */
+.menu-search-bar {
+  display: flex;
+  gap: var(--space-12);
+  margin-bottom: var(--space-32);
+}
+
+.menu-search-input {
+  flex: 1;
+  position: relative;
+}
+
+.menu-search-input svg {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-gray-2);
+}
+
+.menu-search-input input {
+  width: 100%;
+  padding: 12px 16px 12px 48px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-white);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.menu-search-input input::placeholder {
+  color: var(--color-gray-2);
+}
+
+.menu-search-input input:focus {
+  outline: none;
+  border-color: var(--color-orange);
+  box-shadow: 0 0 12px #FF751F15;
+}
+
+.menu-sort-select {
+  min-width: 180px;
+}
+
+/* Layout */
+.menu-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: var(--space-32);
+}
+
+/* Sidebar */
+.menu-sidebar {
+  position: sticky;
+  top: calc(var(--navbar-height) + var(--space-32));
+  height: fit-content;
+}
+
+.filter-section {
+  margin-bottom: var(--space-32);
+}
+
+.filter-section h3 {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-white);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-16);
+}
+
+.filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-8) var(--space-12);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  color: var(--color-gray-1);
+  background: transparent;
+  border: none;
+  text-align: left;
+  width: 100%;
+}
+
+.filter-option:hover {
+  background: var(--color-surface);
+  color: var(--color-white);
+}
+
+.filter-option.active {
+  background: rgba(255, 117, 31, 0.1);
+  color: var(--color-orange);
+}
+
+.filter-option-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--color-gray-2);
+}
+
+.filter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.filter-tag {
+  padding: var(--space-8) var(--space-16);
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-gray-1);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-tag:hover,
+.filter-tag.active {
+  border-color: var(--color-orange);
+  color: var(--color-orange);
+  background: rgba(255, 117, 31, 0.05);
+}
+
+/* Results info */
+.menu-results-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-24);
+}
+
+.menu-results-count {
+  font-size: 14px;
+  color: var(--color-gray-1);
+}
+
+.menu-results-count span {
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+/* Empty State */
+.menu-empty {
+  text-align: center;
+  padding: var(--space-96) var(--space-24);
+}
+
+.menu-empty h3 {
+  font-size: 24px;
+  color: var(--color-white);
+  margin-bottom: var(--space-8);
+}
+
+.menu-empty p {
+  color: var(--color-gray-1);
+  margin-bottom: var(--space-24);
+}
+
+@media (max-width: 768px) {
+  .menu-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .menu-sidebar {
+    position: static;
+  }
+
+  .filter-options {
+    flex-direction: row;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: var(--space-8);
+  }
+
+  .filter-options::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-option {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .menu-sort-select {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .menu-search-bar {
+    flex-direction: column;
+  }
+}

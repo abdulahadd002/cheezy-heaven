@@ -1,0 +1,50 @@
+.skeleton {
+  background: var(--color-surface);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-surface-2) 50%,
+    transparent 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+.skeleton-card {
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.skeleton-image {
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.skeleton-text {
+  height: 16px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.skeleton-text-short {
+  width: 60%;
+}
+
+.skeleton-text-xs {
+  height: 12px;
+  width: 40%;
+}
+
+.skeleton-card-content {
+  padding: var(--space-16);
+}

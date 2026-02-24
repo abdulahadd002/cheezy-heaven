@@ -1,0 +1,12 @@
+node_modules
+dist
+.env
+.env.local
+.DS_Store
+*.log
+.claude/
+PLAN.md
+download-images.*
+*.jpeg
+pizza-*.jpg
+!public/images/pizza-*.jpg

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1A1A1A"/>
+      <stop offset="100%" stop-color="#0D0D0D"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <!-- Bowl shape -->
+  <ellipse cx="200" cy="180" rx="80" ry="25" fill="none" stroke="#FF751F" stroke-width="2.5" opacity="0.6"/>
+  <path d="M120,180 Q120,240 200,240 Q280,240 280,180" fill="none" stroke="#FF751F" stroke-width="2.5" opacity="0.6"/>
+  <!-- Coleslaw texture inside bowl -->
+  <path d="M150,178 Q160,168 175,178" fill="none" stroke="#FF751F" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+  <path d="M170,172 Q182,162 195,172" fill="none" stroke="#FF751F" stroke-width="2" opacity="0.45" stroke-linecap="round"/>
+  <path d="M190,178 Q202,168 215,178" fill="none" stroke="#FF751F" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+  <path d="M210,172 Q222,162 235,172" fill="none" stroke="#FF751F" stroke-width="2" opacity="0.4" stroke-linecap="round"/>
+  <path d="M160,185 Q175,175 185,185" fill="none" stroke="#FF751F" stroke-width="2" opacity="0.35" stroke-linecap="round"/>
+  <path d="M200,185 Q215,175 230,185" fill="none" stroke="#FF751F" stroke-width="2" opacity="0.4" stroke-linecap="round"/>
+  <!-- Carrot shred accents -->
+  <line x1="165" y1="175" x2="172" y2="170" stroke="#FF751F" stroke-width="2.5" opacity="0.7" stroke-linecap="round"/>
+  <line x1="205" y1="170" x2="212" y2="165" stroke="#FF751F" stroke-width="2.5" opacity="0.6" stroke-linecap="round"/>
+  <line x1="235" y1="175" x2="242" y2="170" stroke="#FF751F" stroke-width="2.5" opacity="0.65" stroke-linecap="round"/>
+  <!-- Label -->
+  <text x="200" y="320" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">Coleslaw</text>
+  <text x="200" y="348" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="13" fill="#FF751F" font-weight="500">SIDES</text>
+</svg>

@@ -1,0 +1,600 @@
+[
+  {
+    "id": 1,
+    "name": "Royal Sausage Pizza",
+    "description": "Premium sausage loaded elite pizza with special sauce",
+    "price": 1350,
+    "category": "pizza",
+    "subcategory": "elite",
+    "image": "/images/pizza-pepperoni.jpg",
+    "rating": 4.8,
+    "reviews": 124,
+    "isNew": false,
+    "isBestseller": true,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "9 inch": 1350,
+      "12 inch": 1750,
+      "15 inch": 2800
+    },
+    "customizations": ["Stuffed Crust", "Extra Topping", "Cheese Slice"]
+  },
+  {
+    "id": 2,
+    "name": "Seekh Kabab Overloaded Pizza",
+    "description": "Loaded with juicy seekh kabab, onions & desi spices on pizza base",
+    "price": 1350,
+    "category": "pizza",
+    "subcategory": "elite",
+    "image": "/images/pizza-tandoori.jpg",
+    "rating": 4.9,
+    "reviews": 89,
+    "isNew": false,
+    "isBestseller": true,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "9 inch": 1350,
+      "12 inch": 1750,
+      "15 inch": 2800
+    },
+    "customizations": ["Stuffed Crust", "Extra Topping", "Cheese Slice"]
+  },
+  {
+    "id": 3,
+    "name": "Chicken Extreme Pizza",
+    "description": "Extreme chicken toppings with special seasoning & mozzarella",
+    "price": 1350,
+    "category": "pizza",
+    "subcategory": "elite",
+    "image": "/images/pizza-chicken.jpg",
+    "rating": 4.7,
+    "reviews": 156,
+    "isNew": false,
+    "isBestseller": true,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "9 inch": 1350,
+      "12 inch": 1750,
+      "15 inch": 2800
+    },
+    "customizations": ["Stuffed Crust", "Extra Topping", "Cheese Slice"]
+  },
+  {
+    "id": 4,
+    "name": "Creamy Melt Pizza",
+    "description": "Rich creamy white sauce base with melted cheese blend",
+    "price": 1350,
+    "category": "pizza",
+    "subcategory": "elite",
+    "image": "/images/pizza-four-cheese.jpg",
+    "rating": 4.6,
+    "reviews": 98,
+    "isNew": false,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "9 inch": 1350,
+      "12 inch": 1750,
+      "15 inch": 2800
+    },
+    "customizations": ["Stuffed Crust", "Extra Topping", "Cheese Slice"]
+  },
+  {
+    "id": 5,
+    "name": "Behari Kabab Pizza",
+    "description": "Smoky behari kabab pieces with traditional spices on pizza base",
+    "price": 1350,
+    "category": "pizza",
+    "subcategory": "elite",
+    "image": "/images/pizza-bbq.jpg",
+    "rating": 4.8,
+    "reviews": 112,
+    "isNew": true,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "9 inch": 1350,
+      "12 inch": 1750,
+      "15 inch": 2800
+    },
+    "customizations": ["Stuffed Crust", "Extra Topping", "Cheese Slice"]
+  },
+  {
+    "id": 6,
+    "name": "Cheezy Pizza",
+    "description": "Signature cheezy pizza with chicken, capsicum, onion, cheese & special sauce. Crown Crust available in 9\"+",
+    "price": 550,
+    "category": "pizza",
+    "subcategory": "cheezy",
+    "image": "/images/pizza-margherita.jpg",
+    "rating": 4.9,
+    "reviews": 312,
+    "isNew": false,
+    "isBestseller": true,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "6 inch": 550,
+      "9 inch": 1200,
+      "12 inch": 1600,
+      "15 inch": 2550
+    },
+    "customizations": ["Crown Crust", "Stuffed Crust", "Extra Topping", "Cheese Slice"]
+  },
+  {
+    "id": 7,
+    "name": "Cheezy Heaven Special Pizza",
+    "description": "Our signature special with Garlic Mayo, Hot & Spicy, Afghani Sauce & BBQ flavors",
+    "price": 1000,
+    "category": "pizza",
+    "subcategory": "special",
+    "image": "/images/pizza-volcano.jpg",
+    "rating": 4.9,
+    "reviews": 278,
+    "isNew": false,
+    "isBestseller": true,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "6 inch": 1000,
+      "9 inch": 1800,
+      "12 inch": 2250,
+      "15 inch": 3000
+    },
+    "customizations": ["Garlic Mayo", "Hot & Spicy", "Afghani Sauce", "B.B.Q", "Stuffed Crust", "Extra Topping"]
+  },
+  {
+    "id": 8,
+    "name": "Pepperoni & Cheese Pizza",
+    "description": "Classic pepperoni with loaded mozzarella cheese",
+    "price": 550,
+    "category": "pizza",
+    "subcategory": "cheezy",
+    "image": "/images/pizza-pepperoni.jpg",
+    "rating": 4.7,
+    "reviews": 145,
+    "isNew": false,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "6 inch": 550,
+      "9 inch": 1200,
+      "12 inch": 1600,
+      "15 inch": 2550
+    },
+    "customizations": ["Crown Crust", "Stuffed Crust", "Extra Topping", "Cheese Slice"]
+  },
+  {
+    "id": 9,
+    "name": "Veggies & Cheese Pizza",
+    "description": "All veggies with loaded mozzarella cheese",
+    "price": 550,
+    "category": "pizza",
+    "subcategory": "cheezy",
+    "image": "/images/pizza-veggie.jpg",
+    "rating": 4.5,
+    "reviews": 67,
+    "isNew": false,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["vegetarian", "halal"],
+    "sizes": {
+      "6 inch": 550,
+      "9 inch": 1200,
+      "12 inch": 1600,
+      "15 inch": 2550
+    },
+    "customizations": ["Crown Crust", "Stuffed Crust", "Extra Topping", "Cheese Slice"]
+  },
+  {
+    "id": 10,
+    "name": "Oven Baked Wings",
+    "description": "Fresh oven baked wings with signature dipping sauce",
+    "price": 550,
+    "category": "appetizers",
+    "image": "/images/wings-buffalo.jpg",
+    "rating": 4.6,
+    "reviews": 88,
+    "isNew": false,
+    "isBestseller": true,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "6 Pcs": 550,
+      "12 Pcs": 1000
+    },
+    "customizations": ["Extra Dip", "Spicy"]
+  },
+  {
+    "id": 11,
+    "name": "Flaming Wings",
+    "description": "Fresh oven baked wings tossed in fiery flaming sauce",
+    "price": 600,
+    "category": "appetizers",
+    "image": "/images/wings-honey.jpg",
+    "rating": 4.7,
+    "reviews": 76,
+    "isNew": false,
+    "isBestseller": true,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "6 Pcs": 600,
+      "12 Pcs": 1100
+    },
+    "customizations": ["Extra Dip", "Extra Spicy"]
+  },
+  {
+    "id": 12,
+    "name": "Arabic Roll",
+    "description": "4 Pcs Arabic Roll stuffed with seasoned filling & served with dip",
+    "price": 600,
+    "category": "appetizers",
+    "image": "/images/sides-mozz-sticks.jpg",
+    "rating": 4.5,
+    "reviews": 56,
+    "isNew": false,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "4 Pcs": 600
+    },
+    "customizations": ["Extra Dip"]
+  },
+  {
+    "id": 13,
+    "name": "Cheese Stick",
+    "description": "Gooey melted cheese in a crispy golden coating",
+    "price": 600,
+    "category": "appetizers",
+    "image": "/images/sides-mozz-sticks.jpg",
+    "rating": 4.6,
+    "reviews": 92,
+    "isNew": false,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "regular": 600
+    },
+    "customizations": ["Extra Dip"]
+  },
+  {
+    "id": 14,
+    "name": "Kabab Bites",
+    "description": "4 Pcs kabab rolls stuffed with juicy seekh kabab & cheese, served with dip",
+    "price": 700,
+    "category": "appetizers",
+    "image": "/images/sides-garlic-bread.jpg",
+    "rating": 4.8,
+    "reviews": 134,
+    "isNew": true,
+    "isBestseller": true,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "4 Pcs": 700
+    },
+    "customizations": ["Extra Dip"]
+  },
+  {
+    "id": 15,
+    "name": "Zinger Burger",
+    "description": "Crispy zinger chicken fillet with fresh lettuce & special sauce",
+    "price": 500,
+    "category": "burgers",
+    "image": "/images/deal-first-order.jpg",
+    "rating": 4.7,
+    "reviews": 201,
+    "isNew": false,
+    "isBestseller": true,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "regular": 500
+    },
+    "customizations": ["Extra Cheese", "Extra Sauce", "Double Patty"]
+  },
+  {
+    "id": 16,
+    "name": "Ultimate Burger",
+    "description": "The ultimate loaded burger with chicken, cheese & premium toppings",
+    "price": 650,
+    "category": "burgers",
+    "image": "/images/deal-family.jpg",
+    "rating": 4.8,
+    "reviews": 167,
+    "isNew": false,
+    "isBestseller": true,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "regular": 650
+    },
+    "customizations": ["Extra Cheese", "Extra Sauce", "Double Patty"]
+  },
+  {
+    "id": 17,
+    "name": "Crunch Burger",
+    "description": "Crunchy chicken burger with signature crunch coating",
+    "price": 350,
+    "category": "burgers",
+    "image": "/images/deal-wednesday.jpg",
+    "rating": 4.5,
+    "reviews": 93,
+    "isNew": false,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "regular": 350
+    },
+    "customizations": ["Extra Cheese", "Extra Sauce"]
+  },
+  {
+    "id": 18,
+    "name": "Patty Burger",
+    "description": "Classic beef patty burger with fresh vegetables & sauce",
+    "price": 350,
+    "category": "burgers",
+    "image": "/images/deal-wednesday.jpg",
+    "rating": 4.4,
+    "reviews": 78,
+    "isNew": false,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "regular": 350
+    },
+    "customizations": ["Extra Cheese", "Extra Sauce"]
+  },
+  {
+    "id": 19,
+    "name": "Calzone Chunks",
+    "description": "Crispy calzone stuffed with chicken & cheese, served with dip sauce",
+    "price": 1100,
+    "category": "sandwiches",
+    "image": "/images/sides-garlic-bread.jpg",
+    "rating": 4.6,
+    "reviews": 88,
+    "isNew": false,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "regular": 1100
+    },
+    "customizations": ["Extra Cheese", "Extra Dip"]
+  },
+  {
+    "id": 20,
+    "name": "Euro Chicken",
+    "description": "European style chicken sandwich with special sauce & fresh veggies",
+    "price": 800,
+    "category": "sandwiches",
+    "image": "/images/deal-family.jpg",
+    "rating": 4.5,
+    "reviews": 67,
+    "isNew": false,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "regular": 800
+    },
+    "customizations": ["Extra Cheese", "Extra Sauce"]
+  },
+  {
+    "id": 21,
+    "name": "Pizza Stacker",
+    "description": "A unique blend of delicious sauces with crispy chicken and pizza crust",
+    "price": 1050,
+    "category": "sandwiches",
+    "image": "/images/pizza-volcano.jpg",
+    "rating": 4.7,
+    "reviews": 104,
+    "isNew": true,
+    "isBestseller": true,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "regular": 1050
+    },
+    "customizations": ["Extra Cheese"]
+  },
+  {
+    "id": 22,
+    "name": "Chicken Pieces",
+    "description": "Crispy fried chicken pieces with signature coating",
+    "price": 250,
+    "category": "chicken",
+    "image": "/images/wings-buffalo.jpg",
+    "rating": 4.6,
+    "reviews": 210,
+    "isNew": false,
+    "isBestseller": true,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "1 Pc": 250,
+      "3 Pcs": 650,
+      "5 Pcs": 1050,
+      "Bucket": 1850
+    },
+    "customizations": ["Extra Dip", "Spicy"]
+  },
+  {
+    "id": 23,
+    "name": "Alfredo Pasta",
+    "description": "Italian fettuccine pasta with creamy alfredo sauce, chicken chunks & cheese",
+    "price": 500,
+    "category": "pasta",
+    "image": "/images/sides-loaded-fries.jpg",
+    "rating": 4.7,
+    "reviews": 134,
+    "isNew": false,
+    "isBestseller": true,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "Half": 500,
+      "Full": 800
+    },
+    "customizations": ["Extra Cheese", "Extra Chicken"]
+  },
+  {
+    "id": 24,
+    "name": "Crunchy Chicken Pasta",
+    "description": "Tandoori masala pasta with crunchy chicken pieces",
+    "price": 300,
+    "category": "pasta",
+    "image": "/images/sides-loaded-fries.jpg",
+    "rating": 4.5,
+    "reviews": 78,
+    "isNew": false,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "Half": 300
+    },
+    "customizations": ["Extra Cheese", "Extra Chicken"]
+  },
+  {
+    "id": 25,
+    "name": "Special Roasted Platter",
+    "description": "4 Pc wings with fries, 4 Pcs roasted/BBQ chicken, served with dip",
+    "price": 1280,
+    "category": "platters",
+    "image": "/images/wings-buffalo.jpg",
+    "rating": 4.8,
+    "reviews": 156,
+    "isNew": false,
+    "isBestseller": true,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "regular": 1280
+    },
+    "customizations": ["Extra Dip"]
+  },
+  {
+    "id": 26,
+    "name": "Classic Roll Platter",
+    "description": "4 Pcs Arabic Roll with assorted sides, served with dipping sauces",
+    "price": 1280,
+    "category": "platters",
+    "image": "/images/sides-garlic-bread.jpg",
+    "rating": 4.6,
+    "reviews": 92,
+    "isNew": false,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "regular": 1280
+    },
+    "customizations": ["Extra Dip"]
+  },
+  {
+    "id": 27,
+    "name": "Regular Fries",
+    "description": "Crispy golden french fries",
+    "price": 200,
+    "category": "fries",
+    "image": "/images/sides-loaded-fries.jpg",
+    "rating": 4.4,
+    "reviews": 180,
+    "isNew": false,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["vegetarian", "halal"],
+    "sizes": {
+      "regular": 200
+    },
+    "customizations": []
+  },
+  {
+    "id": 28,
+    "name": "Large Fries",
+    "description": "Large portion of crispy golden french fries",
+    "price": 380,
+    "category": "fries",
+    "image": "/images/sides-loaded-fries.jpg",
+    "rating": 4.5,
+    "reviews": 120,
+    "isNew": false,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["vegetarian", "halal"],
+    "sizes": {
+      "large": 380
+    },
+    "customizations": ["Cheese Sauce"]
+  },
+  {
+    "id": 29,
+    "name": "Dips",
+    "description": "Garlic Mayo, Special Sauce, Hot & Spicy dipping sauces",
+    "price": 70,
+    "category": "fries",
+    "image": "/images/sides-coleslaw.jpg",
+    "rating": 4.3,
+    "reviews": 90,
+    "isNew": false,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["halal"],
+    "sizes": {
+      "each": 70
+    },
+    "customizations": ["Garlic Mayo", "Special Sauce", "Hot & Spicy"]
+  },
+  {
+    "id": 30,
+    "name": "Regular Drink",
+    "description": "Regular 345ml cold drink",
+    "price": 100,
+    "category": "drinks",
+    "image": "/images/drink-cola.jpg",
+    "rating": 4.5,
+    "reviews": 320,
+    "isNew": false,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["vegetarian", "halal"],
+    "sizes": {
+      "Regular 345ml": 100,
+      "1 Litre": 150,
+      "1.5 Litre": 220
+    },
+    "customizations": []
+  },
+  {
+    "id": 31,
+    "name": "Water",
+    "description": "Mineral water bottle",
+    "price": 70,
+    "category": "drinks",
+    "image": "/images/drink-lime.jpg",
+    "rating": 4.2,
+    "reviews": 45,
+    "isNew": false,
+    "isBestseller": false,
+    "discount": 0,
+    "dietary": ["vegetarian", "halal"],
+    "sizes": {
+      "500ml": 70,
+      "1.5 Litre": 130
+    },
+    "customizations": []
+  }
+]

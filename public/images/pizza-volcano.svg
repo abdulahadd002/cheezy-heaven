@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1A1A1A"/>
+      <stop offset="100%" stop-color="#0D0D0D"/>
+    </radialGradient>
+    <radialGradient id="heat" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF751F" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#FF751F" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <!-- Heat glow -->
+  <circle cx="200" cy="175" r="110" fill="url(#heat)"/>
+  <!-- Pizza circle -->
+  <circle cx="200" cy="175" r="100" fill="none" stroke="#FF751F" stroke-width="3"/>
+  <circle cx="200" cy="175" r="85" fill="#1F1510" stroke="#FF751F" stroke-width="1.5" opacity="0.6"/>
+  <!-- Flame shapes -->
+  <path d="M185,160 Q188,140 195,150 Q200,130 205,150 Q212,140 215,160" fill="#FF751F" opacity="0.7"/>
+  <path d="M170,185 Q175,170 180,180 Q185,165 190,185" fill="#FF751F" opacity="0.5"/>
+  <path d="M210,190 Q215,175 220,185 Q225,168 230,190" fill="#FF751F" opacity="0.6"/>
+  <!-- Chili pepper shapes -->
+  <path d="M160,150 Q165,140 175,148" fill="none" stroke="#FF751F" stroke-width="2.5" opacity="0.6" stroke-linecap="round"/>
+  <path d="M225,155 Q230,145 240,153" fill="none" stroke="#FF751F" stroke-width="2.5" opacity="0.5" stroke-linecap="round"/>
+  <!-- Label -->
+  <text x="200" y="320" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">Volcano</text>
+  <text x="200" y="348" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="13" fill="#FF751F" font-weight="500">PIZZA</text>
+</svg>

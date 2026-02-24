@@ -1,0 +1,12 @@
+[
+  { "id": "all", "name": "All", "icon": "Grid3X3" },
+  { "id": "pizza", "name": "Pizza", "icon": "Pizza" },
+  { "id": "appetizers", "name": "Appetizers", "icon": "Drumstick" },
+  { "id": "burgers", "name": "Burgers", "icon": "Sandwich" },
+  { "id": "sandwiches", "name": "Sandwiches", "icon": "Beef" },
+  { "id": "chicken", "name": "Chicken", "icon": "Drumstick" },
+  { "id": "pasta", "name": "Pasta", "icon": "Soup" },
+  { "id": "platters", "name": "Platters", "icon": "UtensilsCrossed" },
+  { "id": "fries", "name": "Fries & Extras", "icon": "Salad" },
+  { "id": "drinks", "name": "Drinks", "icon": "CupSoda" }
+]

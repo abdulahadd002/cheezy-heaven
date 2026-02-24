@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1A1A1A"/>
+      <stop offset="100%" stop-color="#0D0D0D"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <!-- Cake base -->
+  <path d="M145,230 L155,160 Q200,145 245,160 L255,230 Z" fill="#FF751F" opacity="0.5"/>
+  <ellipse cx="200" cy="160" rx="50" ry="15" fill="#FF751F" opacity="0.6"/>
+  <!-- Lava flow from top -->
+  <path d="M185,155 Q180,140 185,130 Q190,120 195,130 Q200,118 205,130 Q210,120 215,135 Q220,145 215,155" fill="#FF751F" opacity="0.8"/>
+  <!-- Lava drips down sides -->
+  <path d="M165,165 Q162,180 165,195" fill="none" stroke="#FF751F" stroke-width="3" opacity="0.7" stroke-linecap="round"/>
+  <path d="M235,168 Q238,182 235,198" fill="none" stroke="#FF751F" stroke-width="3" opacity="0.6" stroke-linecap="round"/>
+  <path d="M200,158 Q202,175 200,192" fill="none" stroke="#FF751F" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+  <!-- Plate -->
+  <ellipse cx="200" cy="232" rx="70" ry="8" fill="none" stroke="#FF751F" stroke-width="1.5" opacity="0.4"/>
+  <!-- Steam -->
+  <path d="M185,120 Q188,108 185,96" fill="none" stroke="#FF751F" stroke-width="1.5" opacity="0.3" stroke-linecap="round"/>
+  <path d="M200,115 Q203,103 200,91" fill="none" stroke="#FF751F" stroke-width="1.5" opacity="0.3" stroke-linecap="round"/>
+  <path d="M215,120 Q218,108 215,96" fill="none" stroke="#FF751F" stroke-width="1.5" opacity="0.3" stroke-linecap="round"/>
+  <!-- Label -->
+  <text x="200" y="320" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">Lava Cake</text>
+  <text x="200" y="348" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="13" fill="#FF751F" font-weight="500">DESSERT</text>
+</svg>

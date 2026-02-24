@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1A1A1A"/>
+      <stop offset="100%" stop-color="#0D0D0D"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <!-- Wing shapes -->
+  <path d="M145,155 Q155,120 185,130 Q200,135 205,155 Q210,170 195,180 Q175,190 155,180 Z" fill="#FF751F" opacity="0.6"/>
+  <path d="M195,155 Q205,120 235,130 Q250,135 255,155 Q260,170 245,180 Q225,190 205,180 Z" fill="#FF751F" opacity="0.5"/>
+  <!-- Drumstick bones -->
+  <line x1="150" y1="180" x2="135" y2="215" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+  <line x1="250" y1="180" x2="265" y2="215" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+  <!-- Honey drizzle -->
+  <path d="M160,140 Q170,150 165,165 Q160,180 170,190" fill="none" stroke="#FF751F" stroke-width="2.5" opacity="0.7" stroke-linecap="round"/>
+  <path d="M210,135 Q220,148 215,162 Q210,178 220,190" fill="none" stroke="#FF751F" stroke-width="2.5" opacity="0.6" stroke-linecap="round"/>
+  <path d="M240,145 Q248,158 243,168" fill="none" stroke="#FF751F" stroke-width="2.5" opacity="0.5" stroke-linecap="round"/>
+  <!-- Honey drop -->
+  <ellipse cx="170" cy="195" rx="4" ry="5" fill="#FF751F" opacity="0.7"/>
+  <ellipse cx="220" cy="195" rx="4" ry="5" fill="#FF751F" opacity="0.6"/>
+  <!-- Label -->
+  <text x="200" y="320" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">Honey Wings</text>
+  <text x="200" y="348" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="13" fill="#FF751F" font-weight="500">WINGS</text>
+</svg>
