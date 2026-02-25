@@ -66,6 +66,9 @@ export default function CartPage() {
                 </div>
                 <div className="cart-item-details">
                   <h3>{item.name}</h3>
+                  {item.description && (
+                    <p className="cart-item-meta" style={{ marginBottom: 2 }}>{item.description}</p>
+                  )}
                   <p className="cart-item-meta">
                     Size: {item.size}
                     {item.customizations?.length > 0 && ` | ${item.customizations.join(', ')}`}

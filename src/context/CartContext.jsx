@@ -77,6 +77,7 @@ export function CartProvider({ children }) {
         id: product.id,
         name: product.name,
         image: product.image,
+        description: product.description,
         price: sizePrice,
         size,
         customizations

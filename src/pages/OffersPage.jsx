@@ -56,7 +56,7 @@ export default function OffersPage() {
 
   const handleOrderDeal = (deal) => {
     addItem(
-      { id: `deal-${deal.id}`, name: deal.title, image: null },
+      { id: `deal-${deal.id}`, name: deal.title, image: null, description: deal.description },
       'deal',
       deal.price,
       []
