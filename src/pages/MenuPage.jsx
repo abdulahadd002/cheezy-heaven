@@ -26,12 +26,15 @@ export default function MenuPage() {
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState(searchParams.get('category') || 'all')
 
-  // Keep category in sync when URL param changes (e.g. footer links)
-  useEffect(() => {
-    setCategory(searchParams.get('category') || 'all')
-  }, [searchParams])
   const [sort, setSort] = useState('popular')
   const [dietary, setDietary] = useState([])
+
+  // Keep category in sync when URL param changes (e.g. footer links).
+  // Also reset dietary filters so users don't see unexpectedly filtered results.
+  useEffect(() => {
+    setCategory(searchParams.get('category') || 'all')
+    setDietary([])
+  }, [searchParams])
 
   const categoryCounts = useMemo(() => {
     const counts = { all: products.length }

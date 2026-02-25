@@ -1,4 +1,6 @@
-import { createContext, useContext, useReducer, useEffect } from 'react'
+import { createContext, useContext, useReducer, useEffect, useState } from 'react'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '../lib/firebase'
 
 const CartContext = createContext()
 
@@ -16,10 +18,11 @@ function loadCart() {
 function cartReducer(state, action) {
   switch (action.type) {
     case 'ADD_ITEM': {
+      const sortedCustomizations = [...(action.payload.customizations || [])].sort()
       const existing = state.find(
         item => item.id === action.payload.id &&
                 item.size === action.payload.size &&
-                JSON.stringify(item.customizations) === JSON.stringify(action.payload.customizations)
+                JSON.stringify([...(item.customizations || [])].sort()) === JSON.stringify(sortedCustomizations)
       )
       if (existing) {
         return state.map(item =>
@@ -47,6 +50,19 @@ function cartReducer(state, action) {
 
 export function CartProvider({ children }) {
   const [items, dispatch] = useReducer(cartReducer, [], loadCart)
+  const [taxRate, setTaxRate] = useState(0.16)
+  const [deliveryFee, setDeliveryFee] = useState(0)
+
+  // Load tax rate and delivery fee from admin settings
+  useEffect(() => {
+    getDoc(doc(db, 'settings', 'restaurant')).then(snap => {
+      if (snap.exists()) {
+        const data = snap.data()
+        if (data.taxRate !== undefined) setTaxRate(data.taxRate / 100)
+        if (data.deliveryFee !== undefined) setDeliveryFee(data.deliveryFee)
+      }
+    }).catch(() => {})
+  }, [])
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
@@ -80,9 +96,8 @@ export function CartProvider({ children }) {
 
   const itemCount = items.reduce((sum, item) => sum + item.qty, 0)
   const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0)
-  const deliveryFee = 0
-  const tax = Math.round(subtotal * 0.16)
-  const total = subtotal + tax
+  const tax = Math.round(subtotal * taxRate)
+  const total = subtotal + tax + deliveryFee
 
   return (
     <CartContext.Provider value={{

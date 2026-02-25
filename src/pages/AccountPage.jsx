@@ -31,13 +31,14 @@ export default function AccountPage() {
 
   // Fetch user's orders when they switch to orders tab
   useEffect(() => {
-    if (tab === 'orders' && isLoggedIn && user?.uid) {
-      setOrdersLoading(true)
-      getUserOrders(user.uid)
-        .then(data => setOrders(data))
-        .catch(() => setOrders([]))
-        .finally(() => setOrdersLoading(false))
-    }
+    if (tab !== 'orders' || !isLoggedIn || !user?.uid) return
+    let cancelled = false
+    setOrdersLoading(true)
+    getUserOrders(user.uid)
+      .then(data => { if (!cancelled) setOrders(data) })
+      .catch(() => { if (!cancelled) setOrders([]) })
+      .finally(() => { if (!cancelled) setOrdersLoading(false) })
+    return () => { cancelled = true }
   }, [tab, isLoggedIn, user?.uid])
   const [emailNotif, setEmailNotif] = useState(true)
   const [smsNotif, setSmsNotif] = useState(true)

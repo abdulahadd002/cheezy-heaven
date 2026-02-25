@@ -27,9 +27,13 @@ export function FavoritesProvider({ children }) {
       return
     }
 
+    let mounted = true
+
     async function syncFavorites() {
       try {
         const snap = await getDoc(doc(db, 'users', user.uid))
+        if (!mounted) return
+
         const firestoreFavs = snap.exists() ? (snap.data().favorites || []) : []
 
         // Merge local guest favorites with Firestore favorites (no duplicates)
@@ -50,6 +54,7 @@ export function FavoritesProvider({ children }) {
     }
 
     syncFavorites()
+    return () => { mounted = false }
   }, [isLoggedIn, user?.uid])
 
   // Persist to localStorage for guests only

@@ -175,7 +175,7 @@ export default function OrderTrackingPage() {
         <div className="tracking-order-details">
           <h3>Order Details</h3>
           <div className="review-items">
-            {order.items.map((item, i) => (
+            {(order.items || []).map((item, i) => (
               <div key={i} className="review-item">
                 <div>
                   <div className="review-item-name">{item.qty}x {item.name}</div>
