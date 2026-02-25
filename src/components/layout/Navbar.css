@@ -8,7 +8,6 @@
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--color-border);
   z-index: 1000;
-  height: var(--navbar-height);
 }
 
 .nav-container {
@@ -18,7 +17,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 var(--space-24);
-  height: 100%;
+  height: var(--navbar-height);
 }
 
 .nav-logo {
@@ -118,95 +117,29 @@
   line-height: 1;
 }
 
-.hamburger-btn {
+/* Mobile pill row — hidden on desktop */
+.mobile-nav-pills {
   display: none;
-  flex-direction: column;
-  gap: 5px;
-  width: 40px;
-  height: 40px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.hamburger-btn:hover {
-  background: var(--color-surface-2);
-}
-
-.hamburger-line {
-  width: 20px;
-  height: 2px;
-  background: var(--color-white);
-  border-radius: 1px;
-  transition: all 0.3s ease;
-}
-
-.hamburger-btn.open .hamburger-line:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
-}
-
-.hamburger-btn.open .hamburger-line:nth-child(2) {
-  opacity: 0;
-}
-
-.hamburger-btn.open .hamburger-line:nth-child(3) {
-  transform: rotate(-45deg) translate(5px, -5px);
-}
-
-.mobile-menu {
-  display: none;
-  position: absolute;
-  top: var(--navbar-height);
-  left: 0;
-  right: 0;
-  background: var(--color-surface-2);
-  border-bottom: 1px solid var(--color-border);
-  padding: var(--space-16) 0;
-  animation: fadeUp 0.3s var(--ease-expo);
-}
-
-.mobile-menu.open {
-  display: block;
-}
-
-.mobile-menu a {
-  display: block;
-  padding: var(--space-16) var(--space-24);
-  color: var(--color-white);
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transition: all 0.3s ease;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.mobile-menu a:last-child {
-  border-bottom: none;
-}
-
-.mobile-menu a:hover,
-.mobile-menu a.active {
-  color: var(--color-orange);
-  background: rgba(139, 32, 32, 0.05);
 }
 
 @media (max-width: 768px) {
+  /* Increase effective navbar height to include pill row (~48px extra) */
+  :root {
+    --navbar-height: 118px;
+  }
+
   .nav-container {
     padding: 0 var(--space-16);
+    height: 70px;
   }
 
   .nav-logo-text {
     font-size: 15px;
   }
 
+  /* Hide desktop nav links on mobile */
   .nav-links {
     display: none;
-  }
-
-  .hamburger-btn {
-    display: flex;
   }
 
   .nav-icon-btn {
@@ -216,5 +149,49 @@
 
   .nav-right {
     gap: 4px;
+  }
+
+  /* Pill row — always visible below the navbar header on mobile */
+  .mobile-nav-pills {
+    display: flex;
+    gap: 8px;
+    padding: 8px var(--space-16) 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .mobile-nav-pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 16px;
+    border-radius: 50px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-gray-1);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    flex-shrink: 0;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .nav-pill:hover {
+    border-color: var(--color-orange);
+    color: var(--color-white);
+  }
+
+  .nav-pill.active {
+    background: var(--color-orange);
+    border-color: var(--color-orange);
+    color: #fff;
   }
 }
