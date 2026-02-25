@@ -78,7 +78,11 @@ export default function OrderDetailPage() {
           {nextStatus && (
             <button
               className="admin-btn admin-btn-primary"
-              onClick={() => handleStatusChange(nextStatus)}
+              onClick={() => {
+                if (window.confirm(`Mark order as "${STATUS_LABELS[nextStatus]}"?`)) {
+                  handleStatusChange(nextStatus)
+                }
+              }}
             >
               Mark as {STATUS_LABELS[nextStatus]}
             </button>

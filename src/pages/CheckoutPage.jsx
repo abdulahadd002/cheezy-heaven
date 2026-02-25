@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { MapPin, Phone, ChevronLeft, ChevronRight, Check, Banknote, Wallet } from 'lucide-react'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '../lib/firebase'
 import StepIndicator from '../components/ui/StepIndicator'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { createOrder } from '../lib/firestore'
 import './CheckoutPage.css'
+
+const PROMO_SESSION_KEY = 'cheesy-promo-discount'
 
 const STEPS = ['Address', 'Payment', 'Review']
 
@@ -22,7 +26,11 @@ export default function CheckoutPage() {
   const { user } = useAuth()
   const { addToast } = useToast()
 
-  const promoDiscountAmount = location.state?.discountAmount || 0
+  // Promo discount: read from navigation state, fall back to sessionStorage on refresh
+  const stateDiscount = location.state?.discountAmount
+  const promoDiscountAmount = stateDiscount != null
+    ? stateDiscount
+    : Number(sessionStorage.getItem(PROMO_SESSION_KEY) || 0)
 
   const [step, setStep] = useState(0)
   const [orderPlaced, setOrderPlaced] = useState(false)
@@ -33,6 +41,26 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState('cod')
   const [errors, setErrors] = useState({})
   const [placing, setPlacing] = useState(false)
+  const [easypaisaNumber, setEasypaisaNumber] = useState('0312-8680974')
+  const [easypaisaName, setEasypaisaName] = useState('Afshan Majid')
+
+  // Save promo discount to sessionStorage so it survives a page refresh
+  useEffect(() => {
+    if (stateDiscount != null) {
+      sessionStorage.setItem(PROMO_SESSION_KEY, stateDiscount)
+    }
+  }, [stateDiscount])
+
+  // Load EasyPaisa details from admin settings
+  useEffect(() => {
+    getDoc(doc(db, 'settings', 'restaurant')).then(snap => {
+      if (snap.exists()) {
+        const data = snap.data()
+        if (data.easypaisaNumber) setEasypaisaNumber(data.easypaisaNumber)
+        if (data.easypaisaName) setEasypaisaName(data.easypaisaName)
+      }
+    }).catch(() => {})
+  }, [])
 
   // Pre-fill phone from user profile
   useEffect(() => {
@@ -103,6 +131,7 @@ export default function CheckoutPage() {
       setOrderId(id)
       setOrderPlaced(true)
       clearCart()
+      sessionStorage.removeItem(PROMO_SESSION_KEY)
       addToast('Order placed successfully!', 'success')
     } catch {
       addToast('Failed to place order. Please try again.', 'error')
@@ -187,8 +216,8 @@ export default function CheckoutPage() {
                     </div>
                     <div style={{ fontSize: 13, color: 'var(--color-gray-1)', lineHeight: 1.8 }}>
                       <p>Send <strong style={{ color: 'var(--color-orange)' }}>PKR {finalTotal.toLocaleString()}</strong> to:</p>
-                      <p style={{ fontSize: 18, fontWeight: 700, color: 'var(--color-white)', margin: '8px 0' }}>0312-8680974</p>
-                      <p>Account: <strong style={{ color: 'var(--color-white)' }}>Afshan Majid</strong></p>
+                      <p style={{ fontSize: 18, fontWeight: 700, color: 'var(--color-white)', margin: '8px 0' }}>{easypaisaNumber}</p>
+                      <p>Account: <strong style={{ color: 'var(--color-white)' }}>{easypaisaName}</strong></p>
                       <p style={{ marginTop: 8, fontSize: 12, color: 'var(--color-gray-2)' }}>
                         After sending, place your order. Our team will verify the payment and confirm your order.
                       </p>

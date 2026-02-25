@@ -1,4 +1,6 @@
 import { createContext, useContext, useReducer, useEffect, useState } from 'react'
+
+let cartIdCounter = 0
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 
@@ -31,7 +33,7 @@ function cartReducer(state, action) {
             : item
         )
       }
-      return [...state, { ...action.payload, cartId: Date.now(), qty: action.payload.qty || 1 }]
+      return [...state, { ...action.payload, cartId: ++cartIdCounter, qty: action.payload.qty || 1 }]
     }
     case 'REMOVE_ITEM':
       return state.filter(item => item.cartId !== action.payload)

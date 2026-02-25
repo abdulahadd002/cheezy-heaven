@@ -369,10 +369,11 @@ export default function AccountPage() {
                     className="btn-icon"
                     onClick={async () => {
                       const newText = window.prompt('Edit address:', addr.address)
-                      if (!newText || newText === addr.address) return
+                      const trimmed = newText?.trim()
+                      if (!trimmed || trimmed === addr.address) return
                       try {
                         const updated = (user.addresses || []).map(a =>
-                          a.id === addr.id ? { ...a, address: newText } : a
+                          a.id === addr.id ? { ...a, address: trimmed } : a
                         )
                         await updateUserProfile({ addresses: updated })
                         addToast('Address updated', 'success')
@@ -404,9 +405,11 @@ export default function AccountPage() {
               className="btn-secondary"
               style={{ alignSelf: 'flex-start', marginTop: 8 }}
               onClick={async () => {
-                const label = window.prompt('Address label (e.g., Home, Office):')
+                const labelRaw = window.prompt('Address label (e.g., Home, Office):')
+                const label = labelRaw?.trim()
                 if (!label) return
-                const addressText = window.prompt('Full delivery address:')
+                const addressRaw = window.prompt('Full delivery address:')
+                const addressText = addressRaw?.trim()
                 if (!addressText) return
                 try {
                   await addAddress({ label, address: addressText, isDefault: !(user.addresses?.length > 0) })
