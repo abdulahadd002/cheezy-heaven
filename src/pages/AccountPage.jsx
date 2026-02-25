@@ -1,11 +1,12 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { User, Package, Heart, MapPin, Settings, LogOut, Trash2, Edit3, Loader } from 'lucide-react'
 import ProductCard from '../components/ui/ProductCard'
 import { useAuth } from '../context/AuthContext'
 import { useFavorites } from '../context/FavoritesContext'
 import { useToast } from '../context/ToastContext'
-import products from '../data/products.json'
+import { useProducts } from '../hooks/useProducts'
+import { getUserOrders } from '../lib/firestore'
 import './AccountPage.css'
 
 const TABS = [
@@ -20,8 +21,23 @@ export default function AccountPage() {
   const { user, isLoggedIn, loading, login, signup, logout, updateUserProfile, removeAddress } = useAuth()
   const { favorites } = useFavorites()
   const { addToast } = useToast()
+  const { products } = useProducts()
+  const navigate = useNavigate()
 
   const [tab, setTab] = useState('profile')
+  const [orders, setOrders] = useState([])
+  const [ordersLoading, setOrdersLoading] = useState(false)
+
+  // Fetch user's orders when they switch to orders tab
+  useEffect(() => {
+    if (tab === 'orders' && isLoggedIn && user?.uid) {
+      setOrdersLoading(true)
+      getUserOrders(user.uid)
+        .then(data => setOrders(data))
+        .catch(() => setOrders([]))
+        .finally(() => setOrdersLoading(false))
+    }
+  }, [tab, isLoggedIn, user?.uid])
   const [authMode, setAuthMode] = useState('login')
   const [authLoading, setAuthLoading] = useState(false)
 
@@ -242,14 +258,65 @@ export default function AccountPage() {
         {/* Orders Tab */}
         {tab === 'orders' && (
           <div>
-            <div className="tab-empty">
-              <Package size={48} style={{ color: 'var(--color-gray-2)', marginBottom: 16 }} />
-              <h3>No orders yet</h3>
-              <p>Your order history will appear here after you place an order.</p>
-              <Link to="/menu" className="btn-primary" style={{ marginTop: 16, display: 'inline-flex' }}>
-                Browse Menu
-              </Link>
-            </div>
+            {ordersLoading ? (
+              <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--space-48)' }}>
+                <Loader size={28} style={{ color: 'var(--color-orange)', animation: 'spin 1s linear infinite' }} />
+              </div>
+            ) : orders.length > 0 ? (
+              <div className="orders-list">
+                {orders.map(order => (
+                  <div
+                    key={order.id}
+                    className="order-history-card"
+                    onClick={() => navigate(`/order/${order.id}`)}
+                    style={{
+                      background: 'var(--color-surface)',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: 12,
+                      padding: 'var(--space-24)',
+                      marginBottom: 'var(--space-16)',
+                      cursor: 'pointer',
+                      transition: 'border-color 0.2s',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--color-orange)'}
+                    onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--color-border)'}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                      <span style={{ fontWeight: 700, color: 'var(--color-white)' }}>Order #{order.id}</span>
+                      <span style={{
+                        fontSize: 12, fontWeight: 600,
+                        padding: '3px 10px', borderRadius: 20,
+                        background: order.status === 'delivered' ? 'rgba(16,185,129,0.15)' : 'rgba(139,32,32,0.2)',
+                        color: order.status === 'delivered' ? '#10B981' : 'var(--color-orange)',
+                        textTransform: 'capitalize',
+                      }}>
+                        {(order.status || 'confirmed').replace('_', ' ')}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: 13, color: 'var(--color-gray-1)', marginBottom: 6 }}>
+                      {order.items?.map(i => `${i.qty}x ${i.name}`).join(', ')}
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                      <span style={{ color: 'var(--color-gray-2)' }}>
+                        {order.placedAt ? new Date(order.placedAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}
+                      </span>
+                      <span style={{ fontWeight: 700, color: 'var(--color-orange)' }}>
+                        PKR {(order.total || 0).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="tab-empty">
+                <Package size={48} style={{ color: 'var(--color-gray-2)', marginBottom: 16 }} />
+                <h3>No orders yet</h3>
+                <p>Your order history will appear here after you place an order.</p>
+                <Link to="/menu" className="btn-primary" style={{ marginTop: 16, display: 'inline-flex' }}>
+                  Browse Menu
+                </Link>
+              </div>
+            )}
           </div>
         )}
 

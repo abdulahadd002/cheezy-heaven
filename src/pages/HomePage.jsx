@@ -1,7 +1,8 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Pizza, Drumstick, Sandwich, Beef, Soup, UtensilsCrossed, Salad, CupSoda, Grid3X3, Phone } from 'lucide-react'
+import { ArrowRight, Pizza, Drumstick, Sandwich, Beef, Soup, UtensilsCrossed, Salad, CupSoda, Grid3X3, Phone, Loader } from 'lucide-react'
 import ProductCard from '../components/ui/ProductCard'
-import products from '../data/products.json'
+import { useProducts } from '../hooks/useProducts'
 import './HomePage.css'
 
 const CATEGORY_ICONS = { Grid3X3, Pizza, Drumstick, Sandwich, Beef, Soup, UtensilsCrossed, Salad, CupSoda }
@@ -16,10 +17,20 @@ const categories = [
   { id: 'drinks', name: 'Drinks', icon: 'CupSoda' },
 ]
 
-const featured = products.filter(p => p.isBestseller).slice(0, 8)
-const newArrivals = products.filter(p => p.isNew).slice(0, 4)
-
 export default function HomePage() {
+  const { products, loading } = useProducts()
+
+  const featured = useMemo(() => products.filter(p => p.isBestseller).slice(0, 8), [products])
+  const newArrivals = useMemo(() => products.filter(p => p.isNew).slice(0, 4), [products])
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+        <Loader size={32} style={{ color: 'var(--color-orange)', animation: 'spin 1s linear infinite' }} />
+      </div>
+    )
+  }
+
   return (
     <>
       {/* Hero */}

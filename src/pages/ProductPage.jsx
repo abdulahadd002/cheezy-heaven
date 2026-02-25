@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { ShoppingCart, Heart, ChevronRight } from 'lucide-react'
+import { ShoppingCart, Heart, ChevronRight, Loader } from 'lucide-react'
 import ProductCard from '../components/ui/ProductCard'
 import { useCart } from '../context/CartContext'
 import { useFavorites } from '../context/FavoritesContext'
 import { useToast } from '../context/ToastContext'
-import products from '../data/products.json'
+import { useProducts } from '../hooks/useProducts'
 import './ProductPage.css'
 
 function getStars(rating) {
@@ -20,6 +20,7 @@ export default function ProductPage() {
   const { addItem } = useCart()
   const { isFavorite, toggleFavorite } = useFavorites()
   const { addToast } = useToast()
+  const { products, loading } = useProducts()
 
   const product = products.find(p => p.id === Number(id))
 
@@ -27,6 +28,16 @@ export default function ProductPage() {
   const [selectedSize, setSelectedSize] = useState(sizeKeys[0] || '')
   const [selectedCustomizations, setSelectedCustomizations] = useState([])
   const [qty, setQty] = useState(1)
+
+  if (loading) {
+    return (
+      <div className="product-page">
+        <div className="container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+          <Loader size={32} style={{ color: 'var(--color-orange)', animation: 'spin 1s linear infinite' }} />
+        </div>
+      </div>
+    )
+  }
 
   if (!product) {
     return (

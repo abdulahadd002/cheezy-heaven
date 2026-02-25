@@ -5,6 +5,7 @@ import StepIndicator from '../components/ui/StepIndicator'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
+import { createOrder } from '../lib/firestore'
 import './CheckoutPage.css'
 
 const STEPS = ['Address', 'Payment', 'Review']
@@ -92,30 +93,37 @@ export default function CheckoutPage() {
 
   const finalTotal = subtotal + tax
 
-  const handlePlaceOrder = () => {
-    const id = Math.floor(10000 + Math.random() * 90000).toString()
-    const order = {
-      id,
-      items: items.map(item => ({
-        name: item.name,
-        qty: item.qty,
-        size: item.size,
-        customizations: item.customizations,
-        price: item.price,
-      })),
-      subtotal,
-      tax,
-      total: finalTotal,
-      address,
-      phone,
-      payment: PAYMENT_METHODS.find(m => m.id === paymentMethod)?.name,
-      placedAt: new Date().toISOString(),
+  const [placing, setPlacing] = useState(false)
+
+  const handlePlaceOrder = async () => {
+    setPlacing(true)
+    try {
+      const id = Math.floor(10000 + Math.random() * 90000).toString()
+      await createOrder(id, {
+        userId: user.uid,
+        userName: user.name,
+        items: items.map(item => ({
+          name: item.name,
+          qty: item.qty,
+          size: item.size,
+          customizations: item.customizations,
+          price: item.price,
+        })),
+        subtotal,
+        tax,
+        total: finalTotal,
+        address,
+        phone,
+        payment: PAYMENT_METHODS.find(m => m.id === paymentMethod)?.name,
+      })
+      setOrderId(id)
+      setOrderPlaced(true)
+      clearCart()
+      addToast('Order placed successfully!', 'success')
+    } catch {
+      addToast('Failed to place order. Please try again.', 'error')
     }
-    localStorage.setItem(`order_${id}`, JSON.stringify(order))
-    setOrderId(id)
-    setOrderPlaced(true)
-    clearCart()
-    addToast('Order placed successfully!', 'success')
+    setPlacing(false)
   }
 
   return (
@@ -244,8 +252,8 @@ export default function CheckoutPage() {
                   Continue <ChevronRight size={16} />
                 </button>
               ) : (
-                <button className="btn-primary btn-lg" onClick={handlePlaceOrder}>
-                  Place Order - PKR {finalTotal.toLocaleString()}
+                <button className="btn-primary btn-lg" onClick={handlePlaceOrder} disabled={placing}>
+                  {placing ? 'Placing Order...' : `Place Order - PKR ${finalTotal.toLocaleString()}`}
                 </button>
               )}
             </div>

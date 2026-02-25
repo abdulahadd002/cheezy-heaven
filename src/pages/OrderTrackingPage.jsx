@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Check, ChefHat, Package, Truck, CircleCheckBig } from 'lucide-react'
+import { Check, ChefHat, Package, Truck, CircleCheckBig, Loader } from 'lucide-react'
+import { subscribeToOrder } from '../lib/firestore'
 import './OrderTrackingPage.css'
 
 function formatTime(date) {
@@ -11,22 +12,29 @@ function addMinutes(date, mins) {
   return new Date(date.getTime() + mins * 60000)
 }
 
+const STATUS_STEP = {
+  confirmed: 0,
+  preparing: 1,
+  ready: 2,
+  out_for_delivery: 3,
+  delivered: 4,
+}
+
 export default function OrderTrackingPage() {
   const { id } = useParams()
-  const [currentStep, setCurrentStep] = useState(0)
+  const [order, setOrder] = useState(undefined) // undefined = loading
 
-  const order = useMemo(() => {
-    try {
-      const data = localStorage.getItem(`order_${id}`)
-      return data ? JSON.parse(data) : null
-    } catch {
-      return null
-    }
+  // Real-time Firestore listener
+  useEffect(() => {
+    const unsubscribe = subscribeToOrder(id, (data) => {
+      setOrder(data) // null if not found
+    })
+    return () => unsubscribe()
   }, [id])
 
   const placedTime = useMemo(() => {
     return order?.placedAt ? new Date(order.placedAt) : new Date()
-  }, [order])
+  }, [order?.placedAt])
 
   const steps = useMemo(() => [
     { label: 'Confirmed', icon: Check, time: formatTime(placedTime) },
@@ -36,16 +44,8 @@ export default function OrderTrackingPage() {
     { label: 'Delivered', icon: CircleCheckBig, time: formatTime(addMinutes(placedTime, 45)) },
   ], [placedTime])
 
-  // Simulate order progress
-  useEffect(() => {
-    if (currentStep < 4) {
-      const delays = [3000, 8000, 5000, 10000]
-      const timer = setTimeout(() => {
-        setCurrentStep(s => s + 1)
-      }, delays[currentStep])
-      return () => clearTimeout(timer)
-    }
-  }, [currentStep])
+  // Derive current step from order status
+  const currentStep = order ? (STATUS_STEP[order.status] ?? 0) : 0
 
   const progressWidth = `${(currentStep / (steps.length - 1)) * 100}%`
 
@@ -61,6 +61,17 @@ export default function OrderTrackingPage() {
     : currentStep === 2 ? 'Your order is ready for pickup'
     : currentStep === 3 ? 'Your order is on its way!'
     : 'Your order has been delivered!'
+
+  // Loading state
+  if (order === undefined) {
+    return (
+      <div className="tracking-page">
+        <div className="container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+          <Loader size={32} style={{ color: 'var(--color-orange)', animation: 'spin 1s linear infinite' }} />
+        </div>
+      </div>
+    )
+  }
 
   if (!order) {
     return (

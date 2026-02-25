@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { Clock, Moon, Sun, Flame, Crown, Utensils, Plus, ChevronDown, Lock } from 'lucide-react'
-import deals from '../data/deals.json'
+import { Clock, Moon, Sun, Flame, Crown, Utensils, Plus, ChevronDown, Lock, Loader } from 'lucide-react'
+import { useDeals } from '../hooks/useDeals'
 
 const CATEGORY_META = {
   midnight: { icon: Moon, color: '#6B3A3A' },
@@ -44,22 +44,23 @@ function isActiveNow(timeStr) {
   return current >= start && current < end
 }
 
-// Group deals by category
-const grouped = deals.reduce((acc, deal) => {
-  if (!acc[deal.category]) {
-    acc[deal.category] = {
-      title: deal.categoryTitle,
-      time: deal.categoryTime,
-      deals: []
-    }
-  }
-  acc[deal.category].deals.push(deal)
-  return acc
-}, {})
-
 export default function OffersPage() {
+  const { deals, loading } = useDeals()
   const [expanded, setExpanded] = useState(null)
   const [now, setNow] = useState(new Date())
+
+  // Group deals by category
+  const grouped = useMemo(() => deals.reduce((acc, deal) => {
+    if (!acc[deal.category]) {
+      acc[deal.category] = {
+        title: deal.categoryTitle,
+        time: deal.categoryTime,
+        deals: []
+      }
+    }
+    acc[deal.category].deals.push(deal)
+    return acc
+  }, {}), [deals])
 
   // Update time every minute to keep active status current
   useEffect(() => {
@@ -69,6 +70,14 @@ export default function OffersPage() {
 
   const toggle = (key) => {
     setExpanded(prev => prev === key ? null : key)
+  }
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+        <Loader size={32} style={{ color: 'var(--color-orange)', animation: 'spin 1s linear infinite' }} />
+      </div>
+    )
   }
 
   return (

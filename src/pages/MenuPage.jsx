@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Search } from 'lucide-react'
+import { Search, Loader } from 'lucide-react'
 import ProductCard from '../components/ui/ProductCard'
-import products from '../data/products.json'
+import { useProducts } from '../hooks/useProducts'
 import './MenuPage.css'
 
 const CATEGORIES = [
@@ -21,6 +21,7 @@ const CATEGORIES = [
 const DIETARY = ['vegetarian', 'halal']
 
 export default function MenuPage() {
+  const { products, loading } = useProducts()
   const [searchParams, setSearchParams] = useSearchParams()
   const initialCategory = searchParams.get('category') || 'all'
 
@@ -35,7 +36,7 @@ export default function MenuPage() {
       counts[p.category] = (counts[p.category] || 0) + 1
     })
     return counts
-  }, [])
+  }, [products])
 
   const filtered = useMemo(() => {
     let result = [...products]
@@ -75,7 +76,17 @@ export default function MenuPage() {
     }
 
     return result
-  }, [category, search, sort, dietary])
+  }, [products, category, search, sort, dietary])
+
+  if (loading) {
+    return (
+      <div className="menu-page">
+        <div className="container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+          <Loader size={32} style={{ color: 'var(--color-orange)', animation: 'spin 1s linear infinite' }} />
+        </div>
+      </div>
+    )
+  }
 
   const handleCategoryChange = (cat) => {
     setCategory(cat)
