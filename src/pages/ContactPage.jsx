@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react'
 import { useToast } from '../context/ToastContext'
+import './ContactPage.css'
 
 const info = [
   { icon: MapPin, title: 'Address', text: 'Rizwan Plaza Opp, Man O Salwa Sweets, Old Lalazar, Rawalpindi' },
@@ -23,7 +24,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div style={{ padding: 'var(--space-32) 0 var(--space-96)' }}>
+    <div className="contact-page">
       <div className="container">
         <span className="label-text" style={{ color: 'var(--color-orange)', display: 'block', marginBottom: 8 }}>
           Get In Touch
@@ -38,11 +39,7 @@ export default function ContactPage() {
           Contact Us
         </h1>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: 'var(--space-48)',
-        }}>
+        <div className="contact-grid">
           {/* Contact Info */}
           <div>
             <p style={{ fontSize: 16, color: 'var(--color-gray-1)', lineHeight: 1.7, marginBottom: 'var(--space-32)' }}>

@@ -1,0 +1,20 @@
+.contact-page {
+  padding: var(--space-32) 0 var(--space-96);
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-48);
+}
+
+@media (max-width: 768px) {
+  .contact-page {
+    padding: var(--space-16) 0 var(--space-64);
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-32);
+  }
+}
