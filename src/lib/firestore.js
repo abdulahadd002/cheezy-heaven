@@ -8,19 +8,19 @@ import { db } from './firebase'
 
 export async function getProducts() {
   const snap = await getDocs(collection(db, 'products'))
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }))
+  return snap.docs.map(d => ({ ...d.data(), id: d.id }))
 }
 
 export async function getProduct(productId) {
   const snap = await getDoc(doc(db, 'products', String(productId)))
-  return snap.exists() ? { id: snap.id, ...snap.data() } : null
+  return snap.exists() ? { ...snap.data(), id: snap.id } : null
 }
 
 // --- Deals ---
 
 export async function getDeals() {
   const snap = await getDocs(collection(db, 'deals'))
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }))
+  return snap.docs.map(d => ({ ...d.data(), id: d.id }))
 }
 
 // --- Orders ---
@@ -37,13 +37,13 @@ export async function createOrder(orderId, orderData) {
 
 export async function getOrder(orderId) {
   const snap = await getDoc(doc(db, 'orders', orderId))
-  return snap.exists() ? { id: snap.id, ...snap.data() } : null
+  return snap.exists() ? { ...snap.data(), id: snap.id } : null
 }
 
 export function subscribeToOrder(orderId, callback) {
   return onSnapshot(
     doc(db, 'orders', orderId),
-    (snap) => { callback(snap.exists() ? { id: snap.id, ...snap.data() } : null) },
+    (snap) => { callback(snap.exists() ? { ...snap.data(), id: snap.id } : null) },
     (error) => { console.error('subscribeToOrder error:', error) }
   )
 }
@@ -61,7 +61,7 @@ export async function getUserOrders(userId) {
     where('userId', '==', userId)
   )
   const snap = await getDocs(q)
-  const orders = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+  const orders = snap.docs.map(d => ({ ...d.data(), id: d.id }))
   // Sort client-side to avoid needing a composite index
   orders.sort((a, b) => (b.placedAt || '').localeCompare(a.placedAt || ''))
   return orders
@@ -73,7 +73,7 @@ export function subscribeToAllOrders(callback) {
   return onSnapshot(
     collection(db, 'orders'),
     (snap) => {
-      const orders = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      const orders = snap.docs.map(d => ({ ...d.data(), id: d.id }))
       orders.sort((a, b) => (b.placedAt || '').localeCompare(a.placedAt || ''))
       callback(orders)
     },

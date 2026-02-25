@@ -1,8 +1,8 @@
 import { createContext, useContext, useReducer, useEffect, useState } from 'react'
-
-let cartIdCounter = 0
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
+
+let cartIdCounter = 0
 
 const CartContext = createContext()
 
