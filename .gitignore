@@ -9,6 +9,8 @@ PLAN.md
 DEPLOYMENT-PLAN.md
 download-images.*
 *.jpeg
+!public/favicon.jpeg
+!public/images/logo.jpeg
 pizza-*.jpg
 !public/images/pizza-*.jpg
 

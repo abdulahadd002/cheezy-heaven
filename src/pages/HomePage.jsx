@@ -70,7 +70,7 @@ export default function HomePage() {
           </div>
           <div className="hero-image">
             <div className="hero-glow" />
-            <img src="/images/hero-pizza.jpg" alt="Cheezy Heaven Pizza" />
+            <img src="/images/logo.jpeg" alt="Cheezy Heaven Logo" />
           </div>
         </div>
       </section>
