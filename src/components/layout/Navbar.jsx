@@ -17,6 +17,7 @@ export default function Navbar() {
         </Link>
 
         <ul className="nav-links">
+          <li><NavLink to="/" end>Home</NavLink></li>
           <li><NavLink to="/menu">Menu</NavLink></li>
           <li><NavLink to="/offers">Offers</NavLink></li>
           <li><NavLink to="/contact">Contact</NavLink></li>
@@ -65,6 +66,7 @@ export default function Navbar() {
 
       {/* Mobile pill row — always visible, replaces hamburger dropdown */}
       <div className="mobile-nav-pills">
+        <NavLink to="/" end className={({ isActive }) => `nav-pill ${isActive ? 'active' : ''}`}>Home</NavLink>
         <NavLink to="/menu" className={({ isActive }) => `nav-pill ${isActive ? 'active' : ''}`}>Menu</NavLink>
         <NavLink to="/offers" className={({ isActive }) => `nav-pill ${isActive ? 'active' : ''}`}>Offers</NavLink>
         <NavLink to="/contact" className={({ isActive }) => `nav-pill ${isActive ? 'active' : ''}`}>Contact</NavLink>
