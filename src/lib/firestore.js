@@ -1,6 +1,6 @@
 import {
-  collection, doc, getDoc, getDocs, setDoc, query,
-  where, orderBy, onSnapshot
+  collection, doc, getDoc, getDocs, setDoc, updateDoc, arrayUnion,
+  query, where, onSnapshot
 } from 'firebase/firestore'
 import { db } from './firebase'
 
@@ -43,6 +43,13 @@ export async function getOrder(orderId) {
 export function subscribeToOrder(orderId, callback) {
   return onSnapshot(doc(db, 'orders', orderId), (snap) => {
     callback(snap.exists() ? { id: snap.id, ...snap.data() } : null)
+  })
+}
+
+export async function updateOrderStatus(orderId, newStatus) {
+  await updateDoc(doc(db, 'orders', orderId), {
+    status: newStatus,
+    statusHistory: arrayUnion({ status: newStatus, time: new Date().toISOString() }),
   })
 }
 

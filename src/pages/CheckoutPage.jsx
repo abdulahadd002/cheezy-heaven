@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { MapPin, Phone, CreditCard, ClipboardCheck, ChevronLeft, ChevronRight, Check, Banknote, Smartphone, Wallet, LogIn } from 'lucide-react'
+import { MapPin, Phone, ChevronLeft, ChevronRight, Check, Banknote, Wallet, LogIn } from 'lucide-react'
 import StepIndicator from '../components/ui/StepIndicator'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
@@ -12,9 +12,7 @@ const STEPS = ['Address', 'Payment', 'Review']
 
 const PAYMENT_METHODS = [
   { id: 'cod', name: 'Cash on Delivery', desc: 'Pay when your order arrives', icon: Banknote },
-  { id: 'jazzcash', name: 'JazzCash', desc: 'Pay via JazzCash mobile wallet', icon: Smartphone },
-  { id: 'easypaisa', name: 'EasyPaisa', desc: 'Pay via EasyPaisa mobile wallet', icon: Wallet },
-  { id: 'card', name: 'Credit/Debit Card', desc: 'Visa, Mastercard accepted', icon: CreditCard },
+  { id: 'easypaisa', name: 'EasyPaisa', desc: 'Send payment to our EasyPaisa account', icon: Wallet },
 ]
 
 export default function CheckoutPage() {
@@ -189,6 +187,28 @@ export default function CheckoutPage() {
                     </button>
                   ))}
                 </div>
+
+                {paymentMethod === 'easypaisa' && (
+                  <div style={{
+                    marginTop: 'var(--space-16)',
+                    padding: 'var(--space-24)',
+                    background: '#1F1018',
+                    border: '1px solid #3F2230',
+                    borderRadius: 12,
+                  }}>
+                    <div style={{ fontWeight: 700, color: 'var(--color-white)', marginBottom: 8, fontSize: 15 }}>
+                      EasyPaisa Payment Instructions
+                    </div>
+                    <div style={{ fontSize: 13, color: 'var(--color-gray-1)', lineHeight: 1.8 }}>
+                      <p>Send <strong style={{ color: 'var(--color-orange)' }}>PKR {finalTotal.toLocaleString()}</strong> to:</p>
+                      <p style={{ fontSize: 18, fontWeight: 700, color: 'var(--color-white)', margin: '8px 0' }}>0349-5479437</p>
+                      <p>Account: <strong style={{ color: 'var(--color-white)' }}>Cheezy Heaven</strong></p>
+                      <p style={{ marginTop: 8, fontSize: 12, color: 'var(--color-gray-2)' }}>
+                        After sending, place your order. Our team will verify the payment and confirm your order.
+                      </p>
+                    </div>
+                  </div>
+                )}
               </>
             )}
 
