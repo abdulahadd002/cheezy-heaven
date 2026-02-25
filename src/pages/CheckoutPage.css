@@ -280,3 +280,65 @@
   }
 }
 
+@media (max-width: 768px) {
+  .checkout-page {
+    padding: var(--space-16) 0 var(--space-64);
+  }
+
+  .checkout-page > .container > h1 {
+    font-size: 24px;
+    margin-bottom: var(--space-16);
+  }
+
+  .checkout-step-content {
+    padding: var(--space-16);
+    border-radius: 12px;
+  }
+
+  .checkout-step-content h2 {
+    font-size: 20px;
+    margin-bottom: var(--space-16);
+  }
+
+  .checkout-nav {
+    margin-top: var(--space-16);
+    padding-top: var(--space-16);
+    gap: var(--space-8);
+  }
+
+  .checkout-nav .btn-primary,
+  .checkout-nav .btn-secondary {
+    flex: 1;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .checkout-success {
+    padding: var(--space-32) var(--space-16);
+  }
+
+  .checkout-success h2 {
+    font-size: 24px;
+  }
+
+  .checkout-success .order-number {
+    font-size: 16px;
+    padding: var(--space-8) var(--space-16);
+  }
+
+  .payment-method {
+    padding: var(--space-12);
+    gap: var(--space-12);
+  }
+
+  .payment-method-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .address-card {
+    padding: var(--space-12);
+    gap: var(--space-12);
+  }
+}
+

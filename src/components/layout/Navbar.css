@@ -193,11 +193,28 @@
 }
 
 @media (max-width: 768px) {
+  .nav-container {
+    padding: 0 var(--space-16);
+  }
+
+  .nav-logo-text {
+    font-size: 15px;
+  }
+
   .nav-links {
     display: none;
   }
 
   .hamburger-btn {
     display: flex;
+  }
+
+  .nav-icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .nav-right {
+    gap: 4px;
   }
 }

@@ -227,13 +227,37 @@
 }
 
 @media (max-width: 768px) {
+  .tracking-page {
+    padding: var(--space-16) 0 var(--space-64);
+  }
+
   .tracking-header {
     flex-direction: column;
-    gap: var(--space-16);
+    gap: var(--space-12);
+    margin-bottom: var(--space-24);
+  }
+
+  .tracking-header h1 {
+    font-size: 22px;
   }
 
   .tracking-info-grid {
     grid-template-columns: 1fr;
+    gap: var(--space-12);
+  }
+
+  .tracking-info-card {
+    padding: var(--space-16);
+    border-radius: 10px;
+  }
+
+  .tracking-info-card h3 {
+    font-size: 12px;
+    margin-bottom: var(--space-8);
+  }
+
+  .tracking-info-value {
+    font-size: 20px;
   }
 
   .progress-steps {
@@ -263,7 +287,37 @@
     gap: var(--space-16);
   }
 
+  .progress-step-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+  }
+
+  .progress-step-label {
+    font-size: 12px;
+    text-align: left;
+  }
+
   .tracking-progress {
-    padding: var(--space-32);
+    padding: var(--space-24);
+    border-radius: 12px;
+    margin-bottom: var(--space-24);
+  }
+
+  .tracking-order-details {
+    padding: var(--space-24);
+    border-radius: 12px;
+  }
+
+  .tracking-order-details h3 {
+    font-size: 16px;
+  }
+
+  .tracking-not-found {
+    padding: var(--space-48) var(--space-16);
+  }
+
+  .tracking-not-found h2 {
+    font-size: 22px;
   }
 }

@@ -91,7 +91,7 @@ export default function CartPage() {
               </div>
             ))}
 
-            <div style={{ display: 'flex', gap: 'var(--space-12)', marginTop: 'var(--space-16)' }}>
+            <div className="cart-actions">
               <Link to="/menu" className="btn-secondary">
                 Continue Shopping
               </Link>

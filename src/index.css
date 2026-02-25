@@ -50,6 +50,12 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 body {
@@ -462,7 +468,49 @@ input, textarea, select {
 }
 
 @media (max-width: 768px) {
+  .container {
+    padding: 0 var(--space-16);
+  }
+
   .page-content {
     padding-bottom: var(--mobile-nav-height);
+  }
+
+  .section {
+    padding: var(--space-48) 0;
+  }
+
+  .section-sm {
+    padding: var(--space-32) 0;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .favorites-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .btn-primary {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+
+  .btn-secondary {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+
+  .btn-lg {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  .btn-sm {
+    padding: 6px 14px;
+    font-size: 11px;
   }
 }

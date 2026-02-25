@@ -38,6 +38,12 @@ export default function MenuPage() {
     return counts
   }, [products])
 
+  const categoryOrder = useMemo(() => {
+    const order = {}
+    CATEGORIES.forEach((cat, i) => { order[cat.id] = i })
+    return order
+  }, [])
+
   const filtered = useMemo(() => {
     let result = [...products]
 
@@ -59,20 +65,24 @@ export default function MenuPage() {
       )
     }
 
-    switch (sort) {
-      case 'price-low':
-        result.sort((a, b) => a.price - b.price)
-        break
-      case 'price-high':
-        result.sort((a, b) => b.price - a.price)
-        break
-      case 'rating':
-        result.sort((a, b) => b.rating - a.rating)
-        break
-      case 'popular':
-      default:
-        result.sort((a, b) => b.reviews - a.reviews)
-        break
+    const sortWithin = (a, b) => {
+      switch (sort) {
+        case 'price-low': return a.price - b.price
+        case 'price-high': return b.price - a.price
+        case 'rating': return b.rating - a.rating
+        case 'popular':
+        default: return b.reviews - a.reviews
+      }
+    }
+
+    if (category === 'all') {
+      result.sort((a, b) => {
+        const catDiff = (categoryOrder[a.category] || 99) - (categoryOrder[b.category] || 99)
+        if (catDiff !== 0) return catDiff
+        return sortWithin(a, b)
+      })
+    } else {
+      result.sort(sortWithin)
     }
 
     return result
