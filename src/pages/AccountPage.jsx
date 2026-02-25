@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { User, Package, Heart, MapPin, Settings, LogOut, Trash2, Edit3 } from 'lucide-react'
+import { User, Package, Heart, MapPin, Settings, LogOut, Trash2, Edit3, Loader } from 'lucide-react'
 import ProductCard from '../components/ui/ProductCard'
 import { useAuth } from '../context/AuthContext'
 import { useFavorites } from '../context/FavoritesContext'
@@ -16,26 +16,26 @@ const TABS = [
   { id: 'settings', label: 'Settings', icon: Settings },
 ]
 
-const MOCK_ORDERS = [
-  { id: '54321', date: '2026-02-22', items: '2x Cheese Volcano, 1x Buffalo Wings', total: 3822, status: 'delivered' },
-  { id: '54290', date: '2026-02-18', items: '1x Pepperoni Feast, 1x Oreo Milkshake', total: 2148, status: 'delivered' },
-  { id: '54150', date: '2026-02-10', items: '1x Family Feast Deal', total: 2999, status: 'delivered' },
-]
-
 export default function AccountPage() {
-  const { user, isLoggedIn, login, signup, logout, updateProfile, removeAddress } = useAuth()
+  const { user, isLoggedIn, loading, login, signup, logout, updateUserProfile, removeAddress } = useAuth()
   const { favorites } = useFavorites()
   const { addToast } = useToast()
 
   const [tab, setTab] = useState('profile')
   const [authMode, setAuthMode] = useState('login')
+  const [authLoading, setAuthLoading] = useState(false)
 
   // Auth form state
   const [authForm, setAuthForm] = useState({ name: '', email: '', phone: '', password: '' })
 
-  const handleLogin = (e) => {
+  // Profile edit state
+  const [profileForm, setProfileForm] = useState(null)
+
+  const handleLogin = async (e) => {
     e.preventDefault()
-    const result = login(authForm.email, authForm.password)
+    setAuthLoading(true)
+    const result = await login(authForm.email, authForm.password)
+    setAuthLoading(false)
     if (result.success) {
       addToast('Welcome back!', 'success')
     } else {
@@ -43,14 +43,40 @@ export default function AccountPage() {
     }
   }
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault()
-    const result = signup(authForm.name, authForm.email, authForm.phone, authForm.password)
+    setAuthLoading(true)
+    const result = await signup(authForm.name, authForm.email, authForm.phone, authForm.password)
+    setAuthLoading(false)
     if (result.success) {
       addToast('Account created successfully!', 'success')
     } else {
       addToast(result.error, 'error')
     }
+  }
+
+  const handleProfileSave = async () => {
+    if (!profileForm) return
+    try {
+      await updateUserProfile(profileForm)
+      setProfileForm(null)
+      addToast('Profile updated!', 'success')
+    } catch {
+      addToast('Failed to update profile', 'error')
+    }
+  }
+
+  // Show loading spinner while Firebase checks auth state
+  if (loading) {
+    return (
+      <div className="account-page">
+        <div className="container">
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+            <Loader size={32} style={{ color: 'var(--color-orange)', animation: 'spin 1s linear infinite' }} />
+          </div>
+        </div>
+      </div>
+    )
   }
 
   // Not logged in - show auth form
@@ -115,22 +141,17 @@ export default function AccountPage() {
                 <input
                   type="password"
                   className="form-input"
-                  placeholder="Enter password"
+                  placeholder={authMode === 'signup' ? 'Minimum 6 characters' : 'Enter password'}
                   value={authForm.password}
                   onChange={e => setAuthForm(f => ({ ...f, password: e.target.value }))}
                   required
+                  minLength={6}
                 />
               </div>
 
-              <button type="submit" className="btn-primary" style={{ width: '100%' }}>
-                {authMode === 'login' ? 'Sign In' : 'Create Account'}
+              <button type="submit" className="btn-primary" style={{ width: '100%' }} disabled={authLoading}>
+                {authLoading ? 'Please wait...' : (authMode === 'login' ? 'Sign In' : 'Create Account')}
               </button>
-
-              {authMode === 'login' && (
-                <p style={{ textAlign: 'center', marginTop: '12px', fontSize: '13px', color: 'var(--color-gray-2)' }}>
-                  Demo: ali@example.com / password123
-                </p>
-              )}
             </form>
 
             <div className="auth-switch">
@@ -147,6 +168,10 @@ export default function AccountPage() {
   }
 
   const favoriteProducts = products.filter(p => favorites.includes(p.id))
+
+  // Get current profile form values (or fall back to user data)
+  const pName = profileForm?.name ?? user.name
+  const pPhone = profileForm?.phone ?? user.phone
 
   return (
     <div className="account-page">
@@ -181,20 +206,33 @@ export default function AccountPage() {
 
             <div className="form-group">
               <label className="form-label">Full Name</label>
-              <input type="text" className="form-input" defaultValue={user.name} />
+              <input
+                type="text"
+                className="form-input"
+                value={pName}
+                onChange={e => setProfileForm(prev => ({ ...prev, name: e.target.value }))}
+              />
             </div>
             <div className="form-group">
               <label className="form-label">Email</label>
-              <input type="email" className="form-input" defaultValue={user.email} />
+              <input type="email" className="form-input" value={user.email} disabled style={{ opacity: 0.6 }} />
+              <span className="form-hint">Email cannot be changed</span>
             </div>
             <div className="form-group">
               <label className="form-label">Phone</label>
-              <input type="tel" className="form-input" defaultValue={user.phone} />
+              <input
+                type="tel"
+                className="form-input"
+                value={pPhone}
+                onChange={e => setProfileForm(prev => ({ ...prev, phone: e.target.value }))}
+              />
             </div>
 
             <button
               className="btn-primary"
-              onClick={() => addToast('Profile updated!', 'success')}
+              onClick={handleProfileSave}
+              disabled={!profileForm}
+              style={{ opacity: profileForm ? 1 : 0.5 }}
             >
               Save Changes
             </button>
@@ -204,26 +242,13 @@ export default function AccountPage() {
         {/* Orders Tab */}
         {tab === 'orders' && (
           <div>
-            <div className="order-history-list">
-              {MOCK_ORDERS.map(order => (
-                <div key={order.id} className="order-history-card">
-                  <div>
-                    <div className="order-history-id">Order #{order.id}</div>
-                    <div className="order-history-date">{order.date}</div>
-                    <div className="order-history-items">{order.items}</div>
-                  </div>
-                  <div className="order-history-right">
-                    <div className="order-history-total">PKR {order.total.toLocaleString()}</div>
-                    <span className={`order-history-status status-${order.status}`}>
-                      {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                    </span>
-                    <div style={{ marginTop: 8, display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                      <Link to={`/order/${order.id}`} className="btn-secondary btn-sm">Track</Link>
-                      <button className="btn-primary btn-sm">Reorder</button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div className="tab-empty">
+              <Package size={48} style={{ color: 'var(--color-gray-2)', marginBottom: 16 }} />
+              <h3>No orders yet</h3>
+              <p>Your order history will appear here after you place an order.</p>
+              <Link to="/menu" className="btn-primary" style={{ marginTop: 16, display: 'inline-flex' }}>
+                Browse Menu
+              </Link>
             </div>
           </div>
         )}
@@ -269,8 +294,8 @@ export default function AccountPage() {
                   <button
                     className="btn-icon"
                     style={{ color: '#EF4444' }}
-                    onClick={() => {
-                      removeAddress(addr.id)
+                    onClick={async () => {
+                      await removeAddress(addr.id)
                       addToast('Address removed', 'info')
                     }}
                   >
@@ -316,8 +341,8 @@ export default function AccountPage() {
             <button
               className="btn-secondary"
               style={{ marginTop: 'var(--space-32)', borderColor: '#EF4444', color: '#EF4444' }}
-              onClick={() => {
-                logout()
+              onClick={async () => {
+                await logout()
                 addToast('Logged out successfully', 'info')
               }}
             >

@@ -101,8 +101,8 @@ export default function OffersPage() {
               <div
                 key={catKey}
                 style={{
-                  background: 'var(--color-surface)',
-                  border: `1px solid ${isOpen && active ? meta.color + '60' : 'var(--color-border)'}`,
+                  background: '#2A1520',
+                  border: `1px solid ${isOpen ? meta.color + '90' : '#3F2230'}`,
                   borderRadius: 14,
                   overflow: 'hidden',
                   transition: 'all 0.3s ease',
@@ -127,7 +127,7 @@ export default function OffersPage() {
                 >
                   <div style={{
                     width: 48, height: 48, borderRadius: 12,
-                    background: `${meta.color}18`,
+                    background: `${meta.color}35`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     flexShrink: 0
                   }}>
@@ -169,7 +169,7 @@ export default function OffersPage() {
                   <div style={{
                     width: 36, height: 36, borderRadius: 8,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: isOpen ? `${meta.color}20` : 'transparent',
+                    background: isOpen ? `${meta.color}30` : 'transparent',
                     transition: 'all 0.3s ease',
                     flexShrink: 0
                   }}>
@@ -200,8 +200,8 @@ export default function OffersPage() {
                       <div
                         key={deal.id}
                         style={{
-                          background: 'var(--color-bg)',
-                          border: '1px solid var(--color-border)',
+                          background: '#1F1018',
+                          border: '1px solid #3F2230',
                           borderRadius: 10,
                           padding: 'var(--space-16) var(--space-24)',
                           display: 'flex',

@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { MapPin, Phone, CreditCard, ClipboardCheck, ChevronLeft, ChevronRight, Check, Banknote, Smartphone, Wallet } from 'lucide-react'
+import { MapPin, Phone, CreditCard, ClipboardCheck, ChevronLeft, ChevronRight, Check, Banknote, Smartphone, Wallet, LogIn } from 'lucide-react'
 import StepIndicator from '../components/ui/StepIndicator'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
@@ -30,6 +30,27 @@ export default function CheckoutPage() {
   const [phone, setPhone] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('cod')
   const [errors, setErrors] = useState({})
+
+  // Pre-fill phone from user profile
+  useEffect(() => {
+    if (user?.phone && !phone) setPhone(user.phone)
+  }, [user])
+
+  // Auth gate: must be logged in to checkout
+  if (!isLoggedIn) {
+    return (
+      <div className="checkout-page">
+        <div className="container">
+          <div className="cart-empty">
+            <LogIn size={48} style={{ color: 'var(--color-gray-2)', marginBottom: 16 }} />
+            <h2>Sign in to continue</h2>
+            <p>You need to be logged in to place an order.</p>
+            <Link to="/account" className="btn-primary" style={{ marginTop: 16 }}>Sign In</Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (items.length === 0 && !orderPlaced) {
     return (

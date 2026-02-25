@@ -6,7 +6,14 @@ dist
 *.log
 .claude/
 PLAN.md
+DEPLOYMENT-PLAN.md
 download-images.*
 *.jpeg
 pizza-*.jpg
 !public/images/pizza-*.jpg
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log

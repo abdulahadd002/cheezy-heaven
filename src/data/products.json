@@ -506,37 +506,20 @@
   },
   {
     "id": 27,
-    "name": "Regular Fries",
+    "name": "Fries",
     "description": "Crispy golden french fries",
     "price": 200,
     "category": "fries",
     "image": "/images/fries.jpg",
     "rating": 4.5,
-    "reviews": 180,
+    "reviews": 300,
     "isNew": false,
     "isBestseller": false,
     "discount": 0,
     "dietary": ["vegetarian", "halal"],
     "sizes": {
-      "regular": 200
-    },
-    "customizations": []
-  },
-  {
-    "id": 28,
-    "name": "Large Fries",
-    "description": "Large portion of crispy golden french fries",
-    "price": 380,
-    "category": "fries",
-    "image": "/images/fries.jpg",
-    "rating": 4.0,
-    "reviews": 120,
-    "isNew": false,
-    "isBestseller": false,
-    "discount": 0,
-    "dietary": ["vegetarian", "halal"],
-    "sizes": {
-      "large": 380
+      "Regular": 200,
+      "Large": 380
     },
     "customizations": ["Cheese Sauce"]
   },

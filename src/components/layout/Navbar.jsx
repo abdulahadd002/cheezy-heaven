@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { ShoppingCart, User, Search } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
+import { useAuth } from '../../context/AuthContext'
 import './Navbar.css'
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { itemCount } = useCart()
+  const { user, isLoggedIn } = useAuth()
   const navigate = useNavigate()
 
   const closeMobile = () => setMobileOpen(false)
@@ -47,8 +49,20 @@ export default function Navbar() {
             className="nav-icon-btn"
             aria-label="Account"
             onClick={() => navigate('/account')}
+            style={{ position: 'relative' }}
           >
-            <User size={20} />
+            {isLoggedIn ? (
+              <div style={{
+                width: 28, height: 28, borderRadius: '50%',
+                background: 'var(--color-orange)', color: '#fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 13, fontWeight: 700,
+              }}>
+                {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+              </div>
+            ) : (
+              <User size={20} />
+            )}
           </button>
 
           <button
