@@ -1,7 +1,9 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Clock, Moon, Sun, Flame, Crown, Utensils, Plus, ChevronDown, Lock, Loader } from 'lucide-react'
 import { useDeals } from '../hooks/useDeals'
+import { useCart } from '../context/CartContext'
+import { useToast } from '../context/ToastContext'
 
 const CATEGORY_META = {
   midnight: { icon: Moon, color: '#6B3A3A' },
@@ -46,8 +48,22 @@ function isActiveNow(timeStr) {
 
 export default function OffersPage() {
   const { deals, loading } = useDeals()
+  const { addItem } = useCart()
+  const { addToast } = useToast()
+  const navigate = useNavigate()
   const [expanded, setExpanded] = useState(null)
   const [now, setNow] = useState(new Date())
+
+  const handleOrderDeal = (deal) => {
+    addItem(
+      { id: `deal-${deal.id}`, name: deal.title, image: null },
+      'deal',
+      deal.price,
+      []
+    )
+    addToast(`${deal.title} added to cart!`, 'success')
+    navigate('/cart')
+  }
 
   // Group deals by category
   const grouped = useMemo(() => deals.reduce((acc, deal) => {
@@ -239,9 +255,13 @@ export default function OffersPage() {
                             PKR {deal.price.toLocaleString()}
                           </div>
                           {active ? (
-                            <Link to="/menu" className="btn-primary btn-sm" style={{ fontSize: 11, padding: '6px 16px' }}>
+                            <button
+                              className="btn-primary btn-sm"
+                              style={{ fontSize: 11, padding: '6px 16px' }}
+                              onClick={() => handleOrderDeal(deal)}
+                            >
                               Order
-                            </Link>
+                            </button>
                           ) : (
                             <button
                               disabled
