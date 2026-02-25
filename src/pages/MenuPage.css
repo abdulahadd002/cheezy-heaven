@@ -22,7 +22,7 @@
 .menu-search-bar {
   display: flex;
   gap: var(--space-12);
-  margin-bottom: var(--space-32);
+  margin-bottom: var(--space-20);
 }
 
 .menu-search-input {
@@ -60,16 +60,27 @@
   box-shadow: 0 0 12px #8B202015;
 }
 
-/* Sort Buttons */
-.menu-sort-buttons {
+/* Filter pill rows — always visible, horizontal scroll */
+.menu-filter-row {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-8);
-  margin-bottom: var(--space-32);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: var(--space-12);
+  padding-bottom: 2px;
 }
 
-.sort-btn {
-  padding: 10px 20px;
+.menu-filter-row::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
   border-radius: 50px;
   border: 1px solid var(--color-border);
   background: var(--color-surface);
@@ -78,111 +89,41 @@
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
   white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
-.sort-btn:hover {
+.filter-pill:hover {
   border-color: var(--color-orange);
   color: var(--color-white);
   background: var(--color-surface-2);
 }
 
-.sort-btn.active {
+.filter-pill.active {
   background: var(--color-orange);
   border-color: var(--color-orange);
   color: #fff;
-  box-shadow: 0 4px 16px rgba(139, 32, 32, 0.35);
+  box-shadow: 0 4px 14px rgba(139, 32, 32, 0.3);
 }
 
-/* Layout */
-.menu-layout {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: var(--space-32);
-}
-
-/* Sidebar */
-.menu-sidebar {
-  position: sticky;
-  top: calc(var(--navbar-height) + var(--space-32));
-  height: fit-content;
-}
-
-.filter-section {
-  margin-bottom: var(--space-32);
-}
-
-.filter-section h3 {
+.filter-pill-count {
+  font-size: 11px;
+  opacity: 0.7;
   font-weight: 600;
-  font-size: 14px;
-  color: var(--color-white);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: var(--space-16);
 }
 
-.filter-options {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
+.filter-pill.active .filter-pill-count {
+  opacity: 0.85;
 }
 
-.filter-option {
-  display: flex;
-  align-items: center;
-  gap: var(--space-12);
-  padding: var(--space-8) var(--space-12);
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
-  color: var(--color-gray-1);
-  background: transparent;
-  border: none;
-  text-align: left;
-  width: 100%;
-}
-
-.filter-option:hover {
-  background: var(--color-surface);
-  color: var(--color-white);
-}
-
-.filter-option.active {
-  background: rgba(139, 32, 32, 0.1);
-  color: var(--color-orange);
-}
-
-.filter-option-count {
-  margin-left: auto;
-  font-size: 12px;
-  color: var(--color-gray-2);
-}
-
-.filter-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-8);
-}
-
-.filter-tag {
-  padding: var(--space-8) var(--space-16);
-  border-radius: 20px;
-  border: 1px solid var(--color-border);
-  background: transparent;
-  color: var(--color-gray-1);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.filter-tag:hover,
-.filter-tag.active {
-  border-color: var(--color-orange);
-  color: var(--color-orange);
-  background: rgba(139, 32, 32, 0.05);
+/* Thin vertical divider between sort and dietary pills */
+.filter-row-divider {
+  width: 1px;
+  height: 22px;
+  background: var(--color-border);
+  flex-shrink: 0;
+  margin: 0 4px;
 }
 
 /* Results info */
@@ -191,6 +132,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--space-24);
+  margin-top: var(--space-8);
 }
 
 .menu-results-count {
@@ -253,86 +195,32 @@
     height: 18px;
   }
 
-  .menu-sort-buttons {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    margin-bottom: var(--space-12);
-    gap: var(--space-4);
+  .menu-filter-row {
+    margin-bottom: var(--space-8);
+    gap: var(--space-6);
   }
 
-  .menu-sort-buttons::-webkit-scrollbar {
-    display: none;
-  }
-
-  .sort-btn {
+  .filter-pill {
     padding: 6px 14px;
-    font-size: 11px;
+    font-size: 12px;
   }
 
-  .menu-layout {
-    grid-template-columns: 1fr;
-    gap: var(--space-12);
-    max-width: 100%;
-    overflow: hidden;
+  .menu-results-info {
+    margin-bottom: var(--space-12);
+    margin-top: var(--space-4);
   }
 
-  .menu-sidebar {
-    position: static;
-    max-width: 100%;
-    overflow: hidden;
+  .menu-results-count {
+    font-size: 12px;
   }
 
   .menu-page .product-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 10px !important;
-    max-width: 100%;
   }
 
   .menu-page .product-card-image {
     aspect-ratio: 1;
-  }
-
-  .filter-section {
-    margin-bottom: var(--space-8);
-  }
-
-  .filter-section h3 {
-    font-size: 11px;
-    margin-bottom: var(--space-8);
-  }
-
-  .filter-options {
-    flex-direction: row;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding-bottom: var(--space-4);
-    gap: var(--space-4);
-  }
-
-  .filter-options::-webkit-scrollbar {
-    display: none;
-  }
-
-  .filter-option {
-    white-space: nowrap;
-    flex-shrink: 0;
-    padding: var(--space-4) var(--space-8);
-    font-size: 12px;
-  }
-
-  .filter-tag {
-    padding: var(--space-4) var(--space-12);
-    font-size: 11px;
-  }
-
-  .menu-results-info {
-    margin-bottom: var(--space-12);
-  }
-
-  .menu-results-count {
-    font-size: 12px;
   }
 
   .menu-empty {

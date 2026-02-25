@@ -140,90 +140,76 @@ export default function MenuPage() {
           </div>
         </div>
 
-        <div className="menu-sort-buttons">
+        {/* Category pill buttons — always visible, horizontal scroll */}
+        <div className="menu-filter-row">
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat.id}
+              className={`filter-pill ${category === cat.id ? 'active' : ''}`}
+              onClick={() => handleCategoryChange(cat.id)}
+            >
+              {cat.name}
+              <span className="filter-pill-count">{categoryCounts[cat.id] || 0}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Sort + Dietary pill buttons in one row */}
+        <div className="menu-filter-row">
           {[
             { value: 'popular', label: 'Most Popular' },
             { value: 'rating', label: 'Highest Rated' },
-            { value: 'price-low', label: 'Price: Low to High' },
-            { value: 'price-high', label: 'Price: High to Low' },
+            { value: 'price-low', label: 'Price ↑' },
+            { value: 'price-high', label: 'Price ↓' },
           ].map(option => (
             <button
               key={option.value}
-              className={`sort-btn ${sort === option.value ? 'active' : ''}`}
+              className={`filter-pill ${sort === option.value ? 'active' : ''}`}
               onClick={() => setSort(option.value)}
             >
               {option.label}
             </button>
           ))}
+          <span className="filter-row-divider" />
+          {DIETARY.map(d => (
+            <button
+              key={d}
+              className={`filter-pill ${dietary.includes(d) ? 'active' : ''}`}
+              onClick={() => toggleDietary(d)}
+            >
+              {d.charAt(0).toUpperCase() + d.slice(1)}
+            </button>
+          ))}
         </div>
 
-        <div className="menu-layout">
-          <aside className="menu-sidebar">
-            <div className="filter-section">
-              <h3>Categories</h3>
-              <div className="filter-options">
-                {CATEGORIES.map(cat => (
-                  <button
-                    key={cat.id}
-                    className={`filter-option ${category === cat.id ? 'active' : ''}`}
-                    onClick={() => handleCategoryChange(cat.id)}
-                  >
-                    {cat.name}
-                    <span className="filter-option-count">
-                      {categoryCounts[cat.id] || 0}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
+        <div className="menu-results-info">
+          <p className="menu-results-count">
+            Showing <span>{filtered.length}</span> items
+          </p>
+        </div>
 
-            <div className="filter-section">
-              <h3>Dietary</h3>
-              <div className="filter-tags">
-                {DIETARY.map(d => (
-                  <button
-                    key={d}
-                    className={`filter-tag ${dietary.includes(d) ? 'active' : ''}`}
-                    onClick={() => toggleDietary(d)}
-                  >
-                    {d.charAt(0).toUpperCase() + d.slice(1)}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </aside>
-
-          <div>
-            <div className="menu-results-info">
-              <p className="menu-results-count">
-                Showing <span>{filtered.length}</span> items
-              </p>
-            </div>
-
-            {filtered.length > 0 ? (
-              <div className="product-grid stagger-children">
-                {filtered.map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            ) : (
-              <div className="menu-empty">
-                <h3>No items found</h3>
-                <p>Try adjusting your filters or search term</p>
-                <button
-                  className="btn-secondary"
-                  onClick={() => {
-                    setSearch('')
-                    setCategory('all')
-                    setDietary([])
-                  }}
-                >
-                  Clear Filters
-                </button>
-              </div>
-            )}
+        {filtered.length > 0 ? (
+          <div className="product-grid stagger-children">
+            {filtered.map(product => (
+              <ProductCard key={product.id} product={product} />
+            ))}
           </div>
-        </div>
+        ) : (
+          <div className="menu-empty">
+            <h3>No items found</h3>
+            <p>Try adjusting your filters or search term</p>
+            <button
+              className="btn-secondary"
+              onClick={() => {
+                setSearch('')
+                setCategory('all')
+                setDietary([])
+              }}
+            >
+              Clear Filters
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
