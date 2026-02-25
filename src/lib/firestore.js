@@ -8,7 +8,7 @@ import { db } from './firebase'
 
 export async function getProducts() {
   const snap = await getDocs(collection(db, 'products'))
-  return snap.docs.map(d => d.data())
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }))
 }
 
 export async function getProduct(productId) {
@@ -20,7 +20,7 @@ export async function getProduct(productId) {
 
 export async function getDeals() {
   const snap = await getDocs(collection(db, 'deals'))
-  return snap.docs.map(d => d.data())
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }))
 }
 
 // --- Orders ---
