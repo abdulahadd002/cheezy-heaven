@@ -16,7 +16,11 @@ export default function AdminLayout() {
   const navigate = useNavigate()
 
   const handleLogout = async () => {
-    await logout()
+    try {
+      await logout()
+    } catch {
+      // proceed to home regardless
+    }
     navigate('/')
   }
 

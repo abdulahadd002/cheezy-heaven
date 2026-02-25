@@ -19,10 +19,20 @@ export default function MobileNav() {
   return (
     <nav className="mobile-nav" aria-label="Mobile navigation">
       <div className="mobile-nav-icons">
-        {items.map(item => (
+        {items.map(item => {
+          const [itemPath, itemQuery] = item.path.split('?')
+          const isActive = location.pathname === itemPath && (
+            itemQuery
+              ? location.search === `?${itemQuery}`
+              : !items.some(other => {
+                  const [op, oq] = other.path.split('?')
+                  return other.path !== item.path && op === itemPath && oq && location.search === `?${oq}`
+                })
+          )
+          return (
           <button
             key={item.path}
-            className={`mobile-nav-item ${location.pathname === item.path ? 'active' : ''}`}
+            className={`mobile-nav-item ${isActive ? 'active' : ''}`}
             onClick={() => navigate(item.path)}
             aria-label={item.label}
           >
@@ -30,7 +40,8 @@ export default function MobileNav() {
             {item.badge > 0 && <span className="cart-badge">{item.badge}</span>}
             <span>{item.label}</span>
           </button>
-        ))}
+          )
+        })}
       </div>
     </nav>
   )

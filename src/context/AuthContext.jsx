@@ -88,7 +88,11 @@ export function AuthProvider({ children }) {
 
   // Sign out
   const logout = async () => {
-    await signOut(auth)
+    try {
+      await signOut(auth)
+    } catch {
+      // Auth state listener will handle cleanup
+    }
   }
 
   // Update profile fields in Firestore
@@ -108,24 +112,32 @@ export function AuthProvider({ children }) {
   // Add a new address to the user's addresses array
   const addAddress = async (address) => {
     if (!user) return
-    const newAddress = { id: Date.now().toString(), ...address }
-    const updated = [...(user.addresses || []), newAddress]
-    await updateDoc(doc(db, 'users', user.uid), {
-      addresses: updated,
-      updatedAt: new Date().toISOString(),
-    })
-    setUser(prev => ({ ...prev, addresses: updated }))
+    try {
+      const newAddress = { id: Date.now().toString(), ...address }
+      const updated = [...(user.addresses || []), newAddress]
+      await updateDoc(doc(db, 'users', user.uid), {
+        addresses: updated,
+        updatedAt: new Date().toISOString(),
+      })
+      setUser(prev => ({ ...prev, addresses: updated }))
+    } catch {
+      throw new Error('Failed to add address')
+    }
   }
 
   // Remove an address by ID
   const removeAddress = async (addressId) => {
     if (!user) return
-    const updated = user.addresses.filter(a => a.id !== addressId)
-    await updateDoc(doc(db, 'users', user.uid), {
-      addresses: updated,
-      updatedAt: new Date().toISOString(),
-    })
-    setUser(prev => ({ ...prev, addresses: updated }))
+    try {
+      const updated = (user.addresses || []).filter(a => a.id !== addressId)
+      await updateDoc(doc(db, 'users', user.uid), {
+        addresses: updated,
+        updatedAt: new Date().toISOString(),
+      })
+      setUser(prev => ({ ...prev, addresses: updated }))
+    } catch {
+      throw new Error('Failed to remove address')
+    }
   }
 
   return (

@@ -13,7 +13,7 @@ export async function getProducts() {
 
 export async function getProduct(productId) {
   const snap = await getDoc(doc(db, 'products', String(productId)))
-  return snap.exists() ? snap.data() : null
+  return snap.exists() ? { id: snap.id, ...snap.data() } : null
 }
 
 // --- Deals ---
@@ -41,9 +41,11 @@ export async function getOrder(orderId) {
 }
 
 export function subscribeToOrder(orderId, callback) {
-  return onSnapshot(doc(db, 'orders', orderId), (snap) => {
-    callback(snap.exists() ? { id: snap.id, ...snap.data() } : null)
-  })
+  return onSnapshot(
+    doc(db, 'orders', orderId),
+    (snap) => { callback(snap.exists() ? { id: snap.id, ...snap.data() } : null) },
+    (error) => { console.error('subscribeToOrder error:', error) }
+  )
 }
 
 export async function updateOrderStatus(orderId, newStatus) {
@@ -68,11 +70,15 @@ export async function getUserOrders(userId) {
 // --- Admin: Real-time all orders ---
 
 export function subscribeToAllOrders(callback) {
-  return onSnapshot(collection(db, 'orders'), (snap) => {
-    const orders = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-    orders.sort((a, b) => (b.placedAt || '').localeCompare(a.placedAt || ''))
-    callback(orders)
-  })
+  return onSnapshot(
+    collection(db, 'orders'),
+    (snap) => {
+      const orders = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      orders.sort((a, b) => (b.placedAt || '').localeCompare(a.placedAt || ''))
+      callback(orders)
+    },
+    (error) => { console.error('subscribeToAllOrders error:', error) }
+  )
 }
 
 // --- Admin: Product management ---

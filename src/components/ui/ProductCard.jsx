@@ -17,9 +17,9 @@ export default function ProductCard({ product }) {
   const { isFavorite, toggleFavorite } = useFavorites()
   const { addToast } = useToast()
 
-  const sizeKeys = Object.keys(product.sizes)
-  const firstSize = sizeKeys[0]
-  const firstPrice = product.sizes[firstSize]
+  const sizeKeys = Object.keys(product.sizes || {})
+  const firstSize = sizeKeys[0] || ''
+  const firstPrice = product.sizes?.[firstSize] ?? product.price ?? 0
 
   const discountedPrice = product.discount
     ? Math.round(firstPrice * (1 - product.discount / 100))

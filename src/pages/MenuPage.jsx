@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Search, Loader } from 'lucide-react'
 import ProductCard from '../components/ui/ProductCard'
@@ -23,10 +23,13 @@ const DIETARY = ['vegetarian', 'halal']
 export default function MenuPage() {
   const { products, loading } = useProducts()
   const [searchParams, setSearchParams] = useSearchParams()
-  const initialCategory = searchParams.get('category') || 'all'
-
   const [search, setSearch] = useState('')
-  const [category, setCategory] = useState(initialCategory)
+  const [category, setCategory] = useState(searchParams.get('category') || 'all')
+
+  // Keep category in sync when URL param changes (e.g. footer links)
+  useEffect(() => {
+    setCategory(searchParams.get('category') || 'all')
+  }, [searchParams])
   const [sort, setSort] = useState('popular')
   const [dietary, setDietary] = useState([])
 

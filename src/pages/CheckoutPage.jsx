@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { MapPin, Phone, ChevronLeft, ChevronRight, Check, Banknote, Wallet } from 'lucide-react'
 import StepIndicator from '../components/ui/StepIndicator'
 import { useCart } from '../context/CartContext'
@@ -17,9 +17,12 @@ const PAYMENT_METHODS = [
 
 export default function CheckoutPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { items, subtotal, deliveryFee, tax, total, clearCart } = useCart()
   const { user } = useAuth()
   const { addToast } = useToast()
+
+  const promoDiscountAmount = location.state?.discountAmount || 0
 
   const [step, setStep] = useState(0)
   const [orderPlaced, setOrderPlaced] = useState(false)
@@ -74,12 +77,12 @@ export default function CheckoutPage() {
     )
   }
 
-  const finalTotal = subtotal + tax
+  const finalTotal = subtotal + tax - promoDiscountAmount
 
   const handlePlaceOrder = async () => {
     setPlacing(true)
     try {
-      const id = Math.floor(10000 + Math.random() * 90000).toString()
+      const id = `${Date.now()}-${Math.floor(100 + Math.random() * 900)}`
       await createOrder(id, {
         userId: user?.uid || 'guest',
         userName: user?.name || 'Guest',
@@ -244,7 +247,11 @@ export default function CheckoutPage() {
                   if (step === 0) {
                     const newErrors = {}
                     if (!address.trim()) newErrors.address = 'Delivery address is required'
-                    if (!phone.trim()) newErrors.phone = 'Mobile number is required'
+                    if (!phone.trim()) {
+                      newErrors.phone = 'Mobile number is required'
+                    } else if (!/^(0\d{10}|\+92\d{10})$/.test(phone.trim())) {
+                      newErrors.phone = 'Enter a valid Pakistani number (e.g., 03001234567)'
+                    }
                     if (Object.keys(newErrors).length > 0) {
                       setErrors(newErrors)
                       return
@@ -276,6 +283,12 @@ export default function CheckoutPage() {
               <span>Tax (16% GST)</span>
               <span>PKR {tax.toLocaleString()}</span>
             </div>
+            {promoDiscountAmount > 0 && (
+              <div className="order-summary-row">
+                <span>Promo Discount</span>
+                <span style={{ color: '#10B981', fontWeight: 600 }}>- PKR {promoDiscountAmount.toLocaleString()}</span>
+              </div>
+            )}
             <div className="order-summary-divider" />
             <div className="order-summary-total">
               <span>Total</span>

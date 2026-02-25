@@ -4,7 +4,7 @@ import { useProducts } from '../../hooks/useProducts'
 import { updateProduct, deleteProduct, createProduct } from '../../lib/firestore'
 import { useToast } from '../../context/ToastContext'
 
-const CATEGORIES = ['pizza', 'burger', 'sandwich', 'pasta', 'sides', 'beverages', 'desserts']
+const CATEGORIES = ['pizza', 'appetizers', 'burgers', 'sandwiches', 'chicken', 'pasta', 'platters', 'fries', 'drinks']
 
 export default function MenuManagementPage() {
   const { products, loading } = useProducts()

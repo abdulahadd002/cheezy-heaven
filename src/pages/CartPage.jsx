@@ -10,10 +10,21 @@ export default function CartPage() {
   const { items, removeItem, updateQty, clearCart, subtotal, deliveryFee, tax, total } = useCart()
   const { addToast } = useToast()
   const [promoCode, setPromoCode] = useState('')
+  const [discount, setDiscount] = useState(0)
+  const [promoApplied, setPromoApplied] = useState(false)
+
+  const discountAmount = discount > 0 ? Math.round(subtotal * discount / 100) : 0
+  const displayTotal = total - discountAmount
 
   const handleApplyPromo = () => {
+    if (promoApplied) {
+      addToast('Promo code already applied', 'info')
+      return
+    }
     if (promoCode.toUpperCase() === 'CODE30') {
-      addToast('Promo code applied! 30% off on first order.', 'success')
+      setDiscount(30)
+      setPromoApplied(true)
+      addToast('Promo code applied! 30% off.', 'success')
     } else {
       addToast('Invalid promo code', 'error')
     }
@@ -48,7 +59,10 @@ export default function CartPage() {
             {items.map(item => (
               <div key={item.cartId} className="cart-item">
                 <div className="cart-item-image">
-                  <img src={item.image} alt={item.name} />
+                  {item.image
+                    ? <img src={item.image} alt={item.name} />
+                    : <div style={{ width: '100%', height: '100%', background: '#2A1520', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28 }}>🍕</div>
+                  }
                 </div>
                 <div className="cart-item-details">
                   <h3>{item.name}</h3>
@@ -124,11 +138,18 @@ export default function CartPage() {
               <span>PKR {tax.toLocaleString()}</span>
             </div>
 
+            {discountAmount > 0 && (
+              <div className="order-summary-row">
+                <span>Promo Discount (30%)</span>
+                <span style={{ color: '#10B981', fontWeight: 600 }}>- PKR {discountAmount.toLocaleString()}</span>
+              </div>
+            )}
+
             <div className="order-summary-divider" />
 
             <div className="order-summary-total">
               <span>Total</span>
-              <span>PKR {total.toLocaleString()}</span>
+              <span>PKR {displayTotal.toLocaleString()}</span>
             </div>
 
             <div className="promo-input-row">
@@ -146,7 +167,7 @@ export default function CartPage() {
 
             <button
               className="btn-primary btn-lg"
-              onClick={() => navigate('/checkout')}
+              onClick={() => navigate('/checkout', { state: { discount, discountAmount } })}
             >
               Proceed to Checkout <ArrowRight size={18} />
             </button>

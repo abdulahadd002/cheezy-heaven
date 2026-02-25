@@ -35,6 +35,7 @@ export default function OrdersPage() {
   }, [orders, filter])
 
   const handleStatusChange = async (orderId, newStatus) => {
+    if (!window.confirm(`Change order #${orderId} status to "${STATUS_LABELS[newStatus]}"?`)) return
     try {
       await updateOrderStatus(orderId, newStatus)
       addToast(`Order #${orderId} updated to ${STATUS_LABELS[newStatus]}`, 'success')

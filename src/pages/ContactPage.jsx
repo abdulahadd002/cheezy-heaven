@@ -15,7 +15,10 @@ export default function ContactPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    addToast('Message sent! We\'ll get back to you soon.', 'success')
+    const subject = encodeURIComponent(form.subject || 'Message from Cheezy Heaven website')
+    const body = encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`)
+    window.open(`mailto:info@cheezyheaven.pk?subject=${subject}&body=${body}`, '_blank')
+    addToast('Opening your email client to send the message.', 'success')
     setForm({ name: '', email: '', subject: '', message: '' })
   }
 

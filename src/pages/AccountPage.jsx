@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { User, Package, Heart, MapPin, Settings, LogOut, Trash2, Edit3, Loader } from 'lucide-react'
 import ProductCard from '../components/ui/ProductCard'
 import { useAuth } from '../context/AuthContext'
@@ -18,13 +18,14 @@ const TABS = [
 ]
 
 export default function AccountPage() {
-  const { user, isLoggedIn, loading, login, signup, logout, updateUserProfile, removeAddress } = useAuth()
+  const { user, isLoggedIn, loading, login, signup, logout, updateUserProfile, addAddress, removeAddress } = useAuth()
   const { favorites } = useFavorites()
   const { addToast } = useToast()
   const { products } = useProducts()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
-  const [tab, setTab] = useState('profile')
+  const [tab, setTab] = useState(searchParams.get('tab') || 'profile')
   const [orders, setOrders] = useState([])
   const [ordersLoading, setOrdersLoading] = useState(false)
 
@@ -38,6 +39,8 @@ export default function AccountPage() {
         .finally(() => setOrdersLoading(false))
     }
   }, [tab, isLoggedIn, user?.uid])
+  const [emailNotif, setEmailNotif] = useState(true)
+  const [smsNotif, setSmsNotif] = useState(true)
   const [authMode, setAuthMode] = useState('login')
   const [authLoading, setAuthLoading] = useState(false)
 
@@ -73,6 +76,10 @@ export default function AccountPage() {
 
   const handleProfileSave = async () => {
     if (!profileForm) return
+    if (!profileForm.name?.trim()) {
+      addToast('Name cannot be empty', 'error')
+      return
+    }
     try {
       await updateUserProfile(profileForm)
       setProfileForm(null)
@@ -357,13 +364,34 @@ export default function AccountPage() {
                   <div className="address-manage-text">{addr.address}</div>
                 </div>
                 <div className="address-manage-actions">
-                  <button className="btn-icon"><Edit3 size={16} /></button>
+                  <button
+                    className="btn-icon"
+                    onClick={async () => {
+                      const newText = window.prompt('Edit address:', addr.address)
+                      if (!newText || newText === addr.address) return
+                      try {
+                        const updated = (user.addresses || []).map(a =>
+                          a.id === addr.id ? { ...a, address: newText } : a
+                        )
+                        await updateUserProfile({ addresses: updated })
+                        addToast('Address updated', 'success')
+                      } catch {
+                        addToast('Failed to update address', 'error')
+                      }
+                    }}
+                  >
+                    <Edit3 size={16} />
+                  </button>
                   <button
                     className="btn-icon"
                     style={{ color: '#EF4444' }}
                     onClick={async () => {
-                      await removeAddress(addr.id)
-                      addToast('Address removed', 'info')
+                      try {
+                        await removeAddress(addr.id)
+                        addToast('Address removed', 'info')
+                      } catch {
+                        addToast('Failed to remove address', 'error')
+                      }
                     }}
                   >
                     <Trash2 size={16} />
@@ -371,7 +399,22 @@ export default function AccountPage() {
                 </div>
               </div>
             ))}
-            <button className="btn-secondary" style={{ alignSelf: 'flex-start', marginTop: 8 }}>
+            <button
+              className="btn-secondary"
+              style={{ alignSelf: 'flex-start', marginTop: 8 }}
+              onClick={async () => {
+                const label = window.prompt('Address label (e.g., Home, Office):')
+                if (!label) return
+                const addressText = window.prompt('Full delivery address:')
+                if (!addressText) return
+                try {
+                  await addAddress({ label, address: addressText, isDefault: !(user.addresses?.length > 0) })
+                  addToast('Address added', 'success')
+                } catch {
+                  addToast('Failed to add address', 'error')
+                }
+              }}
+            >
               + Add New Address
             </button>
           </div>
@@ -385,14 +428,14 @@ export default function AccountPage() {
                 <div className="settings-item-label">Email Notifications</div>
                 <div className="settings-item-desc">Receive order updates and offers via email</div>
               </div>
-              <input type="checkbox" defaultChecked style={{ accentColor: 'var(--color-orange)' }} />
+              <input type="checkbox" checked={emailNotif} onChange={e => setEmailNotif(e.target.checked)} style={{ accentColor: 'var(--color-orange)' }} />
             </div>
             <div className="settings-item">
               <div>
                 <div className="settings-item-label">SMS Notifications</div>
                 <div className="settings-item-desc">Receive order updates via SMS</div>
               </div>
-              <input type="checkbox" defaultChecked style={{ accentColor: 'var(--color-orange)' }} />
+              <input type="checkbox" checked={smsNotif} onChange={e => setSmsNotif(e.target.checked)} style={{ accentColor: 'var(--color-orange)' }} />
             </div>
             <div className="settings-item">
               <div>

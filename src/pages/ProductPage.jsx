@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { ShoppingCart, Heart, ChevronRight, Loader } from 'lucide-react'
 import ProductCard from '../components/ui/ProductCard'
@@ -22,12 +22,19 @@ export default function ProductPage() {
   const { addToast } = useToast()
   const { products, loading } = useProducts()
 
-  const product = products.find(p => p.id === Number(id))
+  const product = products.find(p => p.id === id)
 
-  const sizeKeys = product ? Object.keys(product.sizes) : []
-  const [selectedSize, setSelectedSize] = useState(sizeKeys[0] || '')
+  const sizeKeys = product ? Object.keys(product.sizes || {}) : []
+  const [selectedSize, setSelectedSize] = useState('')
   const [selectedCustomizations, setSelectedCustomizations] = useState([])
   const [qty, setQty] = useState(1)
+
+  // Set the first available size once the product loads
+  useEffect(() => {
+    if (sizeKeys.length > 0 && !selectedSize) {
+      setSelectedSize(sizeKeys[0])
+    }
+  }, [product?.id])
 
   if (loading) {
     return (

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { ShoppingBag, DollarSign, Users, TrendingUp, Loader } from 'lucide-react'
+import { Loader } from 'lucide-react'
 import { subscribeToAllOrders } from '../../lib/firestore'
 
 const STATUS_LABELS = {

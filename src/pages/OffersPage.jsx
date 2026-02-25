@@ -211,7 +211,7 @@ export default function OffersPage() {
 
                 {/* Expandable Deal List */}
                 <div style={{
-                  maxHeight: isOpen ? `${catData.deals.length * 120 + 40}px` : '0px',
+                  maxHeight: isOpen ? '5000px' : '0px',
                   overflow: 'hidden',
                   transition: 'max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}>
