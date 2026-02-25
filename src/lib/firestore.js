@@ -1,6 +1,6 @@
 import {
-  collection, doc, getDoc, getDocs, setDoc, updateDoc, arrayUnion,
-  query, where, onSnapshot
+  collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, arrayUnion,
+  query, where, onSnapshot, orderBy
 } from 'firebase/firestore'
 import { db } from './firebase'
 
@@ -63,4 +63,42 @@ export async function getUserOrders(userId) {
   // Sort client-side to avoid needing a composite index
   orders.sort((a, b) => (b.placedAt || '').localeCompare(a.placedAt || ''))
   return orders
+}
+
+// --- Admin: Real-time all orders ---
+
+export function subscribeToAllOrders(callback) {
+  return onSnapshot(collection(db, 'orders'), (snap) => {
+    const orders = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+    orders.sort((a, b) => (b.placedAt || '').localeCompare(a.placedAt || ''))
+    callback(orders)
+  })
+}
+
+// --- Admin: Product management ---
+
+export async function updateProduct(productId, updates) {
+  await updateDoc(doc(db, 'products', String(productId)), updates)
+}
+
+export async function deleteProduct(productId) {
+  await deleteDoc(doc(db, 'products', String(productId)))
+}
+
+export async function createProduct(productId, data) {
+  await setDoc(doc(db, 'products', String(productId)), data)
+}
+
+// --- Admin: Deal management ---
+
+export async function updateDeal(dealId, updates) {
+  await updateDoc(doc(db, 'deals', String(dealId)), updates)
+}
+
+export async function deleteDeal(dealId) {
+  await deleteDoc(doc(db, 'deals', String(dealId)))
+}
+
+export async function createDeal(dealId, data) {
+  await setDoc(doc(db, 'deals', String(dealId)), data)
 }

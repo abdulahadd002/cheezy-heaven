@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { MapPin, Phone, ChevronLeft, ChevronRight, Check, Banknote, Wallet, LogIn } from 'lucide-react'
+import { MapPin, Phone, ChevronLeft, ChevronRight, Check, Banknote, Wallet } from 'lucide-react'
 import StepIndicator from '../components/ui/StepIndicator'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
@@ -18,7 +18,7 @@ const PAYMENT_METHODS = [
 export default function CheckoutPage() {
   const navigate = useNavigate()
   const { items, subtotal, deliveryFee, tax, total, clearCart } = useCart()
-  const { user, isLoggedIn } = useAuth()
+  const { user } = useAuth()
   const { addToast } = useToast()
 
   const [step, setStep] = useState(0)
@@ -29,27 +29,12 @@ export default function CheckoutPage() {
   const [phone, setPhone] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('cod')
   const [errors, setErrors] = useState({})
+  const [placing, setPlacing] = useState(false)
 
   // Pre-fill phone from user profile
   useEffect(() => {
     if (user?.phone && !phone) setPhone(user.phone)
   }, [user])
-
-  // Auth gate: must be logged in to checkout
-  if (!isLoggedIn) {
-    return (
-      <div className="checkout-page">
-        <div className="container">
-          <div className="cart-empty">
-            <LogIn size={48} style={{ color: 'var(--color-gray-2)', marginBottom: 16 }} />
-            <h2>Sign in to continue</h2>
-            <p>You need to be logged in to place an order.</p>
-            <Link to="/account" className="btn-primary" style={{ marginTop: 16 }}>Sign In</Link>
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   if (items.length === 0 && !orderPlaced) {
     return (
@@ -91,15 +76,13 @@ export default function CheckoutPage() {
 
   const finalTotal = subtotal + tax
 
-  const [placing, setPlacing] = useState(false)
-
   const handlePlaceOrder = async () => {
     setPlacing(true)
     try {
       const id = Math.floor(10000 + Math.random() * 90000).toString()
       await createOrder(id, {
-        userId: user.uid,
-        userName: user.name,
+        userId: user?.uid || 'guest',
+        userName: user?.name || 'Guest',
         items: items.map(item => ({
           name: item.name,
           qty: item.qty,
@@ -201,8 +184,8 @@ export default function CheckoutPage() {
                     </div>
                     <div style={{ fontSize: 13, color: 'var(--color-gray-1)', lineHeight: 1.8 }}>
                       <p>Send <strong style={{ color: 'var(--color-orange)' }}>PKR {finalTotal.toLocaleString()}</strong> to:</p>
-                      <p style={{ fontSize: 18, fontWeight: 700, color: 'var(--color-white)', margin: '8px 0' }}>0349-5479437</p>
-                      <p>Account: <strong style={{ color: 'var(--color-white)' }}>Cheezy Heaven</strong></p>
+                      <p style={{ fontSize: 18, fontWeight: 700, color: 'var(--color-white)', margin: '8px 0' }}>0312-8680974</p>
+                      <p>Account: <strong style={{ color: 'var(--color-white)' }}>Afshan Majid</strong></p>
                       <p style={{ marginTop: 8, fontSize: 12, color: 'var(--color-gray-2)' }}>
                         After sending, place your order. Our team will verify the payment and confirm your order.
                       </p>

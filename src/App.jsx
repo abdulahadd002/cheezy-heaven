@@ -15,6 +15,14 @@ import AboutPage from './pages/AboutPage'
 import ContactPage from './pages/ContactPage'
 import OffersPage from './pages/OffersPage'
 import NotFoundPage from './pages/NotFoundPage'
+import AdminGuard from './components/admin/AdminGuard'
+import AdminLayout from './components/admin/AdminLayout'
+import DashboardPage from './pages/admin/DashboardPage'
+import AdminOrdersPage from './pages/admin/OrdersPage'
+import OrderDetailPage from './pages/admin/OrderDetailPage'
+import MenuManagementPage from './pages/admin/MenuManagementPage'
+import DealsManagementPage from './pages/admin/DealsManagementPage'
+import SettingsPage from './pages/admin/SettingsPage'
 
 export default function App() {
   return (
@@ -36,6 +44,16 @@ export default function App() {
                   <Route path="/contact" element={<ContactPage />} />
                   <Route path="/offers" element={<OffersPage />} />
                   <Route path="*" element={<NotFoundPage />} />
+                </Route>
+
+                {/* Admin Routes */}
+                <Route path="/admin" element={<AdminGuard><AdminLayout /></AdminGuard>}>
+                  <Route index element={<DashboardPage />} />
+                  <Route path="orders" element={<AdminOrdersPage />} />
+                  <Route path="orders/:id" element={<OrderDetailPage />} />
+                  <Route path="menu" element={<MenuManagementPage />} />
+                  <Route path="deals" element={<DealsManagementPage />} />
+                  <Route path="settings" element={<SettingsPage />} />
                 </Route>
               </Routes>
             </FavoritesProvider>
