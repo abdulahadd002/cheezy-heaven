@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react'
-import { Loader, Search, Edit3, Trash2, X, Save } from 'lucide-react'
+import { useState, useMemo, useRef } from 'react'
+import { Loader, Search, Edit3, Trash2, X, Save, Upload } from 'lucide-react'
 import { useProducts } from '../../hooks/useProducts'
 import { updateProduct, deleteProduct } from '../../lib/firestore'
 import { useToast } from '../../context/ToastContext'
@@ -13,6 +13,8 @@ export default function MenuManagementPage() {
   const [catFilter, setCatFilter] = useState('all')
   const [editing, setEditing] = useState(null) // product id being edited
   const [editData, setEditData] = useState({})
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef(null)
 
   const filtered = useMemo(() => {
     let list = products
@@ -88,6 +90,39 @@ export default function MenuManagementPage() {
     } catch {
       addToast('Failed to update', 'error')
     }
+  }
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      addToast('Please select an image file', 'error')
+      return
+    }
+    setUploading(true)
+    const img = new Image()
+    img.onload = () => {
+      const MAX = 600
+      let w = img.width, h = img.height
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX }
+        else { w = Math.round(w * MAX / h); h = MAX }
+      }
+      const canvas = document.createElement('canvas')
+      canvas.width = w
+      canvas.height = h
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h)
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.7)
+      setEditData(d => ({ ...d, image: dataUrl }))
+      setUploading(false)
+      addToast('Image added', 'success')
+    }
+    img.onerror = () => {
+      setUploading(false)
+      addToast('Failed to load image', 'error')
+    }
+    img.src = URL.createObjectURL(file)
+    if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   if (loading) {
@@ -200,6 +235,25 @@ export default function MenuManagementPage() {
                               placeholder="Image URL (e.g. /images/product.jpg)"
                               style={{ flex: '1 1 260px' }}
                             />
+                            <input
+                              ref={fileInputRef}
+                              type="file"
+                              accept="image/*"
+                              onChange={handleImageUpload}
+                              style={{ display: 'none' }}
+                            />
+                            <button
+                              className="admin-btn admin-btn-secondary admin-btn-sm"
+                              onClick={() => fileInputRef.current?.click()}
+                              disabled={uploading}
+                              title="Upload image"
+                              style={{ whiteSpace: 'nowrap' }}
+                            >
+                              {uploading
+                                ? <Loader size={14} style={{ animation: 'spin 1s linear infinite' }} />
+                                : <Upload size={14} />}
+                              {uploading ? ' Uploading...' : ' Upload'}
+                            </button>
                             {editData.image && (
                               <img src={editData.image} alt="" style={{ width: 36, height: 36, borderRadius: 6, objectFit: 'cover' }} />
                             )}
