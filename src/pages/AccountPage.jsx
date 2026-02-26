@@ -25,16 +25,14 @@ export default function AccountPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const [tab, setTab] = useState(searchParams.get('tab') || 'profile')
+  // Derive tab directly from URL — single source of truth
+  const tab = searchParams.get('tab') || 'profile'
   const [orders, setOrders] = useState([])
   const [ordersLoading, setOrdersLoading] = useState(false)
 
-  // Keep tab in sync with URL changes (e.g. bottom nav taps)
-  useEffect(() => {
-    setTab(searchParams.get('tab') || 'profile')
-  }, [searchParams])
-
-  const urlTab = searchParams.get('tab')
+  const switchTab = (id) => {
+    navigate(id === 'profile' ? '/account' : `/account?tab=${id}`, { replace: true })
+  }
 
   // Fetch user's orders when they switch to orders tab
   useEffect(() => {
@@ -120,7 +118,7 @@ export default function AccountPage() {
             <h2>{authMode === 'login' ? 'Welcome Back' : 'Create Account'}</h2>
             <p className="auth-subtitle">
               {authMode === 'login'
-                ? (urlTab === 'favorites' ? 'Sign in to view your saved items' : 'Sign in to access your orders and favorites')
+                ? (tab === 'favorites' ? 'Sign in to view your saved items' : 'Sign in to access your orders and favorites')
                 : 'Join Cheesy Heaven for exclusive deals'}
             </p>
 
@@ -215,7 +213,7 @@ export default function AccountPage() {
             <button
               key={t.id}
               className={`account-tab ${tab === t.id ? 'active' : ''}`}
-              onClick={() => setTab(t.id)}
+              onClick={() => switchTab(t.id)}
             >
               <t.icon size={16} style={{ marginRight: 8, verticalAlign: 'middle' }} />
               {t.label}
