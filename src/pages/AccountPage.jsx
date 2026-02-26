@@ -29,6 +29,18 @@ export default function AccountPage() {
   const [orders, setOrders] = useState([])
   const [ordersLoading, setOrdersLoading] = useState(false)
 
+  // Keep tab in sync with URL changes (e.g. bottom nav taps)
+  useEffect(() => {
+    setTab(searchParams.get('tab') || 'profile')
+  }, [searchParams])
+
+  // When not logged in, strip ?tab= so bottom nav highlights "Account" correctly
+  useEffect(() => {
+    if (!loading && !isLoggedIn && searchParams.get('tab')) {
+      navigate('/account', { replace: true })
+    }
+  }, [loading, isLoggedIn, searchParams, navigate])
+
   // Fetch user's orders when they switch to orders tab
   useEffect(() => {
     if (tab !== 'orders' || !isLoggedIn || !user?.uid) return
