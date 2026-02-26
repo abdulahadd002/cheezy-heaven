@@ -34,12 +34,7 @@ export default function AccountPage() {
     setTab(searchParams.get('tab') || 'profile')
   }, [searchParams])
 
-  // When not logged in, strip ?tab= so bottom nav highlights "Account" correctly
-  useEffect(() => {
-    if (!loading && !isLoggedIn && searchParams.get('tab')) {
-      navigate('/account', { replace: true })
-    }
-  }, [loading, isLoggedIn, searchParams, navigate])
+  const urlTab = searchParams.get('tab')
 
   // Fetch user's orders when they switch to orders tab
   useEffect(() => {
@@ -125,7 +120,7 @@ export default function AccountPage() {
             <h2>{authMode === 'login' ? 'Welcome Back' : 'Create Account'}</h2>
             <p className="auth-subtitle">
               {authMode === 'login'
-                ? 'Sign in to access your orders and favorites'
+                ? (urlTab === 'favorites' ? 'Sign in to view your saved items' : 'Sign in to access your orders and favorites')
                 : 'Join Cheesy Heaven for exclusive deals'}
             </p>
 
