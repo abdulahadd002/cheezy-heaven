@@ -3,44 +3,59 @@
   bottom: 24px;
   right: 24px;
   z-index: 900;
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
+  justify-content: center;
   background: var(--color-orange);
-  color: #fff;
   border: none;
-  border-radius: 50px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
+  border-radius: 50%;
+  cursor: grab;
   box-shadow: 0 4px 20px rgba(139, 32, 32, 0.5);
   animation: trackFloat-in 0.4s ease;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.track-order-float:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 28px rgba(139, 32, 32, 0.65);
+  transition: box-shadow 0.2s ease;
+  user-select: none;
+  touch-action: none;
 }
 
 .track-order-float:active {
-  transform: scale(0.97);
+  cursor: grabbing;
+}
+
+/* When user has dragged to a custom position, use left/top instead */
+.track-order-float.track-order-positioned {
+  bottom: auto;
+  right: auto;
+}
+
+.track-order-float:hover {
+  box-shadow: 0 6px 28px rgba(139, 32, 32, 0.65);
+}
+
+.track-order-emoji {
+  font-size: 26px;
+  line-height: 1;
+  pointer-events: none;
 }
 
 .track-order-float .pulse-dot {
-  width: 8px;
-  height: 8px;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: #10B981;
+  border: 2px solid var(--color-orange);
   animation: trackPulse 1.5s ease-in-out infinite;
+  pointer-events: none;
 }
 
 .track-order-dismiss {
   position: absolute;
-  top: -6px;
-  right: -6px;
+  top: -4px;
+  left: -4px;
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -54,6 +69,12 @@
   cursor: pointer;
   line-height: 1;
   padding: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.track-order-float:hover .track-order-dismiss {
+  opacity: 1;
 }
 
 .track-order-dismiss:hover {
@@ -63,21 +84,19 @@
 }
 
 @keyframes trackFloat-in {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 @keyframes trackPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
 }
 
 /* Push above MobileNav on mobile */
 @media (max-width: 768px) {
-  .track-order-float {
+  .track-order-float:not(.track-order-positioned) {
     bottom: 80px;
     right: 16px;
-    font-size: 13px;
-    padding: 10px 16px;
   }
 }
