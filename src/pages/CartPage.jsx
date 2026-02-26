@@ -134,7 +134,9 @@ export default function CartPage() {
             </div>
             <div className="order-summary-row">
               <span>Delivery Fee</span>
-              <span style={{ color: '#4CAF50', fontWeight: 600 }}>FREE</span>
+              {deliveryFee > 0
+                ? <span>PKR {deliveryFee.toLocaleString()}</span>
+                : <span style={{ color: '#4CAF50', fontWeight: 600 }}>FREE</span>}
             </div>
             <div className="order-summary-row">
               <span>Tax (16% GST)</span>

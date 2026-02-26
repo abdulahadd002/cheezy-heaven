@@ -108,6 +108,7 @@ export default function CheckoutPage() {
   const finalTotal = subtotal + deliveryFee + tax - promoDiscountAmount
 
   const handlePlaceOrder = async () => {
+    if (placing) return
     setPlacing(true)
     try {
       const id = `${Date.now()}-${Math.floor(100 + Math.random() * 900)}`

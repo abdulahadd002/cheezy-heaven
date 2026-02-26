@@ -198,7 +198,9 @@ export default function OrderTrackingPage() {
           </div>
           <div className="order-summary-row">
             <span>Delivery</span>
-            <span style={{ color: '#4CAF50', fontWeight: 600 }}>FREE</span>
+            {(order.deliveryFee || 0) > 0
+              ? <span>PKR {order.deliveryFee.toLocaleString()}</span>
+              : <span style={{ color: '#4CAF50', fontWeight: 600 }}>FREE</span>}
           </div>
           <div className="order-summary-row">
             <span>Tax (16% GST)</span>
