@@ -40,8 +40,6 @@ export default function AccountPage() {
       .finally(() => { if (!cancelled) setOrdersLoading(false) })
     return () => { cancelled = true }
   }, [tab, isLoggedIn, user?.uid])
-  const [emailNotif, setEmailNotif] = useState(true)
-  const [smsNotif, setSmsNotif] = useState(true)
   const [authMode, setAuthMode] = useState('login')
   const [authLoading, setAuthLoading] = useState(false)
 
@@ -427,20 +425,6 @@ export default function AccountPage() {
         {/* Settings Tab */}
         {tab === 'settings' && (
           <div className="settings-section">
-            <div className="settings-item">
-              <div>
-                <div className="settings-item-label">Email Notifications</div>
-                <div className="settings-item-desc">Receive order updates and offers via email</div>
-              </div>
-              <input type="checkbox" checked={emailNotif} onChange={e => setEmailNotif(e.target.checked)} style={{ accentColor: 'var(--color-orange)' }} />
-            </div>
-            <div className="settings-item">
-              <div>
-                <div className="settings-item-label">SMS Notifications</div>
-                <div className="settings-item-desc">Receive order updates via SMS</div>
-              </div>
-              <input type="checkbox" checked={smsNotif} onChange={e => setSmsNotif(e.target.checked)} style={{ accentColor: 'var(--color-orange)' }} />
-            </div>
             <div className="settings-item">
               <div>
                 <div className="settings-item-label">Language</div>

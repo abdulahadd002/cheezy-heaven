@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Clock, Moon, Sun, Flame, Crown, Utensils, Plus, ChevronDown, Lock, Loader } from 'lucide-react'
 import { useDeals } from '../hooks/useDeals'
@@ -52,7 +52,6 @@ export default function OffersPage() {
   const { addToast } = useToast()
   const navigate = useNavigate()
   const [expanded, setExpanded] = useState(null)
-  const [now, setNow] = useState(new Date())
 
   const handleOrderDeal = (deal) => {
     addItem(
@@ -77,12 +76,6 @@ export default function OffersPage() {
     acc[deal.category].deals.push(deal)
     return acc
   }, {}), [deals])
-
-  // Update time every minute to keep active status current
-  useEffect(() => {
-    const interval = setInterval(() => setNow(new Date()), 60000)
-    return () => clearInterval(interval)
-  }, [])
 
   const toggle = (key) => {
     setExpanded(prev => prev === key ? null : key)

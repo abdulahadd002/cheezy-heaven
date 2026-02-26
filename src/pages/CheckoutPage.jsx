@@ -105,7 +105,7 @@ export default function CheckoutPage() {
     )
   }
 
-  const finalTotal = subtotal + tax - promoDiscountAmount
+  const finalTotal = subtotal + deliveryFee + tax - promoDiscountAmount
 
   const handlePlaceOrder = async () => {
     setPlacing(true)
@@ -253,7 +253,7 @@ export default function CheckoutPage() {
                 <div style={{ fontSize: '14px', color: 'var(--color-gray-1)', marginBottom: 'var(--space-16)' }}>
                   <p><strong style={{ color: 'var(--color-white)' }}>Address:</strong> {address}</p>
                   <p><strong style={{ color: 'var(--color-white)' }}>Phone:</strong> {phone}</p>
-                  <p><strong style={{ color: 'var(--color-white)' }}>Delivery:</strong> Free Delivery</p>
+                  <p><strong style={{ color: 'var(--color-white)' }}>Delivery:</strong> {deliveryFee > 0 ? `PKR ${deliveryFee.toLocaleString()}` : 'Free Delivery'}</p>
                   <p><strong style={{ color: 'var(--color-white)' }}>Payment:</strong> {PAYMENT_METHODS.find(m => m.id === paymentMethod)?.name}</p>
                 </div>
               </>
@@ -278,7 +278,7 @@ export default function CheckoutPage() {
                     if (!address.trim()) newErrors.address = 'Delivery address is required'
                     if (!phone.trim()) {
                       newErrors.phone = 'Mobile number is required'
-                    } else if (!/^(0\d{10}|\+92\d{10})$/.test(phone.trim())) {
+                    } else if (!/^(0\d{10}|\+92\d{10})$/.test(phone.trim().replace(/[\s\-]/g, ''))) {
                       newErrors.phone = 'Enter a valid Pakistani number (e.g., 03001234567)'
                     }
                     if (Object.keys(newErrors).length > 0) {
@@ -306,7 +306,9 @@ export default function CheckoutPage() {
             </div>
             <div className="order-summary-row">
               <span>Delivery Fee</span>
-              <span style={{ color: '#4CAF50', fontWeight: 600 }}>FREE</span>
+              {deliveryFee > 0
+                ? <span>PKR {deliveryFee.toLocaleString()}</span>
+                : <span style={{ color: '#4CAF50', fontWeight: 600 }}>FREE</span>}
             </div>
             <div className="order-summary-row">
               <span>Tax (16% GST)</span>

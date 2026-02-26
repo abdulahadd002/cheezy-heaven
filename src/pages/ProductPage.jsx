@@ -72,9 +72,7 @@ export default function ProductPage() {
   }
 
   const handleAddToCart = () => {
-    for (let i = 0; i < qty; i++) {
-      addItem(product, selectedSize, discountedPrice, selectedCustomizations)
-    }
+    addItem(product, selectedSize, discountedPrice, selectedCustomizations, qty)
     addToast(`${qty}x ${product.name} added to cart!`, 'success')
   }
 

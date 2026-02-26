@@ -19,7 +19,7 @@ const CATEGORIES = [
 ]
 
 export default function MenuPage() {
-  const { products, loading } = useProducts()
+  const { products, loading, error } = useProducts()
   const [searchParams, setSearchParams] = useSearchParams()
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState(searchParams.get('category') || 'all')
@@ -62,11 +62,11 @@ export default function MenuPage() {
 
     const sortWithin = (a, b) => {
       switch (sort) {
-        case 'price-low': return a.price - b.price
-        case 'price-high': return b.price - a.price
-        case 'rating': return b.rating - a.rating
+        case 'price-low': return (a.price || 0) - (b.price || 0)
+        case 'price-high': return (b.price || 0) - (a.price || 0)
+        case 'rating': return (b.rating || 0) - (a.rating || 0)
         case 'popular':
-        default: return b.reviews - a.reviews
+        default: return (b.reviews || 0) - (a.reviews || 0)
       }
     }
 
@@ -82,6 +82,20 @@ export default function MenuPage() {
 
     return result
   }, [products, category, search, sort])
+
+  if (error) {
+    return (
+      <div className="menu-page">
+        <div className="container">
+          <div className="menu-empty">
+            <h3>Failed to load menu</h3>
+            <p>Please check your connection and try again.</p>
+            <button className="btn-secondary" onClick={() => window.location.reload()}>Retry</button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (loading) {
     return (

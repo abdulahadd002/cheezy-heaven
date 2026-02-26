@@ -70,7 +70,7 @@ export function CartProvider({ children }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
   }, [items])
 
-  const addItem = (product, size, sizePrice, customizations = []) => {
+  const addItem = (product, size, sizePrice, customizations = [], qty = 1) => {
     dispatch({
       type: 'ADD_ITEM',
       payload: {
@@ -80,7 +80,8 @@ export function CartProvider({ children }) {
         description: product.description,
         price: sizePrice,
         size,
-        customizations
+        customizations,
+        qty,
       }
     })
   }
