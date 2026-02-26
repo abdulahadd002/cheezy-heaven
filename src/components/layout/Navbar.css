@@ -8,6 +8,13 @@
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--color-border);
   z-index: 1000;
+  transition: transform 0.35s ease;
+}
+
+@media (max-width: 768px) {
+  .navbar.navbar-hidden {
+    transform: translateY(-100%);
+  }
 }
 
 .nav-container {

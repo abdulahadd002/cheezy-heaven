@@ -1,3 +1,4 @@
+import { useState, useEffect, useCallback } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { ShoppingCart, User, Search } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
@@ -8,9 +9,43 @@ export default function Navbar() {
   const { itemCount } = useCart()
   const { user, isLoggedIn } = useAuth()
   const navigate = useNavigate()
+  const [hidden, setHidden] = useState(false)
+
+  const showNav = useCallback(() => setHidden(false), [])
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)')
+    if (!mq.matches) return
+
+    let timer = setTimeout(() => setHidden(true), 3000)
+
+    const reset = () => {
+      setHidden(false)
+      clearTimeout(timer)
+      timer = setTimeout(() => setHidden(true), 3000)
+    }
+
+    window.addEventListener('touchstart', reset, { passive: true })
+    window.addEventListener('scroll', reset, { passive: true })
+    window.addEventListener('click', reset)
+
+    const onChange = (e) => {
+      if (!e.matches) { setHidden(false); clearTimeout(timer) }
+      else { timer = setTimeout(() => setHidden(true), 3000) }
+    }
+    mq.addEventListener('change', onChange)
+
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('touchstart', reset)
+      window.removeEventListener('scroll', reset)
+      window.removeEventListener('click', reset)
+      mq.removeEventListener('change', onChange)
+    }
+  }, [])
 
   return (
-    <nav className="navbar" role="navigation" aria-label="Main navigation">
+    <nav className={`navbar ${hidden ? 'navbar-hidden' : ''}`} role="navigation" aria-label="Main navigation">
       <div className="nav-container">
         <Link to="/" className="nav-logo">
           <span className="nav-logo-text">CHEEZY <span>HEAVEN</span></span>
