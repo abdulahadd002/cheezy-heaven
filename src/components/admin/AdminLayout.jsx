@@ -41,17 +41,17 @@ export default function AdminLayout() {
               className={({ isActive }) => `admin-nav-item ${isActive ? 'active' : ''}`}
             >
               <item.icon size={18} />
-              {item.label}
+              <span>{item.label}</span>
             </NavLink>
           ))}
         </nav>
 
         <div className="admin-sidebar-footer">
           <NavLink to="/" className="admin-nav-item">
-            <ChevronLeft size={18} /> Back to Site
+            <ChevronLeft size={18} /> <span>Back to Site</span>
           </NavLink>
           <button className="admin-nav-item admin-logout" onClick={handleLogout}>
-            <LogOut size={18} /> Logout
+            <LogOut size={18} /> <span>Logout</span>
           </button>
         </div>
       </aside>
