@@ -48,6 +48,7 @@ export default function AccountPage() {
 
   // Profile edit state
   const [profileForm, setProfileForm] = useState(null)
+  const [profileSaving, setProfileSaving] = useState(false)
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -74,11 +75,12 @@ export default function AccountPage() {
   }
 
   const handleProfileSave = async () => {
-    if (!profileForm) return
+    if (!profileForm || profileSaving) return
     if (!profileForm.name?.trim()) {
       addToast('Name cannot be empty', 'error')
       return
     }
+    setProfileSaving(true)
     try {
       await updateUserProfile(profileForm)
       setProfileForm(null)
@@ -86,6 +88,7 @@ export default function AccountPage() {
     } catch {
       addToast('Failed to update profile', 'error')
     }
+    setProfileSaving(false)
   }
 
   // Show loading spinner while Firebase checks auth state
@@ -253,10 +256,10 @@ export default function AccountPage() {
             <button
               className="btn-primary"
               onClick={handleProfileSave}
-              disabled={!profileForm}
-              style={{ opacity: profileForm ? 1 : 0.5 }}
+              disabled={!profileForm || profileSaving}
+              style={{ opacity: (profileForm && !profileSaving) ? 1 : 0.5 }}
             >
-              Save Changes
+              {profileSaving ? 'Saving...' : 'Save Changes'}
             </button>
           </div>
         )}

@@ -2,8 +2,6 @@ import { createContext, useContext, useReducer, useEffect, useState } from 'reac
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 
-let cartIdCounter = 0
-
 const CartContext = createContext()
 
 const STORAGE_KEY = 'cheesy-heaven-cart'
@@ -16,6 +14,10 @@ function loadCart() {
     return []
   }
 }
+
+// Initialize from persisted cart so new cartIds never collide with reloaded items
+const _persistedCart = loadCart()
+let cartIdCounter = _persistedCart.reduce((max, item) => Math.max(max, item.cartId || 0), 0)
 
 function cartReducer(state, action) {
   switch (action.type) {

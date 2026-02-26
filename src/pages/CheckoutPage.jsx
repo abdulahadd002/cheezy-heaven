@@ -122,6 +122,7 @@ export default function CheckoutPage() {
           price: item.price,
         })),
         subtotal,
+        deliveryFee,
         tax,
         total: finalTotal,
         address,

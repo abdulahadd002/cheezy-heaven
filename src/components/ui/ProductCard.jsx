@@ -63,8 +63,8 @@ export default function ProductCard({ product }) {
         <p className="product-card-desc">{product.description}</p>
 
         <div className="product-card-rating">
-          <span className="rating-stars">{getStars(product.rating)}</span>
-          <span className="rating-count">({product.reviews})</span>
+          <span className="rating-stars">{getStars(product.rating || 0)}</span>
+          <span className="rating-count">({product.reviews || 0})</span>
         </div>
 
         <div className="product-card-footer">

@@ -105,6 +105,7 @@ export default function SettingsPage() {
             <div className="admin-form-group">
               <label>Tax Rate (%)</label>
               <input className="admin-form-input" type="number" value={settings.taxRate} onChange={e => update('taxRate', Number(e.target.value))} />
+              <span style={{ fontSize: 12, color: 'var(--color-gray-2)', marginTop: 4, display: 'block' }}>Enter as a whole number (e.g. 16 for 16%)</span>
             </div>
             <div className="admin-form-group">
               <label>Delivery Fee (PKR)</label>

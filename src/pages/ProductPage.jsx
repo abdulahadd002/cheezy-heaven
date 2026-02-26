@@ -60,7 +60,7 @@ export default function ProductPage() {
     )
   }
 
-  const currentPrice = product.sizes?.[selectedSize] || product.price
+  const currentPrice = product.sizes?.[selectedSize] || product.price || 0
   const discountedPrice = product.discount
     ? Math.round(currentPrice * (1 - product.discount / 100))
     : currentPrice
