@@ -65,6 +65,10 @@ export default function ProductPage() {
     ? Math.round(currentPrice * (1 - product.discount / 100))
     : currentPrice
 
+  const custPrices = product.customizationPrices || {}
+  const customizationsTotal = selectedCustomizations.reduce((sum, c) => sum + (custPrices[c] || 0), 0)
+  const totalPrice = discountedPrice + customizationsTotal
+
   const toggleCustomization = (c) => {
     setSelectedCustomizations(prev =>
       prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c]
@@ -72,7 +76,7 @@ export default function ProductPage() {
   }
 
   const handleAddToCart = () => {
-    addItem(product, selectedSize, discountedPrice, selectedCustomizations, qty)
+    addItem(product, selectedSize, totalPrice, selectedCustomizations, qty)
     addToast(`${qty}x ${product.name} added to cart!`, 'success')
   }
 
@@ -145,7 +149,7 @@ export default function ProductPage() {
                       className={`customization-tag ${selectedCustomizations.includes(c) ? 'active' : ''}`}
                       onClick={() => toggleCustomization(c)}
                     >
-                      {c}
+                      {c}{custPrices[c] > 0 && <span style={{ fontSize: 11, opacity: 0.8, marginLeft: 4 }}>+PKR {custPrices[c]}</span>}
                     </button>
                   ))}
                 </div>
@@ -154,10 +158,10 @@ export default function ProductPage() {
 
             {/* Price */}
             <div className="product-detail-price">
-              PKR {discountedPrice.toLocaleString()}
-              {product.discount > 0 && (
+              PKR {totalPrice.toLocaleString()}
+              {(product.discount > 0 || customizationsTotal > 0) && (
                 <span className="product-detail-price-original">
-                  PKR {currentPrice.toLocaleString()}
+                  {product.discount > 0 ? `PKR ${(currentPrice + customizationsTotal).toLocaleString()}` : ''}
                 </span>
               )}
             </div>
@@ -171,7 +175,7 @@ export default function ProductPage() {
               </div>
               <button className="btn-primary btn-lg" onClick={handleAddToCart}>
                 <ShoppingCart size={18} />
-                Add to Cart - PKR {(discountedPrice * qty).toLocaleString()}
+                Add to Cart - PKR {(totalPrice * qty).toLocaleString()}
               </button>
               <button
                 className={`btn-icon ${isFavorite(product.id) ? 'text-orange' : ''}`}

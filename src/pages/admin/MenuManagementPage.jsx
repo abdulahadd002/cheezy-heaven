@@ -26,13 +26,18 @@ export default function MenuManagementPage() {
 
   const startEdit = (product) => {
     setEditing(product.id)
+    const custPrices = product.customizationPrices || {}
     setEditData({
       name: product.name,
       price: product.price,
       category: product.category,
       description: product.description || '',
+      image: product.image || '',
       isAvailable: product.isAvailable !== false,
-      customizations: (product.customizations || []).join(', '),
+      customizations: (product.customizations || []).map(c => ({
+        name: c,
+        price: custPrices[c] || 0,
+      })),
     })
   }
 
@@ -42,14 +47,21 @@ export default function MenuManagementPage() {
       addToast('Please enter a valid price', 'error')
       return
     }
+    const custNames = editData.customizations.map(c => c.name.trim()).filter(Boolean)
+    const custPrices = {}
+    editData.customizations.forEach(c => {
+      if (c.name.trim()) custPrices[c.name.trim()] = Number(c.price) || 0
+    })
     try {
       await updateProduct(editing, {
         name: editData.name,
         price: parsedPrice,
         category: editData.category,
         description: editData.description,
+        image: editData.image,
         isAvailable: editData.isAvailable,
-        customizations: editData.customizations.split(',').map(s => s.trim()).filter(Boolean),
+        customizations: custNames,
+        customizationPrices: custPrices,
       })
       addToast('Product updated', 'success')
       setEditing(null)
@@ -148,58 +160,107 @@ export default function MenuManagementPage() {
                 <tr key={product.id}>
                   {editing === product.id ? (
                     <>
-                      <td>
-                        <input
-                          className="admin-form-input"
-                          value={editData.name}
-                          onChange={e => setEditData(d => ({ ...d, name: e.target.value }))}
-                          style={{ width: 200 }}
-                        />
-                      </td>
-                      <td>
-                        <select
-                          className="status-select"
-                          value={editData.category}
-                          onChange={e => setEditData(d => ({ ...d, category: e.target.value }))}
-                        >
-                          {CATEGORIES.map(c => (
-                            <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
-                          ))}
-                        </select>
-                      </td>
-                      <td>
-                        <input
-                          className="admin-form-input"
-                          type="number"
-                          value={editData.price}
-                          onChange={e => setEditData(d => ({ ...d, price: e.target.value }))}
-                          style={{ width: 100 }}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          className="admin-form-input"
-                          value={editData.customizations}
-                          onChange={e => setEditData(d => ({ ...d, customizations: e.target.value }))}
-                          placeholder="e.g. Stuffed Crust, Extra Topping"
-                          style={{ width: 240 }}
-                        />
-                        <div style={{ fontSize: 11, color: 'var(--color-gray-2)', marginTop: 3 }}>comma-separated</div>
-                      </td>
-                      <td>
-                        <button
-                          className={`toggle-switch ${editData.isAvailable ? 'active' : ''}`}
-                          onClick={() => setEditData(d => ({ ...d, isAvailable: !d.isAvailable }))}
-                        />
-                      </td>
-                      <td>
-                        <div style={{ display: 'flex', gap: 6 }}>
-                          <button className="admin-btn admin-btn-primary admin-btn-sm" onClick={saveEdit}>
-                            <Save size={14} /> Save
-                          </button>
-                          <button className="admin-btn admin-btn-secondary admin-btn-sm" onClick={() => setEditing(null)}>
-                            <X size={14} />
-                          </button>
+                      <td colSpan={6}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '8px 0' }}>
+                          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+                            <input
+                              className="admin-form-input"
+                              value={editData.name}
+                              onChange={e => setEditData(d => ({ ...d, name: e.target.value }))}
+                              placeholder="Product name"
+                              style={{ flex: '1 1 180px' }}
+                            />
+                            <select
+                              className="status-select"
+                              value={editData.category}
+                              onChange={e => setEditData(d => ({ ...d, category: e.target.value }))}
+                            >
+                              {CATEGORIES.map(c => (
+                                <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
+                              ))}
+                            </select>
+                            <input
+                              className="admin-form-input"
+                              type="number"
+                              value={editData.price}
+                              onChange={e => setEditData(d => ({ ...d, price: e.target.value }))}
+                              placeholder="Base price"
+                              style={{ width: 100 }}
+                            />
+                            <button
+                              className={`toggle-switch ${editData.isAvailable ? 'active' : ''}`}
+                              onClick={() => setEditData(d => ({ ...d, isAvailable: !d.isAvailable }))}
+                            />
+                          </div>
+                          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+                            <input
+                              className="admin-form-input"
+                              value={editData.image}
+                              onChange={e => setEditData(d => ({ ...d, image: e.target.value }))}
+                              placeholder="Image URL (e.g. /images/product.jpg)"
+                              style={{ flex: '1 1 260px' }}
+                            />
+                            {editData.image && (
+                              <img src={editData.image} alt="" style={{ width: 36, height: 36, borderRadius: 6, objectFit: 'cover' }} />
+                            )}
+                          </div>
+                          <div>
+                            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-gray-1)', marginBottom: 6 }}>Add-ons / Customizations</div>
+                            {editData.customizations.map((c, i) => (
+                              <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 6, alignItems: 'center' }}>
+                                <input
+                                  className="admin-form-input"
+                                  value={c.name}
+                                  onChange={e => {
+                                    const updated = [...editData.customizations]
+                                    updated[i] = { ...updated[i], name: e.target.value }
+                                    setEditData(d => ({ ...d, customizations: updated }))
+                                  }}
+                                  placeholder="Add-on name"
+                                  style={{ flex: '1 1 160px' }}
+                                />
+                                <input
+                                  className="admin-form-input"
+                                  type="number"
+                                  value={c.price}
+                                  onChange={e => {
+                                    const updated = [...editData.customizations]
+                                    updated[i] = { ...updated[i], price: e.target.value }
+                                    setEditData(d => ({ ...d, customizations: updated }))
+                                  }}
+                                  placeholder="Price"
+                                  style={{ width: 80 }}
+                                />
+                                <button
+                                  className="admin-btn admin-btn-danger admin-btn-sm"
+                                  onClick={() => {
+                                    const updated = editData.customizations.filter((_, j) => j !== i)
+                                    setEditData(d => ({ ...d, customizations: updated }))
+                                  }}
+                                >
+                                  <X size={12} />
+                                </button>
+                              </div>
+                            ))}
+                            <button
+                              className="admin-btn admin-btn-secondary admin-btn-sm"
+                              onClick={() => setEditData(d => ({
+                                ...d,
+                                customizations: [...d.customizations, { name: '', price: 0 }]
+                              }))}
+                              style={{ marginTop: 4 }}
+                            >
+                              + Add
+                            </button>
+                          </div>
+                          <div style={{ display: 'flex', gap: 6 }}>
+                            <button className="admin-btn admin-btn-primary admin-btn-sm" onClick={saveEdit}>
+                              <Save size={14} /> Save
+                            </button>
+                            <button className="admin-btn admin-btn-secondary admin-btn-sm" onClick={() => setEditing(null)}>
+                              <X size={14} /> Cancel
+                            </button>
+                          </div>
                         </div>
                       </td>
                     </>
@@ -228,7 +289,10 @@ export default function MenuManagementPage() {
                       <td style={{ fontWeight: 600 }}>PKR {product.price.toLocaleString()}</td>
                       <td style={{ fontSize: 13, color: 'var(--color-gray-1)', maxWidth: 220 }}>
                         {(product.customizations || []).length > 0
-                          ? (product.customizations || []).join(', ')
+                          ? (product.customizations || []).map(c => {
+                              const p = product.customizationPrices?.[c]
+                              return p ? `${c} (+${p})` : c
+                            }).join(', ')
                           : <span style={{ color: 'var(--color-gray-2)' }}>—</span>}
                       </td>
                       <td>
