@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
-import { Loader, Search, Edit3, Trash2, Plus, X, Save } from 'lucide-react'
+import { Loader, Search, Edit3, Trash2, X, Save } from 'lucide-react'
 import { useProducts } from '../../hooks/useProducts'
-import { updateProduct, deleteProduct, createProduct } from '../../lib/firestore'
+import { updateProduct, deleteProduct } from '../../lib/firestore'
 import { useToast } from '../../context/ToastContext'
 
 const CATEGORIES = ['pizza', 'appetizers', 'burgers', 'sandwiches', 'chicken', 'pasta', 'platters', 'fries', 'drinks']
@@ -37,10 +37,15 @@ export default function MenuManagementPage() {
   }
 
   const saveEdit = async () => {
+    const parsedPrice = Number(editData.price)
+    if (isNaN(parsedPrice) || parsedPrice <= 0) {
+      addToast('Please enter a valid price', 'error')
+      return
+    }
     try {
       await updateProduct(editing, {
         name: editData.name,
-        price: Number(editData.price),
+        price: parsedPrice,
         category: editData.category,
         description: editData.description,
         isAvailable: editData.isAvailable,

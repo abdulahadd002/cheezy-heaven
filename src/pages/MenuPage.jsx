@@ -18,8 +18,6 @@ const CATEGORIES = [
   { id: 'drinks', name: 'Drinks' },
 ]
 
-const DIETARY = ['vegetarian', 'halal']
-
 export default function MenuPage() {
   const { products, loading } = useProducts()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -27,13 +25,10 @@ export default function MenuPage() {
   const [category, setCategory] = useState(searchParams.get('category') || 'all')
 
   const [sort, setSort] = useState('popular')
-  const [dietary, setDietary] = useState([])
 
   // Keep category in sync when URL param changes (e.g. footer links).
-  // Also reset dietary filters so users don't see unexpectedly filtered results.
   useEffect(() => {
     setCategory(searchParams.get('category') || 'all')
-    setDietary([])
   }, [searchParams])
 
   const categoryCounts = useMemo(() => {
@@ -61,13 +56,7 @@ export default function MenuPage() {
       const q = search.toLowerCase()
       result = result.filter(p =>
         p.name.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q)
-      )
-    }
-
-    if (dietary.length > 0) {
-      result = result.filter(p =>
-        dietary.every(d => p.dietary.includes(d))
+        p.description?.toLowerCase().includes(q)
       )
     }
 
@@ -92,7 +81,7 @@ export default function MenuPage() {
     }
 
     return result
-  }, [products, category, search, sort, dietary])
+  }, [products, category, search, sort])
 
   if (loading) {
     return (
@@ -111,12 +100,6 @@ export default function MenuPage() {
     } else {
       setSearchParams({})
     }
-  }
-
-  const toggleDietary = (d) => {
-    setDietary(prev =>
-      prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d]
-    )
   }
 
   return (
@@ -154,7 +137,7 @@ export default function MenuPage() {
           ))}
         </div>
 
-        {/* Sort + Dietary pill buttons in one row */}
+        {/* Sort pill buttons */}
         <div className="menu-filter-row">
           {[
             { value: 'popular', label: 'Most Popular' },
@@ -168,16 +151,6 @@ export default function MenuPage() {
               onClick={() => setSort(option.value)}
             >
               {option.label}
-            </button>
-          ))}
-          <span className="filter-row-divider" />
-          {DIETARY.map(d => (
-            <button
-              key={d}
-              className={`filter-pill ${dietary.includes(d) ? 'active' : ''}`}
-              onClick={() => toggleDietary(d)}
-            >
-              {d.charAt(0).toUpperCase() + d.slice(1)}
             </button>
           ))}
         </div>
@@ -203,7 +176,6 @@ export default function MenuPage() {
               onClick={() => {
                 setSearch('')
                 setCategory('all')
-                setDietary([])
               }}
             >
               Clear Filters

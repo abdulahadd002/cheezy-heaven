@@ -29,11 +29,9 @@ export default function ProductPage() {
   const [selectedCustomizations, setSelectedCustomizations] = useState([])
   const [qty, setQty] = useState(1)
 
-  // Set the first available size once the product loads
+  // Reset size selection whenever the product changes
   useEffect(() => {
-    if (sizeKeys.length > 0 && !selectedSize) {
-      setSelectedSize(sizeKeys[0])
-    }
+    setSelectedSize(sizeKeys.length > 0 ? sizeKeys[0] : '')
   }, [product?.id])
 
   if (loading) {
@@ -62,7 +60,7 @@ export default function ProductPage() {
     )
   }
 
-  const currentPrice = product.sizes[selectedSize] || product.price
+  const currentPrice = product.sizes?.[selectedSize] || product.price
   const discountedPrice = product.discount
     ? Math.round(currentPrice * (1 - product.discount / 100))
     : currentPrice
@@ -114,7 +112,7 @@ export default function ProductPage() {
             <p className="product-detail-desc">{product.description}</p>
 
             <div className="product-detail-dietary">
-              {product.dietary.map(d => (
+              {(product.dietary || []).map(d => (
                 <span key={d} className="dietary-tag">{d}</span>
               ))}
             </div>
@@ -139,7 +137,7 @@ export default function ProductPage() {
             </div>
 
             {/* Customizations */}
-            {product.customizations.length > 0 && (
+            {(product.customizations?.length > 0) && (
               <div className="product-options">
                 <h3>Customizations</h3>
                 <div className="customization-options">

@@ -143,7 +143,7 @@ export default function CartPage() {
 
             {discountAmount > 0 && (
               <div className="order-summary-row">
-                <span>Promo Discount (30%)</span>
+                <span>Promo Discount ({discount}%)</span>
                 <span style={{ color: '#10B981', fontWeight: 600 }}>- PKR {discountAmount.toLocaleString()}</span>
               </div>
             )}

@@ -29,11 +29,16 @@ export default function DealsManagementPage() {
   }
 
   const saveEdit = async () => {
+    const parsedPrice = Number(editData.price)
+    if (isNaN(parsedPrice) || parsedPrice <= 0) {
+      addToast('Please enter a valid price', 'error')
+      return
+    }
     try {
       await updateDeal(editing, {
         title: editData.title,
         description: editData.description,
-        price: Number(editData.price),
+        price: parsedPrice,
       })
       addToast('Deal updated', 'success')
       setEditing(null)
