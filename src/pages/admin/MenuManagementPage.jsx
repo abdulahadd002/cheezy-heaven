@@ -32,6 +32,7 @@ export default function MenuManagementPage() {
       category: product.category,
       description: product.description || '',
       isAvailable: product.isAvailable !== false,
+      customizations: (product.customizations || []).join(', '),
     })
   }
 
@@ -43,6 +44,7 @@ export default function MenuManagementPage() {
         category: editData.category,
         description: editData.description,
         isAvailable: editData.isAvailable,
+        customizations: editData.customizations.split(',').map(s => s.trim()).filter(Boolean),
       })
       addToast('Product updated', 'success')
       setEditing(null)
@@ -131,6 +133,7 @@ export default function MenuManagementPage() {
                 <th>Product</th>
                 <th>Category</th>
                 <th>Price</th>
+                <th>Add-ons</th>
                 <th>Available</th>
                 <th>Actions</th>
               </tr>
@@ -167,6 +170,16 @@ export default function MenuManagementPage() {
                           onChange={e => setEditData(d => ({ ...d, price: e.target.value }))}
                           style={{ width: 100 }}
                         />
+                      </td>
+                      <td>
+                        <input
+                          className="admin-form-input"
+                          value={editData.customizations}
+                          onChange={e => setEditData(d => ({ ...d, customizations: e.target.value }))}
+                          placeholder="e.g. Stuffed Crust, Extra Topping"
+                          style={{ width: 240 }}
+                        />
+                        <div style={{ fontSize: 11, color: 'var(--color-gray-2)', marginTop: 3 }}>comma-separated</div>
                       </td>
                       <td>
                         <button
@@ -208,6 +221,11 @@ export default function MenuManagementPage() {
                       </td>
                       <td style={{ textTransform: 'capitalize' }}>{product.category}</td>
                       <td style={{ fontWeight: 600 }}>PKR {product.price.toLocaleString()}</td>
+                      <td style={{ fontSize: 13, color: 'var(--color-gray-1)', maxWidth: 220 }}>
+                        {(product.customizations || []).length > 0
+                          ? (product.customizations || []).join(', ')
+                          : <span style={{ color: 'var(--color-gray-2)' }}>—</span>}
+                      </td>
                       <td>
                         <button
                           className={`toggle-switch ${product.isAvailable !== false ? 'active' : ''}`}
