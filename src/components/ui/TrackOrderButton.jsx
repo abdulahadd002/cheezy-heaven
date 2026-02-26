@@ -56,7 +56,7 @@ export default function TrackOrderButton() {
   useEffect(() => {
     if (!orderId) return
     const unsubscribe = subscribeToOrder(orderId, (data) => {
-      if (!data || data.status === 'delivered') {
+      if (data && data.status === 'delivered') {
         clearActiveOrder()
         setOrderId(null)
       }
