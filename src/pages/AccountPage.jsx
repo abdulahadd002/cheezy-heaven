@@ -49,7 +49,7 @@ export default function AccountPage() {
   const [authLoading, setAuthLoading] = useState(false)
 
   // Auth form state
-  const [authForm, setAuthForm] = useState({ name: '', email: '', phone: '', password: '' })
+  const [authForm, setAuthForm] = useState({ name: '', email: '', phone: '', password: '', address: '' })
 
   // Profile edit state
   const [profileForm, setProfileForm] = useState(null)
@@ -70,7 +70,7 @@ export default function AccountPage() {
   const handleSignup = async (e) => {
     e.preventDefault()
     setAuthLoading(true)
-    const result = await signup(authForm.name, authForm.email, authForm.phone, authForm.password)
+    const result = await signup(authForm.name, authForm.email, authForm.phone, authForm.password, authForm.address.trim())
     setAuthLoading(false)
     if (result.success) {
       addToast('Account created successfully!', 'success')
@@ -162,6 +162,19 @@ export default function AccountPage() {
                     value={authForm.phone}
                     onChange={e => setAuthForm(f => ({ ...f, phone: e.target.value }))}
                     required
+                  />
+                </div>
+              )}
+
+              {authMode === 'signup' && (
+                <div className="form-group">
+                  <label className="form-label">Home Address <span style={{ fontSize: 12, color: 'var(--color-gray-2)' }}>(optional)</span></label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="Your delivery address for faster checkout"
+                    value={authForm.address}
+                    onChange={e => setAuthForm(f => ({ ...f, address: e.target.value }))}
                   />
                 </div>
               )}

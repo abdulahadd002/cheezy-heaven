@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
-import { MapPin, Phone, ChevronLeft, ChevronRight, Check, Banknote, Wallet } from 'lucide-react'
+import { MapPin, Phone, ChevronLeft, ChevronRight, Check, Banknote, Wallet, Plus } from 'lucide-react'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import StepIndicator from '../components/ui/StepIndicator'
@@ -38,6 +38,8 @@ export default function CheckoutPage() {
   const [orderId, setOrderId] = useState('')
 
   const [address, setAddress] = useState('')
+  const [selectedAddressId, setSelectedAddressId] = useState(null)
+  const [showNewAddress, setShowNewAddress] = useState(false)
   const [phone, setPhone] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('cod')
   const [errors, setErrors] = useState({})
@@ -63,9 +65,14 @@ export default function CheckoutPage() {
     }).catch(() => {})
   }, [])
 
-  // Pre-fill phone from user profile
+  // Pre-fill phone from user profile and auto-select default address
   useEffect(() => {
     if (user?.phone && !phone) setPhone(user.phone)
+    if (user?.addresses?.length > 0 && !selectedAddressId && !address) {
+      const defaultAddr = user.addresses.find(a => a.isDefault) || user.addresses[0]
+      setSelectedAddressId(defaultAddr.id)
+      setAddress(defaultAddr.address)
+    }
   }, [user])
 
   if (items.length === 0 && !orderPlaced) {
@@ -158,13 +165,56 @@ export default function CheckoutPage() {
 
                 <div className="form-group">
                   <label className="form-label">Delivery Address <span className="required">*</span></label>
-                  <input
-                    type="text"
-                    className={`form-input ${errors.address ? 'form-input-error' : ''}`}
-                    placeholder="Enter your full delivery address"
-                    value={address}
-                    onChange={e => { setAddress(e.target.value); setErrors(prev => ({ ...prev, address: '' })) }}
-                  />
+
+                  {user?.addresses?.length > 0 && (
+                    <div className="address-cards">
+                      {user.addresses.map(addr => (
+                        <div
+                          key={addr.id}
+                          className={`address-card ${selectedAddressId === addr.id && !showNewAddress ? 'selected' : ''}`}
+                          onClick={() => {
+                            setSelectedAddressId(addr.id)
+                            setAddress(addr.address)
+                            setShowNewAddress(false)
+                            setErrors(prev => ({ ...prev, address: '' }))
+                          }}
+                        >
+                          <div className="address-card-radio" />
+                          <div className="address-card-info">
+                            <div className="address-card-label">{addr.label}</div>
+                            <div className="address-card-text">{addr.address}</div>
+                          </div>
+                        </div>
+                      ))}
+                      <div
+                        className={`address-card ${showNewAddress ? 'selected' : ''}`}
+                        onClick={() => {
+                          setShowNewAddress(true)
+                          setSelectedAddressId(null)
+                          setAddress('')
+                          setErrors(prev => ({ ...prev, address: '' }))
+                        }}
+                      >
+                        <div className="address-card-radio" />
+                        <div className="address-card-info">
+                          <div className="address-card-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <Plus size={14} /> New Address
+                          </div>
+                          <div className="address-card-text">Enter a different delivery address</div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {(!user?.addresses?.length || showNewAddress) && (
+                    <input
+                      type="text"
+                      className={`form-input ${errors.address ? 'form-input-error' : ''}`}
+                      placeholder="Enter your full delivery address"
+                      value={showNewAddress ? address : address}
+                      onChange={e => { setAddress(e.target.value); setErrors(prev => ({ ...prev, address: '' })) }}
+                    />
+                  )}
                   {errors.address && <span className="form-error">{errors.address}</span>}
                 </div>
 

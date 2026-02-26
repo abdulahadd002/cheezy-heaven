@@ -50,19 +50,24 @@ export function AuthProvider({ children }) {
   }
 
   // Sign up: creates Firebase Auth account + Firestore profile
-  const signup = async (name, email, phone, password) => {
+  const signup = async (name, email, phone, password, homeAddress) => {
     try {
       const { user: firebaseUser } = await createUserWithEmailAndPassword(auth, email, password)
 
       // Set display name on Firebase Auth profile
       await updateProfile(firebaseUser, { displayName: name })
 
+      // Build initial addresses array (include home address if provided)
+      const addresses = homeAddress
+        ? [{ id: Date.now().toString(), label: 'Home', address: homeAddress, isDefault: true }]
+        : []
+
       // Create Firestore user document
       await setDoc(doc(db, 'users', firebaseUser.uid), {
         name,
         email,
         phone,
-        addresses: [],
+        addresses,
         role: 'customer',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
