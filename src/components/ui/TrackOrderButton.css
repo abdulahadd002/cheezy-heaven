@@ -3,8 +3,8 @@
   bottom: 24px;
   right: 24px;
   z-index: 900;
-  width: 60px;
-  height: 60px;
+  width: 72px;
+  height: 72px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,8 +34,11 @@
 }
 
 .track-order-emoji {
-  font-size: 26px;
+  font-size: 32px;
   line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
 }
 

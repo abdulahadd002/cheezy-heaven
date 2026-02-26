@@ -66,7 +66,7 @@ export default function TrackOrderButton() {
 
   // Clamp position within viewport
   const clamp = useCallback((x, y) => {
-    const size = 60
+    const size = 72
     return {
       x: Math.max(0, Math.min(x, window.innerWidth - size)),
       y: Math.max(0, Math.min(y, window.innerHeight - size)),
