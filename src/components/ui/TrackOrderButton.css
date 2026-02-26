@@ -13,8 +13,9 @@
   border-radius: 50%;
   cursor: grab;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  animation: trackFloat-in 0.4s ease;
+  animation: trackFloat-in 0.4s ease, trackAttention 2s ease-in-out infinite 1s;
   transition: box-shadow 0.2s ease;
+  overflow: hidden;
   user-select: none;
   touch-action: none;
 }
@@ -33,13 +34,12 @@
   box-shadow: 0 6px 28px rgba(0, 0, 0, 0.4);
 }
 
-.track-order-emoji {
-  font-size: 32px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.track-order-icon {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
   pointer-events: none;
+  border-radius: 50%;
 }
 
 .track-order-float .pulse-dot {
@@ -94,6 +94,11 @@
 @keyframes trackPulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+@keyframes trackAttention {
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
+  50% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(139, 32, 32, 0.2), 0 4px 20px rgba(0, 0, 0, 0.3); }
 }
 
 /* Push above MobileNav on mobile */

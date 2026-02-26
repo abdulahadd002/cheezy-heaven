@@ -148,7 +148,7 @@ export default function TrackOrderButton() {
       tabIndex={0}
       aria-label="Track your order"
     >
-      <span className="track-order-emoji">🛵</span>
+      <img className="track-order-icon" src="/images/delivery-rider.jpeg" alt="Track order" />
       <span className="pulse-dot" />
       <button
         className="track-order-dismiss"
