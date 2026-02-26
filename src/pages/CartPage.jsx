@@ -114,7 +114,6 @@ export default function CartPage() {
               </Link>
               <button
                 className="btn-secondary"
-                style={{ borderColor: '#EF4444', color: '#EF4444' }}
                 onClick={() => {
                   clearCart()
                   addToast('Cart cleared', 'info')
