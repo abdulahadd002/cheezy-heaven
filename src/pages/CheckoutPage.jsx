@@ -8,6 +8,7 @@ import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { createOrder } from '../lib/firestore'
+import { setActiveOrder } from '../components/ui/TrackOrderButton'
 import './CheckoutPage.css'
 
 const PROMO_SESSION_KEY = 'cheesy-promo-discount'
@@ -132,6 +133,7 @@ export default function CheckoutPage() {
       })
       setOrderId(id)
       setOrderPlaced(true)
+      setActiveOrder(id)
       clearCart()
       sessionStorage.removeItem(PROMO_SESSION_KEY)
       addToast('Order placed successfully!', 'success')

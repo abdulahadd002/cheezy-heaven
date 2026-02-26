@@ -4,6 +4,7 @@ import Navbar from './Navbar'
 import Footer from './Footer'
 import MobileNav from './MobileNav'
 import Toast from '../ui/Toast'
+import TrackOrderButton from '../ui/TrackOrderButton'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -23,6 +24,7 @@ export default function Layout() {
       </main>
       <Footer />
       <MobileNav />
+      <TrackOrderButton />
       <Toast />
     </>
   )
