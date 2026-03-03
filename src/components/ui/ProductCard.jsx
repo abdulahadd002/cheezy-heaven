@@ -39,7 +39,10 @@ export default function ProductCard({ product }) {
   return (
     <div className="product-card">
       <div className="product-card-image" onClick={() => navigate(`/product/${product.id}`)}>
-        <img src={product.image} alt={product.name} loading="lazy" />
+        {product.image
+          ? <img src={product.image} alt={product.name} loading="lazy" />
+          : <div style={{ width: '100%', height: '100%', background: '#2A1520', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40 }}>🍕</div>
+        }
 
         <div className="product-card-badges">
           {product.isNew && <span className="badge badge-new">New</span>}

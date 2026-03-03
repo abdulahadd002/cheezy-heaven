@@ -14,9 +14,9 @@ export default function Footer() {
               Free home delivery in Rawalpindi.
             </p>
             <div className="footer-social">
-              <a href="#" aria-label="Instagram"><Instagram size={18} /></a>
-              <a href="#" aria-label="Facebook"><Facebook size={18} /></a>
-              <a href="#" aria-label="Twitter"><Twitter size={18} /></a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Instagram size={18} /></a>
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><Facebook size={18} /></a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><Twitter size={18} /></a>
             </div>
           </div>
 
@@ -67,8 +67,8 @@ export default function Footer() {
         <div className="footer-bottom">
           <p>&copy; 2026 Cheezy Heaven. All rights reserved.</p>
           <div className="footer-bottom-links">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
+            <Link to="/about">Privacy Policy</Link>
+            <Link to="/about">Terms of Service</Link>
           </div>
         </div>
       </div>

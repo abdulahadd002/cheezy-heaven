@@ -16,6 +16,7 @@ const STATUS_LABELS = {
 export default function OrderDetailPage() {
   const { id } = useParams()
   const [order, setOrder] = useState(undefined)
+  const [advancing, setAdvancing] = useState(false)
   const { addToast } = useToast()
 
   useEffect(() => {
@@ -24,12 +25,14 @@ export default function OrderDetailPage() {
   }, [id])
 
   const handleStatusChange = async (newStatus) => {
+    setAdvancing(true)
     try {
       await updateOrderStatus(id, newStatus)
       addToast(`Status updated to ${STATUS_LABELS[newStatus]}`, 'success')
     } catch {
       addToast('Failed to update status', 'error')
     }
+    setAdvancing(false)
   }
 
   const currentIdx = order ? STATUS_ORDER.indexOf(order.status) : -1
@@ -83,8 +86,9 @@ export default function OrderDetailPage() {
                   handleStatusChange(nextStatus)
                 }
               }}
+              disabled={advancing}
             >
-              Mark as {STATUS_LABELS[nextStatus]}
+              {advancing ? 'Updating...' : `Mark as ${STATUS_LABELS[nextStatus]}`}
             </button>
           )}
         </div>

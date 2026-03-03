@@ -30,6 +30,8 @@ export default function DealsManagementPage() {
   const [newDeal, setNewDeal] = useState(EMPTY_DEAL)
   const [itemsOpen, setItemsOpen] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [savingEdit, setSavingEdit] = useState(false)
+  const [deletingId, setDeletingId] = useState(null)
 
   // Group by category for display
   const grouped = deals.reduce((acc, deal) => {
@@ -44,7 +46,7 @@ export default function DealsManagementPage() {
     setEditing(deal.id)
     setEditData({
       title: deal.title,
-      description: deal.description,
+      description: deal.description || '',
       price: deal.price,
     })
   }
@@ -55,6 +57,7 @@ export default function DealsManagementPage() {
       addToast('Please enter a valid price', 'error')
       return
     }
+    setSavingEdit(true)
     try {
       await updateDeal(editing, {
         title: editData.title,
@@ -66,16 +69,19 @@ export default function DealsManagementPage() {
     } catch {
       addToast('Failed to update deal', 'error')
     }
+    setSavingEdit(false)
   }
 
   const handleDelete = async (deal) => {
     if (!window.confirm(`Delete "${deal.title}"?`)) return
+    setDeletingId(deal.id)
     try {
       await deleteDeal(deal.id)
       addToast(`Deal deleted`, 'success')
     } catch {
       addToast('Failed to delete deal', 'error')
     }
+    setDeletingId(null)
   }
 
   // Extract existing categories for the dropdown
@@ -406,8 +412,8 @@ export default function DealsManagementPage() {
                         </td>
                         <td>
                           <div style={{ display: 'flex', gap: 6 }}>
-                            <button className="admin-btn admin-btn-primary admin-btn-sm" onClick={saveEdit}>
-                              <Save size={14} /> Save
+                            <button className="admin-btn admin-btn-primary admin-btn-sm" onClick={saveEdit} disabled={savingEdit}>
+                              <Save size={14} /> {savingEdit ? 'Saving...' : 'Save'}
                             </button>
                             <button className="admin-btn admin-btn-secondary admin-btn-sm" onClick={() => setEditing(null)}>
                               <X size={14} />
@@ -419,13 +425,13 @@ export default function DealsManagementPage() {
                       <>
                         <td style={{ fontWeight: 600, color: 'var(--color-white)' }}>{deal.title}</td>
                         <td style={{ fontSize: 13, maxWidth: 300 }}>{deal.description}</td>
-                        <td style={{ fontWeight: 600 }}>PKR {deal.price.toLocaleString()}</td>
+                        <td style={{ fontWeight: 600 }}>PKR {(deal.price || 0).toLocaleString()}</td>
                         <td>
                           <div style={{ display: 'flex', gap: 6 }}>
                             <button className="admin-btn admin-btn-secondary admin-btn-sm" onClick={() => startEdit(deal)}>
                               <Edit3 size={14} />
                             </button>
-                            <button className="admin-btn admin-btn-danger admin-btn-sm" onClick={() => handleDelete(deal)}>
+                            <button className="admin-btn admin-btn-danger admin-btn-sm" onClick={() => handleDelete(deal)} disabled={deletingId === deal.id}>
                               <Trash2 size={14} />
                             </button>
                           </div>

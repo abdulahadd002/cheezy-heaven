@@ -15,9 +15,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 768px)')
-    if (!mq.matches) return
-
-    let timer = setTimeout(() => setHidden(true), 3000)
+    let timer = null
 
     const reset = () => {
       setHidden(false)
@@ -25,21 +23,38 @@ export default function Navbar() {
       timer = setTimeout(() => setHidden(true), 3000)
     }
 
-    window.addEventListener('touchstart', reset, { passive: true })
-    window.addEventListener('scroll', reset, { passive: true })
-    window.addEventListener('click', reset)
+    const addMobileListeners = () => {
+      window.addEventListener('touchstart', reset, { passive: true })
+      window.addEventListener('scroll', reset, { passive: true })
+      window.addEventListener('click', reset)
+    }
+
+    const removeMobileListeners = () => {
+      window.removeEventListener('touchstart', reset)
+      window.removeEventListener('scroll', reset)
+      window.removeEventListener('click', reset)
+    }
 
     const onChange = (e) => {
-      if (!e.matches) { setHidden(false); clearTimeout(timer) }
-      else { timer = setTimeout(() => setHidden(true), 3000) }
+      if (!e.matches) {
+        setHidden(false)
+        clearTimeout(timer)
+        removeMobileListeners()
+      } else {
+        addMobileListeners()
+        timer = setTimeout(() => setHidden(true), 3000)
+      }
+    }
+
+    if (mq.matches) {
+      addMobileListeners()
+      timer = setTimeout(() => setHidden(true), 3000)
     }
     mq.addEventListener('change', onChange)
 
     return () => {
       clearTimeout(timer)
-      window.removeEventListener('touchstart', reset)
-      window.removeEventListener('scroll', reset)
-      window.removeEventListener('click', reset)
+      removeMobileListeners()
       mq.removeEventListener('change', onChange)
     }
   }, [])

@@ -446,20 +446,9 @@ export default function AccountPage() {
         {/* Settings Tab */}
         {tab === 'settings' && (
           <div className="settings-section">
-            <div className="settings-item">
-              <div>
-                <div className="settings-item-label">Language</div>
-                <div className="settings-item-desc">Choose your preferred language</div>
-              </div>
-              <select className="form-select" style={{ width: 'auto', minWidth: 120 }}>
-                <option>English</option>
-                <option>Urdu</option>
-              </select>
-            </div>
-
             <button
               className="btn-secondary"
-              style={{ marginTop: 'var(--space-32)', borderColor: '#EF4444', color: '#EF4444' }}
+              style={{ borderColor: '#EF4444', color: '#EF4444' }}
               onClick={async () => {
                 await logout()
                 addToast('Logged out successfully', 'info')

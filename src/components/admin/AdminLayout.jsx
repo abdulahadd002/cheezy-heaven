@@ -1,6 +1,7 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { LayoutDashboard, ShoppingBag, UtensilsCrossed, Tag, Settings, LogOut, ChevronLeft } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
+import Toast from '../ui/Toast'
 import './Admin.css'
 
 const NAV_ITEMS = [
@@ -59,6 +60,7 @@ export default function AdminLayout() {
       <main className="admin-main">
         <Outlet />
       </main>
+      <Toast />
     </div>
   )
 }

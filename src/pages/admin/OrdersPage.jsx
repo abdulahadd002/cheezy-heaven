@@ -263,9 +263,9 @@ export default function OrdersPage() {
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                           <span className={`status-badge status-${order.status}`}>
-                            {STATUS_LABELS[order.status]}
+                            {STATUS_LABELS[order.status] || order.status}
                           </span>
-                          {order.status !== 'delivered' && (
+                          {NEXT_ACTION_LABELS[order.status] && (
                             <button
                               className="next-status-pill"
                               onClick={() => handleStatusChange(order.id, STATUS_ORDER[STATUS_ORDER.indexOf(order.status) + 1])}

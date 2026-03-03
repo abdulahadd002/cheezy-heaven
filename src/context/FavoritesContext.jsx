@@ -20,10 +20,9 @@ export function FavoritesProvider({ children }) {
 
   // When user logs in, load their favorites from Firestore
   // and merge with any guest favorites from localStorage.
-  // When user logs out, clear favorites to prevent data leakage.
+  // When not logged in, keep favorites from localStorage (guest mode).
   useEffect(() => {
     if (!isLoggedIn || !user?.uid) {
-      setFavorites([])
       return
     }
 
