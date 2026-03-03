@@ -100,7 +100,24 @@ export default function CheckoutPage() {
             <h2>Order Placed Successfully!</h2>
             <p>Your delicious food is being prepared.</p>
             <div className="order-number">Order #{orderId}</div>
-            <br /><br />
+
+            <div style={{
+              background: 'var(--color-surface)',
+              border: '1px solid var(--color-border)',
+              borderRadius: 12,
+              padding: 'var(--space-24)',
+              margin: 'var(--space-24) auto',
+              maxWidth: 400,
+              textAlign: 'left',
+            }}>
+              <div style={{ fontSize: 14, color: 'var(--color-gray-1)', lineHeight: 1.8 }}>
+                <p><strong style={{ color: 'var(--color-white)' }}>Delivery to:</strong> {address}</p>
+                <p><strong style={{ color: 'var(--color-white)' }}>Phone:</strong> {phone}</p>
+                <p><strong style={{ color: 'var(--color-white)' }}>Payment:</strong> {PAYMENT_METHODS.find(m => m.id === paymentMethod)?.name}</p>
+                <p><strong style={{ color: 'var(--color-white)' }}>Estimated time:</strong> 30-45 minutes</p>
+              </div>
+            </div>
+
             <div style={{ display: 'flex', gap: 'var(--space-16)', justifyContent: 'center' }}>
               <button className="btn-primary" onClick={() => navigate(`/order/${orderId}`)}>
                 Track Order

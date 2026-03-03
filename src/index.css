@@ -514,3 +514,90 @@ input, textarea, select {
     font-size: 11px;
   }
 }
+
+/* ==========================================
+   WhatsApp Floating Button
+   ========================================== */
+
+.whatsapp-float {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  background: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+  z-index: 999;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: wa-pulse 2s infinite;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+}
+
+@keyframes wa-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5); }
+  70% { box-shadow: 0 0 0 12px rgba(37, 211, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+@media (max-width: 768px) {
+  .whatsapp-float {
+    bottom: 80px;
+    right: 16px;
+    width: 50px;
+    height: 50px;
+  }
+}
+
+/* ==========================================
+   Star Rating
+   ========================================== */
+
+.star-rating {
+  display: flex;
+  gap: 4px;
+}
+
+.star-rating button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  transition: transform 0.15s ease;
+}
+
+.star-rating button:hover {
+  transform: scale(1.2);
+}
+
+/* ==========================================
+   Closed Banner
+   ========================================== */
+
+.closed-banner {
+  background: linear-gradient(135deg, #1C0E0E, #2A1515);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: var(--space-16) var(--space-24);
+  margin-bottom: var(--space-24);
+  text-align: center;
+}
+
+.closed-banner h3 {
+  color: var(--color-orange);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.closed-banner p {
+  color: var(--color-gray-1);
+  font-size: 13px;
+}

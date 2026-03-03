@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ShoppingCart, Trash2, ArrowRight } from 'lucide-react'
+import { ShoppingCart, Trash2, ArrowRight, Loader } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useToast } from '../context/ToastContext'
+import { getPromoCode } from '../lib/firestore'
 import './CartPage.css'
 
 export default function CartPage() {
@@ -12,22 +13,32 @@ export default function CartPage() {
   const [promoCode, setPromoCode] = useState('')
   const [discount, setDiscount] = useState(0)
   const [promoApplied, setPromoApplied] = useState(false)
+  const [promoLoading, setPromoLoading] = useState(false)
 
   const discountAmount = discount > 0 ? Math.round(subtotal * discount / 100) : 0
   const displayTotal = total - discountAmount
 
-  const handleApplyPromo = () => {
-    if (promoApplied) {
-      addToast('Promo code already applied', 'info')
-      return
+  const handleApplyPromo = async () => {
+    if (promoApplied) { addToast('Promo code already applied', 'info'); return }
+    if (!promoCode.trim()) { addToast('Enter a promo code', 'error'); return }
+    setPromoLoading(true)
+    try {
+      const promo = await getPromoCode(promoCode.trim())
+      if (promo) {
+        if (promo.minOrder && subtotal < promo.minOrder) {
+          addToast(`Minimum order PKR ${promo.minOrder.toLocaleString()} required`, 'error')
+        } else {
+          setDiscount(promo.discount)
+          setPromoApplied(true)
+          addToast(`Promo code applied! ${promo.discount}% off.`, 'success')
+        }
+      } else {
+        addToast('Invalid or expired promo code', 'error')
+      }
+    } catch {
+      addToast('Failed to validate promo code', 'error')
     }
-    if (promoCode.toUpperCase() === 'CODE30') {
-      setDiscount(30)
-      setPromoApplied(true)
-      addToast('Promo code applied! 30% off.', 'success')
-    } else {
-      addToast('Invalid promo code', 'error')
-    }
+    setPromoLoading(false)
   }
 
   if (items.length === 0) {
@@ -164,8 +175,8 @@ export default function CartPage() {
                 onChange={e => setPromoCode(e.target.value)}
                 aria-label="Promo code"
               />
-              <button className="btn-secondary btn-sm" onClick={handleApplyPromo}>
-                Apply
+              <button className="btn-secondary btn-sm" onClick={handleApplyPromo} disabled={promoLoading}>
+                {promoLoading ? <Loader size={14} style={{ animation: 'spin 1s linear infinite' }} /> : 'Apply'}
               </button>
             </div>
 

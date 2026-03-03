@@ -13,10 +13,9 @@ export default function AdminGuard({ children }) {
     )
   }
 
-  // TODO: Re-enable guard after testing
-  // if (!user || user.role !== 'admin') {
-  //   return <Navigate to="/" replace />
-  // }
+  if (!user || user.role !== 'admin') {
+    return <Navigate to="/" replace />
+  }
 
   return children
 }

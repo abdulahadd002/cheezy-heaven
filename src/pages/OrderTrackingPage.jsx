@@ -1,7 +1,9 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Check, ChefHat, Package, Truck, CircleCheckBig, Loader } from 'lucide-react'
-import { subscribeToOrder } from '../lib/firestore'
+import { Check, ChefHat, Package, Truck, CircleCheckBig, Loader, Star, Send } from 'lucide-react'
+import { subscribeToOrder, addOrderReview } from '../lib/firestore'
+import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 import './OrderTrackingPage.css'
 
 function formatTime(dateStr) {
@@ -26,6 +28,23 @@ const STEP_META = [
 export default function OrderTrackingPage() {
   const { id } = useParams()
   const [order, setOrder] = useState(undefined) // undefined = loading
+  const { user } = useAuth()
+  const { addToast } = useToast()
+  const [reviewRating, setReviewRating] = useState(0)
+  const [reviewComment, setReviewComment] = useState('')
+  const [reviewSubmitting, setReviewSubmitting] = useState(false)
+
+  const handleSubmitReview = async () => {
+    if (reviewRating === 0) { addToast('Please select a rating', 'error'); return }
+    setReviewSubmitting(true)
+    try {
+      await addOrderReview(id, { rating: reviewRating, comment: reviewComment.trim(), userName: user?.name || 'Guest' })
+      addToast('Thank you for your review!', 'success')
+    } catch {
+      addToast('Failed to submit review', 'error')
+    }
+    setReviewSubmitting(false)
+  }
 
   // Real-time Firestore listener — auto-updates when admin changes status
   useEffect(() => {
@@ -212,6 +231,44 @@ export default function OrderTrackingPage() {
             <span>PKR {order.total.toLocaleString()}</span>
           </div>
         </div>
+
+        {/* Review Section — shown after delivery */}
+        {currentStep >= 4 && !order.review && user && (
+          <div className="tracking-info-card" style={{ marginTop: 'var(--space-32)' }}>
+            <h3>Rate Your Experience</h3>
+            <div className="star-rating" style={{ marginBottom: 12 }}>
+              {[1, 2, 3, 4, 5].map(star => (
+                <button key={star} onClick={() => setReviewRating(star)} aria-label={`${star} star${star > 1 ? 's' : ''}`}>
+                  <Star size={28} fill={star <= reviewRating ? '#FBBF24' : 'none'} stroke={star <= reviewRating ? '#FBBF24' : 'var(--color-gray-2)'} />
+                </button>
+              ))}
+            </div>
+            <textarea
+              className="form-textarea"
+              placeholder="Tell us about your experience (optional)"
+              value={reviewComment}
+              onChange={e => setReviewComment(e.target.value)}
+              rows={3}
+              style={{ marginBottom: 12 }}
+            />
+            <button className="btn-primary" onClick={handleSubmitReview} disabled={reviewSubmitting}>
+              {reviewSubmitting ? 'Submitting...' : <><Send size={16} /> Submit Review</>}
+            </button>
+          </div>
+        )}
+
+        {/* Show existing review */}
+        {order.review && (
+          <div className="tracking-info-card" style={{ marginTop: 'var(--space-32)' }}>
+            <h3>Your Review</h3>
+            <div className="star-rating" style={{ marginBottom: 8 }}>
+              {[1, 2, 3, 4, 5].map(star => (
+                <Star key={star} size={20} fill={star <= order.review.rating ? '#FBBF24' : 'none'} stroke={star <= order.review.rating ? '#FBBF24' : 'var(--color-gray-2)'} />
+              ))}
+            </div>
+            {order.review.comment && <p style={{ fontSize: 14, color: 'var(--color-gray-1)' }}>{order.review.comment}</p>}
+          </div>
+        )}
 
         <div style={{ textAlign: 'center', marginTop: 'var(--space-48)' }}>
           <Link to="/menu" className="btn-secondary">Order More</Link>

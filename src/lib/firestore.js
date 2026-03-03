@@ -81,6 +81,10 @@ export function subscribeToAllOrders(callback) {
   )
 }
 
+export async function deleteOrder(orderId) {
+  await deleteDoc(doc(db, 'orders', String(orderId)))
+}
+
 // --- Admin: Product management ---
 
 export async function updateProduct(productId, updates) {
@@ -107,4 +111,51 @@ export async function deleteDeal(dealId) {
 
 export async function createDeal(dealId, data) {
   await setDoc(doc(db, 'deals', String(dealId)), data)
+}
+
+// --- Promo Codes ---
+
+export async function getPromoCode(code) {
+  const q = query(
+    collection(db, 'promoCodes'),
+    where('code', '==', code.toUpperCase()),
+    where('active', '==', true)
+  )
+  const snap = await getDocs(q)
+  if (snap.empty) return null
+  return { ...snap.docs[0].data(), id: snap.docs[0].id }
+}
+
+export function subscribeToPromoCodes(callback) {
+  return onSnapshot(
+    collection(db, 'promoCodes'),
+    (snap) => {
+      callback(snap.docs.map(d => ({ ...d.data(), id: d.id })))
+    },
+    (error) => console.error('subscribeToPromoCodes error:', error)
+  )
+}
+
+export async function createPromoCode(data) {
+  const id = `promo-${Date.now()}`
+  await setDoc(doc(db, 'promoCodes', id), {
+    ...data,
+    code: data.code.toUpperCase(),
+    createdAt: new Date().toISOString(),
+  })
+}
+
+export async function deletePromoCode(promoId) {
+  await deleteDoc(doc(db, 'promoCodes', promoId))
+}
+
+// --- Reviews ---
+
+export async function addOrderReview(orderId, review) {
+  await updateDoc(doc(db, 'orders', orderId), {
+    review: {
+      ...review,
+      createdAt: new Date().toISOString(),
+    }
+  })
 }

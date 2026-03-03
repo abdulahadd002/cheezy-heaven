@@ -15,20 +15,35 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Orders: anyone can create, users read own, admins read/update all
+    // Orders: anyone can create, anyone can read (IDs are unguessable),
+    // admins can update/delete, order owner can add a review
     match /orders/{orderId} {
       allow create: if true;
       allow read: if true;
-      allow update: if isAdmin();
+      allow delete: if isAdmin();
+      allow update: if isAdmin()
+        || (request.auth != null
+            && resource.data.userId == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['review']));
     }
 
-    // Users: read/write own document only
+    // Users: read/write own document only, cannot escalate role
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId
+        && request.resource.data.role == 'customer';
+      allow update: if request.auth != null && request.auth.uid == userId
+        && request.resource.data.role == resource.data.role;
     }
 
     // Settings: anyone can read, admin-only writes
     match /settings/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Promo codes: anyone can read (to validate), admin-only writes
+    match /promoCodes/{codeId} {
       allow read: if true;
       allow write: if isAdmin();
     }

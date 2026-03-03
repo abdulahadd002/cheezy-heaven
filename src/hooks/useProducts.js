@@ -1,30 +1,25 @@
 import { useState, useEffect } from 'react'
-import { getProducts } from '../lib/firestore'
+import { collection, onSnapshot } from 'firebase/firestore'
+import { db } from '../lib/firebase'
 
 export function useProducts() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
 
   useEffect(() => {
-    let cancelled = false
-
-    getProducts()
-      .then(data => {
-        if (!cancelled) {
-          setProducts(data)
-          setLoading(false)
-        }
-      })
-      .catch(err => {
-        if (!cancelled) {
-          setError(err.message)
-          setLoading(false)
-        }
-      })
-
-    return () => { cancelled = true }
+    const unsub = onSnapshot(
+      collection(db, 'products'),
+      (snap) => {
+        setProducts(snap.docs.map(d => ({ ...d.data(), id: d.id })))
+        setLoading(false)
+      },
+      (error) => {
+        console.error('useProducts subscription error:', error)
+        setLoading(false)
+      }
+    )
+    return () => unsub()
   }, [])
 
-  return { products, loading, error }
+  return { products, loading }
 }

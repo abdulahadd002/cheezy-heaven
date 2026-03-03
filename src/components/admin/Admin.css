@@ -310,6 +310,27 @@
   border-color: var(--color-orange);
 }
 
+/* Next-status pill button */
+.next-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  background: rgba(var(--color-orange-rgb, 255, 140, 50), 0.15);
+  color: var(--color-orange);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.next-status-pill:hover {
+  background: rgba(var(--color-orange-rgb, 255, 140, 50), 0.3);
+}
+
 /* Admin Card */
 .admin-card {
   background: #1A1120;

@@ -1,9 +1,33 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Search, Loader } from 'lucide-react'
+import { Search, Loader, Clock } from 'lucide-react'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '../lib/firebase'
 import ProductCard from '../components/ui/ProductCard'
 import { useProducts } from '../hooks/useProducts'
 import './MenuPage.css'
+
+function isRestaurantOpen(openingTime, closingTime) {
+  const parseTime = (str) => {
+    if (!str) return null
+    const m = str.match(/(\d{1,2}):?(\d{2})?\s*(AM|PM)/i)
+    if (!m) return null
+    let h = parseInt(m[1])
+    const min = parseInt(m[2] || '0')
+    const ampm = m[3].toUpperCase()
+    if (ampm === 'PM' && h !== 12) h += 12
+    if (ampm === 'AM' && h === 12) h = 0
+    return h * 60 + min
+  }
+  const open = parseTime(openingTime)
+  const close = parseTime(closingTime)
+  if (open === null || close === null) return true
+  const now = new Date()
+  const current = now.getHours() * 60 + now.getMinutes()
+  if (close > open) return current >= open && current < close
+  // Crosses midnight (e.g. 11 AM to 3 AM)
+  return current >= open || current < close
+}
 
 const CATEGORIES = [
   { id: 'all', name: 'All' },
@@ -23,8 +47,20 @@ export default function MenuPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState(searchParams.get('category') || 'all')
-
   const [sort, setSort] = useState('popular')
+  const [isOpen, setIsOpen] = useState(true)
+  const [hours, setHours] = useState('')
+
+  useEffect(() => {
+    getDoc(doc(db, 'settings', 'restaurant')).then(snap => {
+      if (snap.exists()) {
+        const d = snap.data()
+        const open = isRestaurantOpen(d.openingTime, d.closingTime)
+        setIsOpen(open)
+        setHours(`${d.openingTime || '11:00 AM'} - ${d.closingTime || '3:00 AM'}`)
+      }
+    }).catch(() => {})
+  }, [])
 
   // Keep category in sync when URL param changes (e.g. footer links).
   useEffect(() => {
@@ -123,6 +159,13 @@ export default function MenuPage() {
           <h1>Our Menu</h1>
           <p>Explore our full range of delicious offerings</p>
         </div>
+
+        {!isOpen && (
+          <div className="closed-banner">
+            <h3><Clock size={16} style={{ verticalAlign: 'middle', marginRight: 6 }} />We're Currently Closed</h3>
+            <p>Our hours are {hours}. You can still browse the menu — orders will be processed when we reopen.</p>
+          </div>
+        )}
 
         <div className="menu-search-bar">
           <div className="menu-search-input">
