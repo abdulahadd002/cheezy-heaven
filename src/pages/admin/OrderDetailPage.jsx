@@ -163,8 +163,16 @@ export default function OrderDetailPage() {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                   <span>Delivery</span>
-                  <span style={{ color: '#4CAF50' }}>FREE</span>
+                  {(order.deliveryFee || 0) > 0
+                    ? <span>PKR {order.deliveryFee.toLocaleString()}</span>
+                    : <span style={{ color: '#4CAF50' }}>FREE</span>}
                 </div>
+                {(order.promoDiscount || 0) > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <span>Promo Discount</span>
+                    <span style={{ color: '#10B981' }}>- PKR {order.promoDiscount.toLocaleString()}</span>
+                  </div>
+                )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, color: 'var(--color-white)', borderTop: '1px solid #1F1528', paddingTop: 8, marginTop: 8, fontSize: 16 }}>
                   <span>Total</span>
                   <span>PKR {(order.total || 0).toLocaleString()}</span>

@@ -225,6 +225,12 @@ export default function OrderTrackingPage() {
             <span>Tax (16% GST)</span>
             <span>PKR {(order.tax || 0).toLocaleString()}</span>
           </div>
+          {(order.promoDiscount || 0) > 0 && (
+            <div className="order-summary-row">
+              <span>Promo Discount</span>
+              <span style={{ color: '#10B981', fontWeight: 600 }}>- PKR {order.promoDiscount.toLocaleString()}</span>
+            </div>
+          )}
           <div className="order-summary-divider" />
           <div className="order-summary-total">
             <span>Total</span>

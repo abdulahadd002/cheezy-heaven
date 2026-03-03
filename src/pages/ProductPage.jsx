@@ -99,16 +99,19 @@ export default function ProductPage() {
 
         <div className="product-detail">
           <div className="product-detail-image">
-            <img src={product.image} alt={product.name} />
+            {product.image
+              ? <img src={product.image} alt={product.name} />
+              : <div style={{ width: '100%', height: '100%', background: '#2A1520', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 64 }}>🍕</div>
+            }
           </div>
 
           <div className="product-detail-info">
             <h1>{product.name}</h1>
 
             <div className="product-detail-rating">
-              <span className="rating-stars">{getStars(product.rating)}</span>
-              <span className="rating-value">{product.rating}</span>
-              <span className="rating-count">({product.reviews} reviews)</span>
+              <span className="rating-stars">{getStars(product.rating || 0)}</span>
+              <span className="rating-value">{product.rating || 0}</span>
+              <span className="rating-count">({product.reviews || 0} reviews)</span>
             </div>
 
             <p className="product-detail-desc">{product.description}</p>

@@ -150,6 +150,7 @@ export default function CheckoutPage() {
         subtotal,
         deliveryFee,
         tax,
+        promoDiscount: promoDiscountAmount > 0 ? promoDiscountAmount : 0,
         total: finalTotal,
         address,
         phone,

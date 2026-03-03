@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ShoppingCart, Trash2, ArrowRight, Loader } from 'lucide-react'
 import { useCart } from '../context/CartContext'
@@ -15,8 +15,13 @@ export default function CartPage() {
   const [promoApplied, setPromoApplied] = useState(false)
   const [promoLoading, setPromoLoading] = useState(false)
 
+  // Clear stale promo from sessionStorage when returning to cart
+  useEffect(() => {
+    sessionStorage.removeItem('cheesy-promo-discount')
+  }, [])
+
   const discountAmount = discount > 0 ? Math.round(subtotal * discount / 100) : 0
-  const displayTotal = total - discountAmount
+  const displayTotal = Math.max(0, total - discountAmount)
 
   const handleApplyPromo = async () => {
     if (promoApplied) { addToast('Promo code already applied', 'info'); return }
