@@ -213,22 +213,22 @@ export default function OrderTrackingPage() {
           <div className="order-summary-divider" />
           <div className="order-summary-row">
             <span>Subtotal</span>
-            <span>PKR {order.subtotal.toLocaleString()}</span>
+            <span>PKR {(order.subtotal || 0).toLocaleString()}</span>
           </div>
           <div className="order-summary-row">
             <span>Delivery</span>
             {(order.deliveryFee || 0) > 0
-              ? <span>PKR {order.deliveryFee.toLocaleString()}</span>
+              ? <span>PKR {(order.deliveryFee || 0).toLocaleString()}</span>
               : <span style={{ color: '#4CAF50', fontWeight: 600 }}>FREE</span>}
           </div>
           <div className="order-summary-row">
             <span>Tax (16% GST)</span>
-            <span>PKR {order.tax.toLocaleString()}</span>
+            <span>PKR {(order.tax || 0).toLocaleString()}</span>
           </div>
           <div className="order-summary-divider" />
           <div className="order-summary-total">
             <span>Total</span>
-            <span>PKR {order.total.toLocaleString()}</span>
+            <span>PKR {(order.total || 0).toLocaleString()}</span>
           </div>
         </div>
 

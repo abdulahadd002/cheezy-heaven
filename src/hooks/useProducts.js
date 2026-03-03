@@ -5,6 +5,7 @@ import { db } from '../lib/firebase'
 export function useProducts() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     const unsub = onSnapshot(
@@ -13,13 +14,14 @@ export function useProducts() {
         setProducts(snap.docs.map(d => ({ ...d.data(), id: d.id })))
         setLoading(false)
       },
-      (error) => {
-        console.error('useProducts subscription error:', error)
+      (err) => {
+        console.error('useProducts subscription error:', err)
+        setError(err)
         setLoading(false)
       }
     )
     return () => unsub()
   }, [])
 
-  return { products, loading }
+  return { products, loading, error }
 }

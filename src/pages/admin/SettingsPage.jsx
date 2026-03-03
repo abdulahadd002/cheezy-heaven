@@ -25,6 +25,8 @@ export default function SettingsPage() {
   const [promoCodes, setPromoCodes] = useState([])
   const [newPromo, setNewPromo] = useState({ code: '', discount: '', minOrder: '', active: true })
   const [addingPromo, setAddingPromo] = useState(false)
+  const [savingPromo, setSavingPromo] = useState(false)
+  const [deletingPromoId, setDeletingPromoId] = useState(null)
 
   useEffect(() => {
     async function load() {
@@ -49,6 +51,7 @@ export default function SettingsPage() {
     if (!newPromo.code.trim()) { addToast('Code is required', 'error'); return }
     const disc = Number(newPromo.discount)
     if (isNaN(disc) || disc <= 0 || disc > 100) { addToast('Discount must be 1-100%', 'error'); return }
+    setSavingPromo(true)
     try {
       await createPromoCode({
         code: newPromo.code.trim(),
@@ -62,22 +65,25 @@ export default function SettingsPage() {
     } catch {
       addToast('Failed to create promo code', 'error')
     }
+    setSavingPromo(false)
   }
 
   const handleDeletePromo = async (promo) => {
     if (!window.confirm(`Delete promo "${promo.code}"?`)) return
+    setDeletingPromoId(promo.id)
     try {
       await deletePromoCode(promo.id)
       addToast('Promo code deleted', 'success')
     } catch {
       addToast('Failed to delete promo code', 'error')
     }
+    setDeletingPromoId(null)
   }
 
   const handleSave = async () => {
     setSaving(true)
     try {
-      await setDoc(doc(db, 'settings', 'restaurant'), settings)
+      await setDoc(doc(db, 'settings', 'restaurant'), settings, { merge: true })
       addToast('Settings saved', 'success')
     } catch {
       addToast('Failed to save settings', 'error')
@@ -195,7 +201,7 @@ export default function SettingsPage() {
                 <label>Min Order</label>
                 <input className="admin-form-input" type="number" value={newPromo.minOrder} onChange={e => setNewPromo(p => ({ ...p, minOrder: e.target.value }))} placeholder="0" />
               </div>
-              <button className="admin-btn admin-btn-primary admin-btn-sm" onClick={handleAddPromo}><Save size={14} /> Save</button>
+              <button className="admin-btn admin-btn-primary admin-btn-sm" onClick={handleAddPromo} disabled={savingPromo}><Save size={14} /> {savingPromo ? 'Saving...' : 'Save'}</button>
               <button className="admin-btn admin-btn-secondary admin-btn-sm" onClick={() => setAddingPromo(false)}>Cancel</button>
             </div>
           )}
@@ -225,7 +231,7 @@ export default function SettingsPage() {
                       </span>
                     </td>
                     <td>
-                      <button className="admin-btn admin-btn-danger admin-btn-sm" onClick={() => handleDeletePromo(p)}>
+                      <button className="admin-btn admin-btn-danger admin-btn-sm" onClick={() => handleDeletePromo(p)} disabled={deletingPromoId === p.id}>
                         <Trash2 size={14} />
                       </button>
                     </td>

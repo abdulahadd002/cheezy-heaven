@@ -25,6 +25,9 @@ export default function MenuManagementPage() {
   const [newProduct, setNewProduct] = useState(EMPTY_PRODUCT)
   const [addUploading, setAddUploading] = useState(false)
   const [addSaving, setAddSaving] = useState(false)
+  const [savingEdit, setSavingEdit] = useState(false)
+  const [deletingId, setDeletingId] = useState(null)
+  const [togglingId, setTogglingId] = useState(null)
 
   const filtered = useMemo(() => {
     let list = products
@@ -59,6 +62,7 @@ export default function MenuManagementPage() {
       addToast('Please enter a valid price', 'error')
       return
     }
+    setSavingEdit(true)
     const custNames = editData.customizations.map(c => c.name.trim()).filter(Boolean)
     const custPrices = {}
     editData.customizations.forEach(c => {
@@ -80,31 +84,38 @@ export default function MenuManagementPage() {
     } catch {
       addToast('Failed to update product', 'error')
     }
+    setSavingEdit(false)
   }
 
   const handleDelete = async (product) => {
     if (!window.confirm(`Delete "${product.name}"? This cannot be undone.`)) return
+    setDeletingId(product.id)
     try {
       await deleteProduct(product.id)
       addToast(`${product.name} deleted`, 'success')
     } catch {
       addToast('Failed to delete product', 'error')
     }
+    setDeletingId(null)
   }
 
   const toggleAvailability = async (product) => {
     const newVal = product.isAvailable === false ? true : false
+    setTogglingId(product.id)
     try {
       await updateProduct(product.id, { isAvailable: newVal })
       addToast(`${product.name} ${newVal ? 'enabled' : 'disabled'}`, 'success')
     } catch {
       addToast('Failed to update', 'error')
     }
+    setTogglingId(null)
   }
 
   const compressImage = (file, callback, errorCallback) => {
     const img = new Image()
+    const blobUrl = URL.createObjectURL(file)
     img.onload = () => {
+      URL.revokeObjectURL(blobUrl)
       const MAX = 600
       let w = img.width, h = img.height
       if (w > MAX || h > MAX) {
@@ -117,8 +128,11 @@ export default function MenuManagementPage() {
       canvas.getContext('2d').drawImage(img, 0, 0, w, h)
       callback(canvas.toDataURL('image/jpeg', 0.7))
     }
-    img.onerror = errorCallback
-    img.src = URL.createObjectURL(file)
+    img.onerror = () => {
+      URL.revokeObjectURL(blobUrl)
+      errorCallback()
+    }
+    img.src = blobUrl
   }
 
   const handleImageUpload = (e) => {
@@ -233,8 +247,8 @@ export default function MenuManagementPage() {
             <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-gray-1)', marginBottom: 6 }}>Add-ons / Customizations</div>
             {newProduct.customizations.map((c, i) => (
               <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 6, alignItems: 'center' }}>
-                <input className="admin-form-input" value={c.name} onChange={e => { const u = [...newProduct.customizations]; u[i] = { ...u[i], name: e.target.value }; setNewProduct(d => ({ ...d, customizations: u })) }} placeholder="Add-on name" style={{ flex: '1 1 160px' }} />
-                <input className="admin-form-input" type="number" value={c.price} onChange={e => { const u = [...newProduct.customizations]; u[i] = { ...u[i], price: e.target.value }; setNewProduct(d => ({ ...d, customizations: u })) }} placeholder="Price" style={{ width: 80 }} />
+                <input className="admin-form-input" value={c.name} onChange={e => { const val = e.target.value; setNewProduct(d => { const u = [...d.customizations]; u[i] = { ...u[i], name: val }; return { ...d, customizations: u } }) }} placeholder="Add-on name" style={{ flex: '1 1 160px' }} />
+                <input className="admin-form-input" type="number" value={c.price} onChange={e => { const val = e.target.value; setNewProduct(d => { const u = [...d.customizations]; u[i] = { ...u[i], price: val }; return { ...d, customizations: u } }) }} placeholder="Price" style={{ width: 80 }} />
                 <button className="admin-btn admin-btn-danger admin-btn-sm" onClick={() => setNewProduct(d => ({ ...d, customizations: d.customizations.filter((_, j) => j !== i) }))}><X size={12} /></button>
               </div>
             ))}
@@ -375,9 +389,12 @@ export default function MenuManagementPage() {
                                   className="admin-form-input"
                                   value={c.name}
                                   onChange={e => {
-                                    const updated = [...editData.customizations]
-                                    updated[i] = { ...updated[i], name: e.target.value }
-                                    setEditData(d => ({ ...d, customizations: updated }))
+                                    const val = e.target.value
+                                    setEditData(d => {
+                                      const updated = [...d.customizations]
+                                      updated[i] = { ...updated[i], name: val }
+                                      return { ...d, customizations: updated }
+                                    })
                                   }}
                                   placeholder="Add-on name"
                                   style={{ flex: '1 1 160px' }}
@@ -387,9 +404,12 @@ export default function MenuManagementPage() {
                                   type="number"
                                   value={c.price}
                                   onChange={e => {
-                                    const updated = [...editData.customizations]
-                                    updated[i] = { ...updated[i], price: e.target.value }
-                                    setEditData(d => ({ ...d, customizations: updated }))
+                                    const val = e.target.value
+                                    setEditData(d => {
+                                      const updated = [...d.customizations]
+                                      updated[i] = { ...updated[i], price: val }
+                                      return { ...d, customizations: updated }
+                                    })
                                   }}
                                   placeholder="Price"
                                   style={{ width: 80 }}
@@ -397,8 +417,7 @@ export default function MenuManagementPage() {
                                 <button
                                   className="admin-btn admin-btn-danger admin-btn-sm"
                                   onClick={() => {
-                                    const updated = editData.customizations.filter((_, j) => j !== i)
-                                    setEditData(d => ({ ...d, customizations: updated }))
+                                    setEditData(d => ({ ...d, customizations: d.customizations.filter((_, j) => j !== i) }))
                                   }}
                                 >
                                   <X size={12} />
@@ -417,8 +436,8 @@ export default function MenuManagementPage() {
                             </button>
                           </div>
                           <div style={{ display: 'flex', gap: 6 }}>
-                            <button className="admin-btn admin-btn-primary admin-btn-sm" onClick={saveEdit}>
-                              <Save size={14} /> Save
+                            <button className="admin-btn admin-btn-primary admin-btn-sm" onClick={saveEdit} disabled={savingEdit}>
+                              <Save size={14} /> {savingEdit ? 'Saving...' : 'Save'}
                             </button>
                             <button className="admin-btn admin-btn-secondary admin-btn-sm" onClick={() => setEditing(null)}>
                               <X size={14} /> Cancel
@@ -462,6 +481,7 @@ export default function MenuManagementPage() {
                         <button
                           className={`toggle-switch ${product.isAvailable !== false ? 'active' : ''}`}
                           onClick={() => toggleAvailability(product)}
+                          disabled={togglingId === product.id}
                         />
                       </td>
                       <td>
@@ -469,7 +489,7 @@ export default function MenuManagementPage() {
                           <button className="admin-btn admin-btn-secondary admin-btn-sm" onClick={() => startEdit(product)}>
                             <Edit3 size={14} />
                           </button>
-                          <button className="admin-btn admin-btn-danger admin-btn-sm" onClick={() => handleDelete(product)}>
+                          <button className="admin-btn admin-btn-danger admin-btn-sm" onClick={() => handleDelete(product)} disabled={deletingId === product.id}>
                             <Trash2 size={14} />
                           </button>
                         </div>

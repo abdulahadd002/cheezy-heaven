@@ -1,6 +1,6 @@
 import {
   collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, arrayUnion,
-  query, where, onSnapshot, orderBy
+  query, where, onSnapshot
 } from 'firebase/firestore'
 import { db } from './firebase'
 
@@ -118,12 +118,12 @@ export async function createDeal(dealId, data) {
 export async function getPromoCode(code) {
   const q = query(
     collection(db, 'promoCodes'),
-    where('code', '==', code.toUpperCase()),
-    where('active', '==', true)
+    where('code', '==', code.toUpperCase())
   )
   const snap = await getDocs(q)
   if (snap.empty) return null
-  return { ...snap.docs[0].data(), id: snap.docs[0].id }
+  const promo = { ...snap.docs[0].data(), id: snap.docs[0].id }
+  return promo.active ? promo : null
 }
 
 export function subscribeToPromoCodes(callback) {

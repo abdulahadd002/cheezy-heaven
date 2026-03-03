@@ -70,7 +70,10 @@ export default function OrdersPage() {
   const [notifyEnabled, setNotifyEnabled] = useState(false)
   const dateRef = useRef(null)
   const prevCountRef = useRef(null)
+  const notifyRef = useRef(false)
   const { addToast } = useToast()
+  const [advancingId, setAdvancingId] = useState(null)
+  const [deletingId, setDeletingId] = useState(null)
 
   const enableNotifications = useCallback(() => {
     if ('Notification' in window && Notification.permission === 'default') {
@@ -81,8 +84,14 @@ export default function OrdersPage() {
   }, [])
 
   useEffect(() => {
-    if ('Notification' in window && Notification.permission === 'granted') setNotifyEnabled(true)
+    if ('Notification' in window && Notification.permission === 'granted') {
+      setNotifyEnabled(true)
+      notifyRef.current = true
+    }
   }, [])
+
+  // Keep ref in sync with state so the subscription callback reads the latest value
+  useEffect(() => { notifyRef.current = notifyEnabled }, [notifyEnabled])
 
   useEffect(() => {
     const unsub = subscribeToAllOrders((data) => {
@@ -90,7 +99,7 @@ export default function OrdersPage() {
         const diff = data.length - prevCountRef.current
         playNotificationSound()
         addToast(`${diff} new order${diff > 1 ? 's' : ''} received!`, 'success')
-        if (notifyEnabled) {
+        if (notifyRef.current) {
           try { new Notification('New Order!', { body: `${diff} new order${diff > 1 ? 's' : ''} received`, icon: '/favicon.jpeg' }) } catch {}
         }
       }
@@ -99,7 +108,7 @@ export default function OrdersPage() {
       setLoading(false)
     })
     return () => unsub()
-  }, [notifyEnabled])
+  }, [])
 
   const filtered = useMemo(() => {
     let list = orders
@@ -116,22 +125,26 @@ export default function OrdersPage() {
   }, [orders, filter, dateFilter])
 
   const handleStatusChange = async (orderId, newStatus) => {
+    setAdvancingId(orderId)
     try {
       await updateOrderStatus(orderId, newStatus)
       addToast(`Order #${orderId} updated to ${STATUS_LABELS[newStatus]}`, 'success')
     } catch {
       addToast('Failed to update status', 'error')
     }
+    setAdvancingId(null)
   }
 
   const handleDelete = async (orderId) => {
     if (!window.confirm(`Delete order #${orderId}? This cannot be undone.`)) return
+    setDeletingId(orderId)
     try {
       await deleteOrder(orderId)
       addToast(`Order #${orderId} deleted`, 'success')
     } catch {
       addToast('Failed to delete order', 'error')
     }
+    setDeletingId(null)
   }
 
   if (loading) {
@@ -256,8 +269,9 @@ export default function OrdersPage() {
                             <button
                               className="next-status-pill"
                               onClick={() => handleStatusChange(order.id, STATUS_ORDER[STATUS_ORDER.indexOf(order.status) + 1])}
+                              disabled={advancingId === order.id}
                             >
-                              {NEXT_ACTION_LABELS[order.status]} <ChevronRight size={14} />
+                              {advancingId === order.id ? 'Updating...' : NEXT_ACTION_LABELS[order.status]} {advancingId !== order.id && <ChevronRight size={14} />}
                             </button>
                           )}
                         </div>
@@ -271,6 +285,7 @@ export default function OrdersPage() {
                         <button
                           className="admin-btn admin-btn-danger admin-btn-sm"
                           onClick={() => handleDelete(order.id)}
+                          disabled={deletingId === order.id}
                         >
                           <Trash2 size={14} />
                         </button>

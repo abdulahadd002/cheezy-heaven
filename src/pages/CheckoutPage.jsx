@@ -130,7 +130,7 @@ export default function CheckoutPage() {
     )
   }
 
-  const finalTotal = subtotal + deliveryFee + tax - promoDiscountAmount
+  const finalTotal = Math.max(0, subtotal + deliveryFee + tax - promoDiscountAmount)
 
   const handlePlaceOrder = async () => {
     if (placing) return

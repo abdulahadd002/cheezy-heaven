@@ -127,6 +127,9 @@ export default function CartPage() {
                 className="btn-secondary"
                 onClick={() => {
                   clearCart()
+                  setDiscount(0)
+                  setPromoApplied(false)
+                  setPromoCode('')
                   addToast('Cart cleared', 'info')
                 }}
               >
