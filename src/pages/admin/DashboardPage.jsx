@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { Loader } from 'lucide-react'
+import { Loader, TrendingUp, ShoppingBag, Star } from 'lucide-react'
 import { subscribeToAllOrders } from '../../lib/firestore'
 
 const STATUS_LABELS = {
@@ -29,7 +29,32 @@ export default function DashboardPage() {
     const todayRevenue = todayOrders.reduce((sum, o) => sum + (o.total || 0), 0)
     const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0)
     const activeOrders = orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled')
-    return { todayOrders: todayOrders.length, todayRevenue, totalRevenue, activeOrders: activeOrders.length, total: orders.length }
+    const avgOrder = orders.length > 0 ? Math.round(totalRevenue / orders.length) : 0
+
+    // Weekly revenue (last 7 days)
+    const weekAgo = new Date()
+    weekAgo.setDate(weekAgo.getDate() - 7)
+    const weekStr = weekAgo.toISOString()
+    const weekRevenue = orders.filter(o => (o.placedAt || '') >= weekStr).reduce((sum, o) => sum + (o.total || 0), 0)
+
+    // Orders by status
+    const byStatus = {}
+    orders.forEach(o => { byStatus[o.status] = (byStatus[o.status] || 0) + 1 })
+
+    // Top 5 selling items
+    const itemCounts = {}
+    orders.forEach(o => {
+      (o.items || []).forEach(item => {
+        itemCounts[item.name] = (itemCounts[item.name] || 0) + item.qty
+      })
+    })
+    const topItems = Object.entries(itemCounts).sort((a, b) => b[1] - a[1]).slice(0, 5)
+
+    return {
+      todayOrders: todayOrders.length, todayRevenue, totalRevenue,
+      activeOrders: activeOrders.length, total: orders.length,
+      avgOrder, weekRevenue, byStatus, topItems,
+    }
   }, [orders])
 
   const recentOrders = orders.slice(0, 8)
@@ -67,6 +92,63 @@ export default function DashboardPage() {
           <h3>Total Revenue</h3>
           <div className="admin-stat-value">PKR {stats.totalRevenue.toLocaleString()}</div>
           <div className="admin-stat-sub">{stats.total} total orders</div>
+        </div>
+        <div className="admin-stat-card">
+          <h3>This Week</h3>
+          <div className="admin-stat-value">PKR {stats.weekRevenue.toLocaleString()}</div>
+          <div className="admin-stat-sub">Last 7 days</div>
+        </div>
+        <div className="admin-stat-card">
+          <h3>Avg. Order</h3>
+          <div className="admin-stat-value">PKR {stats.avgOrder.toLocaleString()}</div>
+          <div className="admin-stat-sub">Per order</div>
+        </div>
+      </div>
+
+      {/* Top Items & Status Breakdown */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20, marginBottom: 32 }}>
+        <div className="admin-card">
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--color-white)', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Star size={16} style={{ color: 'var(--color-orange)' }} /> Top Selling Items
+          </h3>
+          {stats.topItems.length > 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {stats.topItems.map(([name, count], i) => (
+                <div key={name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <span style={{ width: 22, height: 22, borderRadius: '50%', background: i === 0 ? 'var(--color-orange)' : 'var(--color-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: i === 0 ? '#fff' : 'var(--color-gray-1)' }}>{i + 1}</span>
+                    <span style={{ fontSize: 14, color: 'var(--color-white)' }}>{name}</span>
+                  </div>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-gray-1)' }}>{count} sold</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p style={{ fontSize: 13, color: 'var(--color-gray-2)' }}>No data yet</p>
+          )}
+        </div>
+
+        <div className="admin-card">
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--color-white)', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <ShoppingBag size={16} style={{ color: 'var(--color-orange)' }} /> Orders by Status
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {Object.entries(STATUS_LABELS).map(([key, label]) => {
+              const count = stats.byStatus[key] || 0
+              const pct = stats.total > 0 ? Math.round((count / stats.total) * 100) : 0
+              return (
+                <div key={key}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <span style={{ fontSize: 13, color: 'var(--color-gray-1)' }}>{label}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-white)' }}>{count} ({pct}%)</span>
+                  </div>
+                  <div style={{ height: 6, borderRadius: 3, background: 'var(--color-border)' }}>
+                    <div style={{ height: '100%', borderRadius: 3, background: 'var(--color-orange)', width: `${pct}%`, transition: 'width 0.3s' }} />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
         </div>
       </div>
 
