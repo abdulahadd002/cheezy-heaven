@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef } from 'react'
 import { Loader, Search, Edit3, Trash2, X, Save, Upload, Plus } from 'lucide-react'
 import { useProducts } from '../../hooks/useProducts'
-import { updateProduct, deleteProduct, createProduct, uploadProductImage } from '../../lib/firestore'
+import { updateProduct, deleteProduct, createProduct } from '../../lib/firestore'
 import { useToast } from '../../context/ToastContext'
 
 const CATEGORIES = ['pizza', 'appetizers', 'burgers', 'sandwiches', 'chicken', 'pasta', 'platters', 'fries', 'drinks']
@@ -111,67 +111,62 @@ export default function MenuManagementPage() {
     setTogglingId(null)
   }
 
-  const compressImage = (file) => {
-    return new Promise((resolve, reject) => {
-      const img = new Image()
-      const blobUrl = URL.createObjectURL(file)
-      img.onload = () => {
-        URL.revokeObjectURL(blobUrl)
-        const MAX = 800
-        let w = img.width, h = img.height
-        if (w > MAX || h > MAX) {
-          if (w > h) { h = Math.round(h * MAX / w); w = MAX }
-          else { w = Math.round(w * MAX / h); h = MAX }
-        }
-        const canvas = document.createElement('canvas')
-        canvas.width = w
-        canvas.height = h
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h)
-        canvas.toBlob((blob) => {
-          if (blob) resolve(blob)
-          else reject(new Error('Failed to compress'))
-        }, 'image/jpeg', 0.75)
+  const compressImage = (file, callback) => {
+    const img = new Image()
+    const blobUrl = URL.createObjectURL(file)
+    img.onload = () => {
+      URL.revokeObjectURL(blobUrl)
+      const MAX = 800
+      let w = img.width, h = img.height
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX }
+        else { w = Math.round(w * MAX / h); h = MAX }
       }
-      img.onerror = () => {
-        URL.revokeObjectURL(blobUrl)
-        reject(new Error('Failed to load image'))
-      }
-      img.src = blobUrl
-    })
+      const canvas = document.createElement('canvas')
+      canvas.width = w
+      canvas.height = h
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h)
+      callback(canvas.toDataURL('image/jpeg', 0.75))
+    }
+    img.onerror = () => {
+      URL.revokeObjectURL(blobUrl)
+      callback(null)
+    }
+    img.src = blobUrl
   }
 
-  const handleImageUpload = async (e) => {
+  const handleImageUpload = (e) => {
     const file = e.target.files?.[0]
     if (!file) return
     if (!file.type.startsWith('image/')) { addToast('Please select an image file', 'error'); return }
     setUploading(true)
-    try {
-      const blob = await compressImage(file)
-      const url = await uploadProductImage(blob)
-      setEditData(d => ({ ...d, image: url }))
-      addToast('Image uploaded', 'success')
-    } catch {
-      addToast('Failed to upload image', 'error')
-    }
-    setUploading(false)
-    if (fileInputRef.current) fileInputRef.current.value = ''
+    compressImage(file, (dataUrl) => {
+      if (dataUrl) {
+        setEditData(d => ({ ...d, image: dataUrl }))
+        addToast('Image loaded', 'success')
+      } else {
+        addToast('Failed to load image', 'error')
+      }
+      setUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    })
   }
 
-  const handleAddImageUpload = async (e) => {
+  const handleAddImageUpload = (e) => {
     const file = e.target.files?.[0]
     if (!file) return
     if (!file.type.startsWith('image/')) { addToast('Please select an image file', 'error'); return }
     setAddUploading(true)
-    try {
-      const blob = await compressImage(file)
-      const url = await uploadProductImage(blob)
-      setNewProduct(d => ({ ...d, image: url }))
-      addToast('Image uploaded', 'success')
-    } catch {
-      addToast('Failed to upload image', 'error')
-    }
-    setAddUploading(false)
-    if (addFileRef.current) addFileRef.current.value = ''
+    compressImage(file, (dataUrl) => {
+      if (dataUrl) {
+        setNewProduct(d => ({ ...d, image: dataUrl }))
+        addToast('Image loaded', 'success')
+      } else {
+        addToast('Failed to load image', 'error')
+      }
+      setAddUploading(false)
+      if (addFileRef.current) addFileRef.current.value = ''
+    })
   }
 
   const handleAddProduct = async () => {

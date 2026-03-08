@@ -2,8 +2,7 @@ import {
   collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, arrayUnion,
   query, where, onSnapshot
 } from 'firebase/firestore'
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { db, storage } from './firebase'
+import { db } from './firebase'
 
 // --- Products ---
 
@@ -147,15 +146,6 @@ export async function createPromoCode(data) {
 
 export async function deletePromoCode(promoId) {
   await deleteDoc(doc(db, 'promoCodes', promoId))
-}
-
-// --- Image Upload (Firebase Storage) ---
-
-export async function uploadProductImage(blob) {
-  const name = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`
-  const storageRef = ref(storage, `products/${name}`)
-  await uploadBytes(storageRef, blob, { contentType: 'image/jpeg' })
-  return getDownloadURL(storageRef)
 }
 
 // --- Reviews ---
