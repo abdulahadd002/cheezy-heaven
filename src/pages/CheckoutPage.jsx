@@ -44,8 +44,8 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState('cod')
   const [errors, setErrors] = useState({})
   const [placing, setPlacing] = useState(false)
-  const [easypaisaNumber, setEasypaisaNumber] = useState('0312-8680974')
-  const [easypaisaName, setEasypaisaName] = useState('Afshan Majid')
+  const [easypaisaNumber, setEasypaisaNumber] = useState('')
+  const [easypaisaName, setEasypaisaName] = useState('')
 
   // Save promo discount to sessionStorage so it survives a page refresh
   useEffect(() => {
@@ -136,7 +136,7 @@ export default function CheckoutPage() {
     if (placing) return
     setPlacing(true)
     try {
-      const id = `${Date.now()}-${Math.floor(100 + Math.random() * 900)}`
+      const id = crypto.randomUUID()
       await createOrder(id, {
         userId: user?.uid || 'guest',
         userName: user?.name || 'Guest',

@@ -116,13 +116,11 @@ export async function createDeal(dealId, data) {
 // --- Promo Codes ---
 
 export async function getPromoCode(code) {
-  const q = query(
-    collection(db, 'promoCodes'),
-    where('code', '==', code.toUpperCase())
-  )
-  const snap = await getDocs(q)
-  if (snap.empty) return null
-  const promo = { ...snap.docs[0].data(), id: snap.docs[0].id }
+  // Single-document read (get) — customers don't need list permission.
+  // Document ID = uppercase code (e.g., "CODE30").
+  const snap = await getDoc(doc(db, 'promoCodes', code.toUpperCase()))
+  if (!snap.exists()) return null
+  const promo = { ...snap.data(), id: snap.id }
   return promo.active ? promo : null
 }
 
@@ -137,10 +135,11 @@ export function subscribeToPromoCodes(callback) {
 }
 
 export async function createPromoCode(data) {
-  const id = `promo-${Date.now()}`
-  await setDoc(doc(db, 'promoCodes', id), {
+  // Use the code itself as the document ID so customers can look up by code
+  const code = data.code.toUpperCase()
+  await setDoc(doc(db, 'promoCodes', code), {
     ...data,
-    code: data.code.toUpperCase(),
+    code,
     createdAt: new Date().toISOString(),
   })
 }

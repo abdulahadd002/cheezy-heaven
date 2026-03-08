@@ -238,8 +238,8 @@ export default function OrderTrackingPage() {
           </div>
         </div>
 
-        {/* Review Section — shown after delivery */}
-        {currentStep >= 4 && !order.review && user && (
+        {/* Review Section — shown after delivery, only to the order owner */}
+        {currentStep >= 4 && !order.review && user && order.userId === user.uid && (
           <div className="tracking-info-card" style={{ marginTop: 'var(--space-32)' }}>
             <h3>Rate Your Experience</h3>
             <div className="star-rating" style={{ marginBottom: 12 }}>
