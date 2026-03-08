@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { useParams, Link } from 'react-router-dom'
-import { Check, ChefHat, Package, Truck, CircleCheckBig, Loader, Star, Send, Download } from 'lucide-react'
+import { useParams, Link, useNavigate } from 'react-router-dom'
+import { Check, ChefHat, Package, Truck, CircleCheckBig, Loader, Star, Send, Download, RefreshCw } from 'lucide-react'
 import { subscribeToOrder, addOrderReview } from '../lib/firestore'
 import { useAuth } from '../context/AuthContext'
+import { useCart } from '../context/CartContext'
 import { useToast } from '../context/ToastContext'
 import './OrderTrackingPage.css'
 
@@ -37,6 +38,8 @@ export default function OrderTrackingPage() {
   const { id } = useParams()
   const [order, setOrder] = useState(undefined) // undefined = loading
   const { user } = useAuth()
+  const { addItem } = useCart()
+  const navigate = useNavigate()
   const { addToast } = useToast()
   const [reviewRating, setReviewRating] = useState(0)
   const [reviewComment, setReviewComment] = useState('')
@@ -60,6 +63,20 @@ export default function OrderTrackingPage() {
       addToast('Failed to submit review', 'error')
     }
     setReviewSubmitting(false)
+  }
+
+  const handleReorder = () => {
+    (order.items || []).forEach(item => {
+      addItem(
+        { id: item.productId || item.name, name: item.name, image: item.image },
+        item.size,
+        item.price,
+        item.customizations || [],
+        item.qty
+      )
+    })
+    addToast('Items added to cart!', 'success')
+    navigate('/cart')
   }
 
   const handleDownloadReceipt = () => {
@@ -348,7 +365,10 @@ export default function OrderTrackingPage() {
           </div>
         )}
 
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginTop: 'var(--space-48)' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginTop: 'var(--space-48)', flexWrap: 'wrap' }}>
+          <button className="btn-primary" onClick={handleReorder}>
+            <RefreshCw size={16} /> Re-order
+          </button>
           <button className="btn-secondary" onClick={handleDownloadReceipt}>
             <Download size={16} /> Receipt
           </button>
