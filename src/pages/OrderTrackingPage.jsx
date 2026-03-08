@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Check, ChefHat, Package, Truck, CircleCheckBig, Loader, Star, Send } from 'lucide-react'
+import { Check, ChefHat, Package, Truck, CircleCheckBig, Loader, Star, Send, Download } from 'lucide-react'
 import { subscribeToOrder, addOrderReview } from '../lib/firestore'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
@@ -60,6 +60,54 @@ export default function OrderTrackingPage() {
       addToast('Failed to submit review', 'error')
     }
     setReviewSubmitting(false)
+  }
+
+  const handleDownloadReceipt = () => {
+    const date = order.placedAt ? new Date(order.placedAt) : new Date()
+    const dateStr = date.toLocaleDateString('en-PK', { year: 'numeric', month: 'long', day: 'numeric' })
+    const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+    const itemsHtml = (order.items || []).map(item => `
+      <tr>
+        <td style="padding:6px 0;border-bottom:1px solid #eee">${item.qty}x ${item.name}<br><span style="font-size:12px;color:#888">Size: ${item.size}${item.customizations?.length ? ' | ' + item.customizations.join(', ') : ''}</span></td>
+        <td style="padding:6px 0;border-bottom:1px solid #eee;text-align:right;white-space:nowrap">PKR ${(item.price * item.qty).toLocaleString()}</td>
+      </tr>
+    `).join('')
+    const promoRow = (order.promoDiscount || 0) > 0
+      ? `<tr><td style="padding:4px 0">Promo Discount</td><td style="text-align:right;color:#10B981">- PKR ${order.promoDiscount.toLocaleString()}</td></tr>` : ''
+    const html = `<!DOCTYPE html><html><head><title>Receipt - Order #${id}</title>
+      <style>body{font-family:Arial,sans-serif;max-width:400px;margin:40px auto;color:#222;font-size:14px}
+      h1{font-size:22px;margin:0}h2{font-size:14px;margin:24px 0 8px;text-transform:uppercase;color:#888;letter-spacing:1px}
+      .header{text-align:center;margin-bottom:24px;border-bottom:2px dashed #ccc;padding-bottom:16px}
+      .total-row{font-size:18px;font-weight:700;border-top:2px solid #222;padding-top:8px;margin-top:4px}
+      table{width:100%;border-collapse:collapse}
+      .footer{text-align:center;margin-top:32px;padding-top:16px;border-top:2px dashed #ccc;color:#888;font-size:12px}
+      @media print{body{margin:0;padding:20px}}</style></head><body>
+      <div class="header">
+        <h1>Cheezy Heaven</h1>
+        <p style="margin:4px 0;color:#888">Old Lalazar, Rawalpindi</p>
+        <p style="margin:4px 0;color:#888">051-5122227</p>
+      </div>
+      <p><strong>Order #</strong> ${id}</p>
+      <p><strong>Date:</strong> ${dateStr} at ${timeStr}</p>
+      <p><strong>Status:</strong> ${statusText}</p>
+      <h2>Items</h2>
+      <table>${itemsHtml}</table>
+      <h2>Summary</h2>
+      <table>
+        <tr><td style="padding:4px 0">Subtotal</td><td style="text-align:right">PKR ${(order.subtotal || 0).toLocaleString()}</td></tr>
+        <tr><td style="padding:4px 0">Delivery</td><td style="text-align:right">${(order.deliveryFee || 0) > 0 ? 'PKR ' + (order.deliveryFee || 0).toLocaleString() : 'FREE'}</td></tr>
+        <tr><td style="padding:4px 0">Tax (16% GST)</td><td style="text-align:right">PKR ${(order.tax || 0).toLocaleString()}</td></tr>
+        ${promoRow}
+        <tr class="total-row"><td style="padding:8px 0">Total</td><td style="text-align:right;padding:8px 0">PKR ${(order.total || 0).toLocaleString()}</td></tr>
+      </table>
+      <h2>Delivery Info</h2>
+      <p><strong>Address:</strong> ${order.address || ''}</p>
+      <p><strong>Phone:</strong> ${order.phone || ''}</p>
+      <p><strong>Payment:</strong> ${order.payment || ''}</p>
+      <div class="footer"><p>Thank you for ordering from Cheezy Heaven!</p><p>cheezy-heaven.web.app</p></div>
+      <script>window.print()</script></body></html>`
+    const w = window.open('', '_blank')
+    if (w) { w.document.write(html); w.document.close() }
   }
 
   // Real-time Firestore listener — auto-updates when admin changes status
@@ -300,7 +348,10 @@ export default function OrderTrackingPage() {
           </div>
         )}
 
-        <div style={{ textAlign: 'center', marginTop: 'var(--space-48)' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginTop: 'var(--space-48)' }}>
+          <button className="btn-secondary" onClick={handleDownloadReceipt}>
+            <Download size={16} /> Receipt
+          </button>
           <Link to="/menu" className="btn-secondary">Order More</Link>
         </div>
       </div>
