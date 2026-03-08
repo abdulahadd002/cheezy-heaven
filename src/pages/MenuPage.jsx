@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Search, Loader, Clock } from 'lucide-react'
+import { Search, Clock } from 'lucide-react'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import ProductCard from '../components/ui/ProductCard'
@@ -161,8 +161,27 @@ export default function MenuPage() {
   if (loading) {
     return (
       <div className="menu-page">
-        <div className="container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-          <Loader size={32} style={{ color: 'var(--color-orange)', animation: 'spin 1s linear infinite' }} />
+        <div className="container">
+          <div className="menu-header">
+            <h1>Our Menu</h1>
+            <p>Explore our full range of delicious offerings</p>
+          </div>
+          <div className="product-grid">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="skeleton-card">
+                <div className="skeleton-image skeleton-shimmer" />
+                <div className="skeleton-content">
+                  <div className="skeleton-line skeleton-shimmer" style={{ width: '70%', height: 16 }} />
+                  <div className="skeleton-line skeleton-shimmer" style={{ width: '100%', height: 12 }} />
+                  <div className="skeleton-line skeleton-shimmer" style={{ width: '40%', height: 12 }} />
+                  <div className="skeleton-footer">
+                    <div className="skeleton-line skeleton-shimmer" style={{ width: 80, height: 20 }} />
+                    <div className="skeleton-line skeleton-shimmer" style={{ width: 50, height: 32, borderRadius: 6 }} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     )
