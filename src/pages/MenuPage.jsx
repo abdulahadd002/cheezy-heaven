@@ -194,32 +194,25 @@ export default function MenuPage() {
           ))}
         </div>
 
-        {/* Sort pill buttons */}
-        <div className="menu-filter-row">
-          {[
-            { value: 'popular', label: 'Most Popular' },
-            { value: 'rating', label: 'Highest Rated' },
-            { value: 'price-low', label: 'Price ↑' },
-            { value: 'price-high', label: 'Price ↓' },
-          ].map(option => (
-            <button
-              key={option.value}
-              className={`filter-pill ${sort === option.value ? 'active' : ''}`}
-              onClick={() => setSort(option.value)}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-
         <div className="menu-results-info">
           <p className="menu-results-count">
             Showing <span>{filtered.length}</span> items
           </p>
+          <select
+            className="sort-select"
+            value={sort}
+            onChange={e => setSort(e.target.value)}
+            aria-label="Sort by"
+          >
+            <option value="popular">Most Popular</option>
+            <option value="rating">Highest Rated</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+          </select>
         </div>
 
         {filtered.length > 0 ? (
-          <div className="product-grid stagger-children">
+          <div className="product-grid">
             {filtered.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}

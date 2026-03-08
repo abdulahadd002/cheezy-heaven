@@ -81,12 +81,6 @@
   max-width: 500px;
   border-radius: 50%;
   filter: drop-shadow(0 0 60px rgba(139, 32, 32, 0.15));
-  animation: float 6s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
 }
 
 .hero-glow {

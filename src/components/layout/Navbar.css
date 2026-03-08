@@ -124,27 +124,20 @@
   line-height: 1;
 }
 
-/* Mobile pill row — hidden on desktop */
-.mobile-nav-pills {
-  display: none;
-}
-
 @media (max-width: 768px) {
-  /* Increase effective navbar height to include pill row (~48px extra) */
   :root {
-    --navbar-height: 118px;
+    --navbar-height: 60px;
   }
 
   .nav-container {
     padding: 0 var(--space-16);
-    height: 70px;
+    height: 60px;
   }
 
   .nav-logo-text {
     font-size: 15px;
   }
 
-  /* Hide desktop nav links on mobile */
   .nav-links {
     display: none;
   }
@@ -156,49 +149,5 @@
 
   .nav-right {
     gap: 4px;
-  }
-
-  /* Pill row — always visible below the navbar header on mobile */
-  .mobile-nav-pills {
-    display: flex;
-    gap: 8px;
-    padding: 8px var(--space-16) 10px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    border-top: 1px solid var(--color-border);
-  }
-
-  .mobile-nav-pills::-webkit-scrollbar {
-    display: none;
-  }
-
-  .nav-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 16px;
-    border-radius: 50px;
-    border: 1px solid var(--color-border);
-    background: var(--color-surface);
-    color: var(--color-gray-1);
-    font-family: 'Montserrat', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-    flex-shrink: 0;
-    text-decoration: none;
-    transition: all 0.2s ease;
-  }
-
-  .nav-pill:hover {
-    border-color: var(--color-orange);
-    color: var(--color-white);
-  }
-
-  .nav-pill.active {
-    background: var(--color-orange);
-    border-color: var(--color-orange);
-    color: #fff;
   }
 }

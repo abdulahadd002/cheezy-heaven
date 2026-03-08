@@ -116,7 +116,7 @@
 .progress-step.active .progress-step-icon {
   border-color: var(--color-orange);
   color: var(--color-orange);
-  animation: pulse-ring 2s ease infinite;
+  animation: pulse-ring 2s ease 4;
 }
 
 @keyframes pulse-ring {

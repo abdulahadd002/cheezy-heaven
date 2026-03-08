@@ -145,6 +145,23 @@
   font-weight: 600;
 }
 
+.sort-select {
+  padding: 6px 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-gray-1);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: var(--color-orange);
+}
+
 /* Empty State */
 .menu-empty {
   text-align: center;

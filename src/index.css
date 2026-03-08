@@ -65,23 +65,7 @@ body {
   line-height: 1.75;
   color: var(--color-gray-1);
   background-color: var(--color-bg);
-  background-image:
-    radial-gradient(ellipse at 50% 0%, #1C0E0E 0%, transparent 70%),
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(139, 32, 32, 0.03) 2px,
-      rgba(139, 32, 32, 0.03) 4px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 2px,
-      rgba(139, 32, 32, 0.03) 2px,
-      rgba(139, 32, 32, 0.03) 4px
-    );
-  background-size: 100% 100%, 20px 20px, 20px 20px;
+  background-image: radial-gradient(ellipse at 50% 0%, #1C0E0E 0%, transparent 70%);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -533,7 +517,7 @@ input, textarea, select {
   box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
   z-index: 999;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  animation: wa-pulse 2s infinite;
+  animation: wa-pulse 2s ease 3;
 }
 
 .whatsapp-float:hover {
