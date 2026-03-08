@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Check, ChefHat, Package, Truck, CircleCheckBig, Loader, Star, Send } from 'lucide-react'
 import { subscribeToOrder, addOrderReview } from '../lib/firestore'
@@ -17,6 +17,14 @@ function addMinutes(date, mins) {
 
 const STATUS_ORDER = ['confirmed', 'preparing', 'ready', 'out_for_delivery', 'delivered']
 
+const STATUS_NOTIF = {
+  confirmed: '✅ Your order has been confirmed!',
+  preparing: '👨‍🍳 Your food is being prepared!',
+  ready: '📦 Your order is ready for pickup!',
+  out_for_delivery: '🚗 Your order is on its way!',
+  delivered: '🎉 Your order has been delivered!',
+}
+
 const STEP_META = [
   { label: 'Confirmed', icon: Check, estimateMin: 0 },
   { label: 'Preparing', icon: ChefHat, estimateMin: 3 },
@@ -33,6 +41,14 @@ export default function OrderTrackingPage() {
   const [reviewRating, setReviewRating] = useState(0)
   const [reviewComment, setReviewComment] = useState('')
   const [reviewSubmitting, setReviewSubmitting] = useState(false)
+  const prevStatusRef = useRef(null)
+
+  // Request notification permission on mount
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission()
+    }
+  }, [])
 
   const handleSubmitReview = async () => {
     if (reviewRating === 0) { addToast('Please select a rating', 'error'); return }
@@ -49,7 +65,15 @@ export default function OrderTrackingPage() {
   // Real-time Firestore listener — auto-updates when admin changes status
   useEffect(() => {
     const unsubscribe = subscribeToOrder(id, (data) => {
-      setOrder(data) // null if not found
+      // Send browser notification on status change (skip initial load)
+      if (data && prevStatusRef.current && data.status !== prevStatusRef.current) {
+        const msg = STATUS_NOTIF[data.status]
+        if (msg && 'Notification' in window && Notification.permission === 'granted') {
+          new Notification('Cheezy Heaven', { body: msg, icon: '/favicon.jpeg' })
+        }
+      }
+      prevStatusRef.current = data?.status || null
+      setOrder(data)
     })
     return () => unsubscribe()
   }, [id])
