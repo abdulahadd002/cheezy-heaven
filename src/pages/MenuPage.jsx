@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Search, Loader, Clock } from 'lucide-react'
 import { doc, getDoc } from 'firebase/firestore'
@@ -48,6 +48,9 @@ export default function MenuPage() {
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState(searchParams.get('category') || 'all')
   const [sort, setSort] = useState('popular')
+  const PAGE_SIZE = 12
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+  const sentinelRef = useRef(null)
   const [isOpen, setIsOpen] = useState(true)
   const [hours, setHours] = useState('')
 
@@ -66,6 +69,28 @@ export default function MenuPage() {
   useEffect(() => {
     setCategory(searchParams.get('category') || 'all')
   }, [searchParams])
+
+  // Reset visible count when filters change
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE)
+  }, [category, search, sort])
+
+  // Infinite scroll observer
+  useEffect(() => {
+    const el = sentinelRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setVisibleCount(v => v + PAGE_SIZE)
+      }
+    }, { rootMargin: '200px' })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [filtered?.length])
+
+  const visibleProducts = useMemo(() => {
+    return filtered.slice(0, visibleCount)
+  }, [filtered, visibleCount])
 
   const categoryCounts = useMemo(() => {
     const counts = { all: products.length }
@@ -212,11 +237,16 @@ export default function MenuPage() {
         </div>
 
         {filtered.length > 0 ? (
-          <div className="product-grid">
-            {filtered.map(product => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          <>
+            <div className="product-grid">
+              {visibleProducts.map(product => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+            {visibleCount < filtered.length && (
+              <div ref={sentinelRef} style={{ height: 1 }} />
+            )}
+          </>
         ) : (
           <div className="menu-empty">
             <h3>No items found</h3>
