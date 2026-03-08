@@ -70,28 +70,6 @@ export default function MenuPage() {
     setCategory(searchParams.get('category') || 'all')
   }, [searchParams])
 
-  // Reset visible count when filters change
-  useEffect(() => {
-    setVisibleCount(PAGE_SIZE)
-  }, [category, search, sort])
-
-  // Infinite scroll observer
-  useEffect(() => {
-    const el = sentinelRef.current
-    if (!el) return
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setVisibleCount(v => v + PAGE_SIZE)
-      }
-    }, { rootMargin: '200px' })
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [filtered?.length])
-
-  const visibleProducts = useMemo(() => {
-    return filtered.slice(0, visibleCount)
-  }, [filtered, visibleCount])
-
   const categoryCounts = useMemo(() => {
     const counts = { all: products.length }
     products.forEach(p => {
@@ -143,6 +121,28 @@ export default function MenuPage() {
 
     return result
   }, [products, category, search, sort])
+
+  // Reset visible count when filters change
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE)
+  }, [category, search, sort])
+
+  // Infinite scroll observer
+  useEffect(() => {
+    const el = sentinelRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setVisibleCount(v => v + PAGE_SIZE)
+      }
+    }, { rootMargin: '200px' })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [filtered.length])
+
+  const visibleProducts = useMemo(() => {
+    return filtered.slice(0, visibleCount)
+  }, [filtered, visibleCount])
 
   if (error) {
     return (
