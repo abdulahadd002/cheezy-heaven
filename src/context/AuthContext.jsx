@@ -8,6 +8,8 @@ import {
 } from 'firebase/auth'
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore'
 import { auth, db } from '../lib/firebase'
+import { canAttemptAuth, canUpdateProfile } from '../lib/rateLimit'
+import { sanitizeText, sanitizeAndLimit, LIMITS } from '../lib/validate'
 
 const AuthContext = createContext()
 
@@ -51,22 +53,36 @@ export function AuthProvider({ children }) {
 
   // Sign up: creates Firebase Auth account + Firestore profile
   const signup = useCallback(async (name, email, phone, password, homeAddress) => {
+    // Rate limit auth attempts
+    const rateCheck = canAttemptAuth()
+    if (!rateCheck.allowed) {
+      const secs = Math.ceil(rateCheck.retryAfterMs / 1000)
+      return { success: false, error: `Too many attempts. Please wait ${secs}s.` }
+    }
+
+    // Sanitize inputs before sending to Firebase/Firestore
+    const cleanName = sanitizeAndLimit(name, LIMITS.name.max)
+    const cleanPhone = sanitizeAndLimit(phone, LIMITS.phone.max)
+    const cleanAddress = homeAddress ? sanitizeAndLimit(homeAddress, LIMITS.address.max) : ''
+
+    if (!cleanName) return { success: false, error: 'Name is required' }
+
     try {
       const { user: firebaseUser } = await createUserWithEmailAndPassword(auth, email, password)
 
       // Set display name on Firebase Auth profile
-      await updateProfile(firebaseUser, { displayName: name })
+      await updateProfile(firebaseUser, { displayName: cleanName })
 
       // Build initial addresses array (include home address if provided)
-      const addresses = homeAddress
-        ? [{ id: Date.now().toString(), label: 'Home', address: homeAddress, isDefault: true }]
+      const addresses = cleanAddress
+        ? [{ id: Date.now().toString(), label: 'Home', address: cleanAddress, isDefault: true }]
         : []
 
       // Create Firestore user document
       await setDoc(doc(db, 'users', firebaseUser.uid), {
-        name,
-        email,
-        phone,
+        name: cleanName,
+        email: sanitizeText(email),
+        phone: cleanPhone,
         addresses,
         role: 'customer',
         createdAt: new Date().toISOString(),
@@ -82,6 +98,13 @@ export function AuthProvider({ children }) {
 
   // Sign in with email & password
   const login = useCallback(async (email, password) => {
+    // Rate limit auth attempts
+    const rateCheck = canAttemptAuth()
+    if (!rateCheck.allowed) {
+      const secs = Math.ceil(rateCheck.retryAfterMs / 1000)
+      return { success: false, error: `Too many attempts. Please wait ${secs}s.` }
+    }
+
     try {
       await signInWithEmailAndPassword(auth, email, password)
       return { success: true }
@@ -103,12 +126,27 @@ export function AuthProvider({ children }) {
   // Update profile fields in Firestore
   const updateUserProfile = async (updates) => {
     if (!user) return
+
+    // Rate limit profile updates
+    const rateCheck = canUpdateProfile()
+    if (!rateCheck.allowed) throw new Error('Too many updates. Please wait a moment.')
+
+    // Sanitize string fields — reject unexpected keys
+    const allowedKeys = ['name', 'phone', 'addresses']
+    const sanitized = {}
+    for (const key of Object.keys(updates)) {
+      if (!allowedKeys.includes(key)) continue
+      if (key === 'name') sanitized.name = sanitizeAndLimit(updates.name, LIMITS.name.max)
+      else if (key === 'phone') sanitized.phone = sanitizeAndLimit(updates.phone, LIMITS.phone.max)
+      else if (key === 'addresses') sanitized.addresses = updates.addresses
+    }
+
     try {
       await updateDoc(doc(db, 'users', user.uid), {
-        ...updates,
+        ...sanitized,
         updatedAt: new Date().toISOString(),
       })
-      setUser(prev => ({ ...prev, ...updates }))
+      setUser(prev => ({ ...prev, ...sanitized }))
     } catch {
       throw new Error('Failed to update profile')
     }

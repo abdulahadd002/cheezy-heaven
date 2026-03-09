@@ -3,6 +3,7 @@ import {
   query, where, onSnapshot
 } from 'firebase/firestore'
 import { db } from './firebase'
+import { sanitizeText, sanitizeAndLimit, sanitizePromoCode, LIMITS } from './validate'
 
 // --- Products ---
 
@@ -26,12 +27,17 @@ export async function getDeals() {
 // --- Orders ---
 
 export async function createOrder(orderId, orderData) {
-  await setDoc(doc(db, 'orders', orderId), {
+  // Defense-in-depth: sanitize string fields even though caller should too
+  const safeData = {
     ...orderData,
+    address: sanitizeAndLimit(orderData.address || '', LIMITS.address.max),
+    phone: sanitizeText(orderData.phone || '').slice(0, LIMITS.phone.max),
+    userName: sanitizeAndLimit(orderData.userName || '', LIMITS.name.max),
     status: 'confirmed',
     statusHistory: [{ status: 'confirmed', time: new Date().toISOString() }],
     placedAt: new Date().toISOString(),
-  })
+  }
+  await setDoc(doc(db, 'orders', orderId), safeData)
   return orderId
 }
 
@@ -116,9 +122,10 @@ export async function createDeal(dealId, data) {
 // --- Promo Codes ---
 
 export async function getPromoCode(code) {
-  // Single-document read (get) — customers don't need list permission.
-  // Document ID = uppercase code (e.g., "CODE30").
-  const snap = await getDoc(doc(db, 'promoCodes', code.toUpperCase()))
+  // Sanitize: alphanumeric only, uppercase, max 20 chars
+  const safeCode = sanitizePromoCode(code)
+  if (!safeCode) return null
+  const snap = await getDoc(doc(db, 'promoCodes', safeCode))
   if (!snap.exists()) return null
   const promo = { ...snap.data(), id: snap.id }
   return promo.active ? promo : null
@@ -151,10 +158,11 @@ export async function deletePromoCode(promoId) {
 // --- Reviews ---
 
 export async function addOrderReview(orderId, review) {
-  await updateDoc(doc(db, 'orders', orderId), {
-    review: {
-      ...review,
-      createdAt: new Date().toISOString(),
-    }
-  })
+  // Sanitize review text to prevent stored XSS
+  const safeReview = {
+    rating: Math.max(1, Math.min(5, Math.floor(Number(review.rating) || 1))),
+    comment: sanitizeAndLimit(review.comment || '', LIMITS.reviewComment.max),
+    createdAt: new Date().toISOString(),
+  }
+  await updateDoc(doc(db, 'orders', orderId), { review: safeReview })
 }

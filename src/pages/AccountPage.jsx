@@ -7,6 +7,7 @@ import { useFavorites } from '../context/FavoritesContext'
 import { useToast } from '../context/ToastContext'
 import { useProducts } from '../hooks/useProducts'
 import { getUserOrders } from '../lib/firestore'
+import { LIMITS } from '../lib/validate'
 import './AccountPage.css'
 
 const TABS = [
@@ -133,6 +134,7 @@ export default function AccountPage() {
                     type="text"
                     className="form-input"
                     placeholder="Your name"
+                    maxLength={LIMITS.name.max}
                     value={authForm.name}
                     onChange={e => setAuthForm(f => ({ ...f, name: e.target.value }))}
                     required
@@ -146,6 +148,7 @@ export default function AccountPage() {
                   type="email"
                   className="form-input"
                   placeholder="your@email.com"
+                  maxLength={LIMITS.email.max}
                   value={authForm.email}
                   onChange={e => setAuthForm(f => ({ ...f, email: e.target.value }))}
                   required
@@ -159,6 +162,7 @@ export default function AccountPage() {
                     type="tel"
                     className="form-input"
                     placeholder="+92 300 1234567"
+                    maxLength={LIMITS.phone.max}
                     value={authForm.phone}
                     onChange={e => setAuthForm(f => ({ ...f, phone: e.target.value }))}
                     required
@@ -173,6 +177,7 @@ export default function AccountPage() {
                     type="text"
                     className="form-input"
                     placeholder="Your delivery address for faster checkout"
+                    maxLength={LIMITS.address.max}
                     value={authForm.address}
                     onChange={e => setAuthForm(f => ({ ...f, address: e.target.value }))}
                   />
@@ -189,6 +194,7 @@ export default function AccountPage() {
                   onChange={e => setAuthForm(f => ({ ...f, password: e.target.value }))}
                   required
                   minLength={6}
+                  maxLength={LIMITS.password.max}
                 />
               </div>
 
@@ -252,6 +258,7 @@ export default function AccountPage() {
               <input
                 type="text"
                 className="form-input"
+                maxLength={LIMITS.name.max}
                 value={pName}
                 onChange={e => setProfileForm(prev => ({ ...prev, name: e.target.value }))}
               />
@@ -266,6 +273,7 @@ export default function AccountPage() {
               <input
                 type="tel"
                 className="form-input"
+                maxLength={LIMITS.phone.max}
                 value={pPhone}
                 onChange={e => setProfileForm(prev => ({ ...prev, phone: e.target.value }))}
               />
@@ -388,8 +396,12 @@ export default function AccountPage() {
                     className="btn-icon"
                     onClick={async () => {
                       const newText = window.prompt('Edit address:', addr.address)
-                      const trimmed = newText?.trim()
-                      if (!trimmed || trimmed === addr.address) return
+                      const trimmed = newText?.trim()?.slice(0, LIMITS.address.max)
+                      if (!trimmed || trimmed.length < LIMITS.address.min) {
+                        if (trimmed !== null && trimmed !== undefined) addToast('Address must be at least 5 characters', 'error')
+                        return
+                      }
+                      if (trimmed === addr.address) return
                       try {
                         const updated = (user.addresses || []).map(a =>
                           a.id === addr.id ? { ...a, address: trimmed } : a
@@ -425,11 +437,14 @@ export default function AccountPage() {
               style={{ alignSelf: 'flex-start', marginTop: 8 }}
               onClick={async () => {
                 const labelRaw = window.prompt('Address label (e.g., Home, Office):')
-                const label = labelRaw?.trim()
+                const label = labelRaw?.trim()?.slice(0, LIMITS.addressLabel.max)
                 if (!label) return
                 const addressRaw = window.prompt('Full delivery address:')
-                const addressText = addressRaw?.trim()
-                if (!addressText) return
+                const addressText = addressRaw?.trim()?.slice(0, LIMITS.address.max)
+                if (!addressText || addressText.length < LIMITS.address.min) {
+                  if (addressText !== null && addressText !== undefined) addToast('Address must be at least 5 characters', 'error')
+                  return
+                }
                 try {
                   await addAddress({ label, address: addressText, isDefault: !(user.addresses?.length > 0) })
                   addToast('Address added', 'success')

@@ -9,6 +9,8 @@ import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { createOrder } from '../lib/firestore'
 import { setActiveOrder } from '../components/ui/TrackOrderButton'
+import { canPlaceOrder } from '../lib/rateLimit'
+import { validateAddress, validatePhone, validateOrderData, sanitizeOrderData, LIMITS } from '../lib/validate'
 import './CheckoutPage.css'
 
 const PROMO_SESSION_KEY = 'cheesy-promo-discount'
@@ -155,28 +157,49 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (placing) return
+
+    // Rate limit: prevent rapid order spam
+    const rateCheck = canPlaceOrder()
+    if (!rateCheck.allowed) {
+      const secs = Math.ceil(rateCheck.retryAfterMs / 1000)
+      addToast(`Too many orders. Please wait ${secs}s before trying again.`, 'error')
+      return
+    }
+
+    const orderData = {
+      userId: user?.uid || 'guest',
+      userName: user?.name || 'Guest',
+      items: items.map(item => ({
+        name: item.name,
+        qty: item.qty,
+        size: item.size,
+        customizations: item.customizations,
+        price: item.price,
+      })),
+      subtotal,
+      deliveryFee,
+      tax,
+      promoDiscount: promoDiscountAmount > 0 ? promoDiscountAmount : 0,
+      total: finalTotal,
+      address,
+      phone,
+      payment: PAYMENT_METHODS.find(m => m.id === paymentMethod)?.name,
+    }
+
+    // Validate order schema before sending to Firestore
+    const validation = validateOrderData(orderData)
+    if (!validation.valid) {
+      addToast(validation.errors[0], 'error')
+      return
+    }
+
+    // Sanitize all string fields
+    const sanitized = sanitizeOrderData(orderData)
+
     setPlacing(true)
     try {
       const id = crypto.randomUUID()
-      await createOrder(id, {
-        userId: user?.uid || 'guest',
-        userName: user?.name || 'Guest',
-        items: items.map(item => ({
-          name: item.name,
-          qty: item.qty,
-          size: item.size,
-          customizations: item.customizations,
-          price: item.price,
-        })),
-        subtotal,
-        deliveryFee,
-        tax,
-        promoDiscount: promoDiscountAmount > 0 ? promoDiscountAmount : 0,
-        total: finalTotal,
-        address,
-        phone,
-        payment: PAYMENT_METHODS.find(m => m.id === paymentMethod)?.name,
-      })
+      await createOrder(id, sanitized)
       setOrderId(id)
       setPlacedItems([...items])
       setPlacedTotal(finalTotal)
@@ -252,6 +275,7 @@ export default function CheckoutPage() {
                       type="text"
                       className={`form-input ${errors.address ? 'form-input-error' : ''}`}
                       placeholder="Enter your full delivery address"
+                      maxLength={LIMITS.address.max}
                       value={showNewAddress ? address : address}
                       onChange={e => { setAddress(e.target.value); setErrors(prev => ({ ...prev, address: '' })) }}
                     />
@@ -267,6 +291,7 @@ export default function CheckoutPage() {
                       type="tel"
                       className={`form-input phone-input ${errors.phone ? 'form-input-error' : ''}`}
                       placeholder="03XX-XXXXXXX"
+                      maxLength={LIMITS.phone.max}
                       value={phone}
                       onChange={e => { setPhone(e.target.value); setErrors(prev => ({ ...prev, phone: '' })) }}
                     />
@@ -370,12 +395,10 @@ export default function CheckoutPage() {
                 <button className="btn-primary" onClick={() => {
                   if (step === 0) {
                     const newErrors = {}
-                    if (!address.trim()) newErrors.address = 'Delivery address is required'
-                    if (!phone.trim()) {
-                      newErrors.phone = 'Mobile number is required'
-                    } else if (!/^(0\d{10}|\+92\d{10})$/.test(phone.trim().replace(/[\s\-]/g, ''))) {
-                      newErrors.phone = 'Enter a valid Pakistani number (e.g., 03001234567)'
-                    }
+                    const addrResult = validateAddress(address)
+                    if (!addrResult.valid) newErrors.address = addrResult.error
+                    const phoneResult = validatePhone(phone)
+                    if (!phoneResult.valid) newErrors.phone = phoneResult.error
                     if (Object.keys(newErrors).length > 0) {
                       setErrors(newErrors)
                       return

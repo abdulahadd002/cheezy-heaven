@@ -4,6 +4,8 @@ import { ShoppingCart, Trash2, ArrowRight, Loader } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useToast } from '../context/ToastContext'
 import { getPromoCode } from '../lib/firestore'
+import { canCheckPromo } from '../lib/rateLimit'
+import { sanitizePromoCode, LIMITS } from '../lib/validate'
 import './CartPage.css'
 
 export default function CartPage() {
@@ -25,10 +27,20 @@ export default function CartPage() {
 
   const handleApplyPromo = async () => {
     if (promoApplied) { addToast('Promo code already applied', 'info'); return }
-    if (!promoCode.trim()) { addToast('Enter a promo code', 'error'); return }
+    const cleaned = sanitizePromoCode(promoCode)
+    if (!cleaned) { addToast('Enter a promo code', 'error'); return }
+
+    // Rate limit promo checks to prevent brute-force guessing
+    const rateCheck = canCheckPromo()
+    if (!rateCheck.allowed) {
+      const secs = Math.ceil(rateCheck.retryAfterMs / 1000)
+      addToast(`Too many attempts. Please wait ${secs}s.`, 'error')
+      return
+    }
+
     setPromoLoading(true)
     try {
-      const promo = await getPromoCode(promoCode.trim())
+      const promo = await getPromoCode(cleaned)
       if (promo) {
         if (promo.minOrder && subtotal < promo.minOrder) {
           addToast(`Minimum order PKR ${promo.minOrder.toLocaleString()} required`, 'error')
@@ -179,6 +191,7 @@ export default function CartPage() {
               <input
                 type="text"
                 placeholder="Promo code"
+                maxLength={LIMITS.promoCode.max}
                 value={promoCode}
                 onChange={e => setPromoCode(e.target.value)}
                 aria-label="Promo code"
