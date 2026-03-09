@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react'
 import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
@@ -50,7 +50,7 @@ export function AuthProvider({ children }) {
   }
 
   // Sign up: creates Firebase Auth account + Firestore profile
-  const signup = async (name, email, phone, password, homeAddress) => {
+  const signup = useCallback(async (name, email, phone, password, homeAddress) => {
     try {
       const { user: firebaseUser } = await createUserWithEmailAndPassword(auth, email, password)
 
@@ -78,10 +78,10 @@ export function AuthProvider({ children }) {
       const message = getAuthErrorMessage(error.code)
       return { success: false, error: message }
     }
-  }
+  }, [])
 
   // Sign in with email & password
-  const login = async (email, password) => {
+  const login = useCallback(async (email, password) => {
     try {
       await signInWithEmailAndPassword(auth, email, password)
       return { success: true }
@@ -89,16 +89,16 @@ export function AuthProvider({ children }) {
       const message = getAuthErrorMessage(error.code)
       return { success: false, error: message }
     }
-  }
+  }, [])
 
   // Sign out
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await signOut(auth)
     } catch {
       // Auth state listener will handle cleanup
     }
-  }
+  }, [])
 
   // Update profile fields in Firestore
   const updateUserProfile = async (updates) => {
@@ -145,18 +145,13 @@ export function AuthProvider({ children }) {
     }
   }
 
+  const value = useMemo(() => ({
+    user, isLoggedIn: !!user, loading,
+    login, signup, logout, updateUserProfile, addAddress, removeAddress
+  }), [user, loading, login, signup, logout, updateUserProfile, addAddress, removeAddress])
+
   return (
-    <AuthContext.Provider value={{
-      user,
-      isLoggedIn: !!user,
-      loading,
-      login,
-      signup,
-      logout,
-      updateUserProfile,
-      addAddress,
-      removeAddress
-    }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   )

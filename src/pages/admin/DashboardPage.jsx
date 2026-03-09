@@ -57,7 +57,7 @@ export default function DashboardPage() {
     }
   }, [orders])
 
-  const recentOrders = orders.slice(0, 8)
+  const recentOrders = useMemo(() => orders.slice(0, 8), [orders])
 
   if (loading) {
     return (

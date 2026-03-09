@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
 import { doc, updateDoc, getDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { useAuth } from './AuthContext'
@@ -63,27 +63,26 @@ export function FavoritesProvider({ children }) {
     }
   }, [favorites, isLoggedIn])
 
-  const toggleFavorite = async (productId) => {
-    const newFavs = favorites.includes(productId)
-      ? favorites.filter(id => id !== productId)
-      : [...favorites, productId]
+  const toggleFavorite = useCallback(async (productId) => {
+    setFavorites(prev => {
+      const newFavs = prev.includes(productId)
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
 
-    setFavorites(newFavs)
-
-    // Sync to Firestore if logged in
-    if (isLoggedIn && user?.uid) {
-      try {
-        await updateDoc(doc(db, 'users', user.uid), { favorites: newFavs })
-      } catch {
-        // Silent fail — local state is still updated
+      // Sync to Firestore if logged in
+      if (isLoggedIn && user?.uid) {
+        updateDoc(doc(db, 'users', user.uid), { favorites: newFavs }).catch(() => {})
       }
-    }
-  }
+      return newFavs
+    })
+  }, [isLoggedIn, user?.uid])
 
-  const isFavorite = (productId) => favorites.includes(productId)
+  const isFavorite = useCallback((productId) => favorites.includes(productId), [favorites])
+
+  const value = useMemo(() => ({ favorites, toggleFavorite, isFavorite }), [favorites, toggleFavorite, isFavorite])
 
   return (
-    <FavoritesContext.Provider value={{ favorites, toggleFavorite, isFavorite }}>
+    <FavoritesContext.Provider value={value}>
       {children}
     </FavoritesContext.Provider>
   )

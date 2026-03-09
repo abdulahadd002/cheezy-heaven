@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useEffect, useState } from 'react'
+import { createContext, useContext, useReducer, useEffect, useState, useMemo, useCallback } from 'react'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 
@@ -72,7 +72,7 @@ export function CartProvider({ children }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
   }, [items])
 
-  const addItem = (product, size, sizePrice, customizations = [], qty = 1) => {
+  const addItem = useCallback((product, size, sizePrice, customizations = [], qty = 1) => {
     dispatch({
       type: 'ADD_ITEM',
       payload: {
@@ -86,38 +86,34 @@ export function CartProvider({ children }) {
         qty,
       }
     })
-  }
+  }, [])
 
-  const removeItem = (cartId) => {
+  const removeItem = useCallback((cartId) => {
     dispatch({ type: 'REMOVE_ITEM', payload: cartId })
-  }
+  }, [])
 
-  const updateQty = (cartId, qty) => {
+  const updateQty = useCallback((cartId, qty) => {
     dispatch({ type: 'UPDATE_QTY', payload: { cartId, qty } })
-  }
+  }, [])
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     dispatch({ type: 'CLEAR_CART' })
-  }
+  }, [])
 
-  const itemCount = items.reduce((sum, item) => sum + item.qty, 0)
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0)
-  const tax = Math.round(subtotal * taxRate)
-  const total = subtotal + tax + deliveryFee
+  const { itemCount, subtotal, tax, total } = useMemo(() => {
+    const ic = items.reduce((sum, item) => sum + item.qty, 0)
+    const st = items.reduce((sum, item) => sum + item.price * item.qty, 0)
+    const tx = Math.round(st * taxRate)
+    return { itemCount: ic, subtotal: st, tax: tx, total: st + tx + deliveryFee }
+  }, [items, taxRate, deliveryFee])
+
+  const value = useMemo(() => ({
+    items, addItem, removeItem, updateQty, clearCart,
+    itemCount, subtotal, deliveryFee, tax, total
+  }), [items, addItem, removeItem, updateQty, clearCart, itemCount, subtotal, deliveryFee, tax, total])
 
   return (
-    <CartContext.Provider value={{
-      items,
-      addItem,
-      removeItem,
-      updateQty,
-      clearCart,
-      itemCount,
-      subtotal,
-      deliveryFee,
-      tax,
-      total
-    }}>
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   )
