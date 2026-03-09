@@ -62,14 +62,14 @@ export function CartProvider({ children }) {
     getDoc(doc(db, 'settings', 'restaurant')).then(snap => {
       if (snap.exists()) {
         const data = snap.data()
-        if (data.taxRate !== undefined) setTaxRate(data.taxRate / 100)
-        if (data.deliveryFee !== undefined) setDeliveryFee(data.deliveryFee)
+        if (Number.isFinite(data.taxRate)) setTaxRate(data.taxRate / 100)
+        if (Number.isFinite(data.deliveryFee)) setDeliveryFee(data.deliveryFee)
       }
     }).catch(() => {})
   }, [])
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)) } catch {}
   }, [items])
 
   const addItem = useCallback((product, size, sizePrice, customizations = [], qty = 1) => {
@@ -101,10 +101,12 @@ export function CartProvider({ children }) {
   }, [])
 
   const { itemCount, subtotal, tax, total } = useMemo(() => {
-    const ic = items.reduce((sum, item) => sum + item.qty, 0)
-    const st = items.reduce((sum, item) => sum + item.price * item.qty, 0)
-    const tx = Math.round(st * taxRate)
-    return { itemCount: ic, subtotal: st, tax: tx, total: st + tx + deliveryFee }
+    const ic = items.reduce((sum, item) => sum + (item.qty || 0), 0)
+    const st = items.reduce((sum, item) => sum + (item.price || 0) * (item.qty || 0), 0)
+    const rate = Number.isFinite(taxRate) ? taxRate : 0
+    const fee = Number.isFinite(deliveryFee) ? deliveryFee : 0
+    const tx = Math.round(st * rate)
+    return { itemCount: ic, subtotal: st, tax: tx, total: st + tx + fee }
   }, [items, taxRate, deliveryFee])
 
   const value = useMemo(() => ({

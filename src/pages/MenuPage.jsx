@@ -70,13 +70,15 @@ export default function MenuPage() {
     setCategory(searchParams.get('category') || 'all')
   }, [searchParams])
 
+  const availableProducts = useMemo(() => products.filter(p => p.isAvailable !== false), [products])
+
   const categoryCounts = useMemo(() => {
-    const counts = { all: products.length }
-    products.forEach(p => {
+    const counts = { all: availableProducts.length }
+    availableProducts.forEach(p => {
       counts[p.category] = (counts[p.category] || 0) + 1
     })
     return counts
-  }, [products])
+  }, [availableProducts])
 
   const categoryOrder = useMemo(() => {
     const order = {}
@@ -85,7 +87,7 @@ export default function MenuPage() {
   }, [])
 
   const filtered = useMemo(() => {
-    let result = [...products]
+    let result = [...availableProducts]
 
     if (category !== 'all') {
       result = result.filter(p => p.category === category)
@@ -120,7 +122,7 @@ export default function MenuPage() {
     }
 
     return result
-  }, [products, category, search, sort])
+  }, [availableProducts, category, search, sort, categoryOrder])
 
   // Reset visible count when filters change
   useEffect(() => {

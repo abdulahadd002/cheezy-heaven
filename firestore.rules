@@ -100,6 +100,8 @@ service cloud.firestore {
         && d.promoDiscount is number
         && d.promoDiscount >= 0
         && d.promoDiscount <= d.subtotal
+        // Verify total consistency: total must equal subtotal + tax + deliveryFee - promoDiscount
+        && d.total == d.subtotal + d.tax + d.deliveryFee - d.promoDiscount
         // Status fields set by client must be correct
         && d.status == 'confirmed'
       );

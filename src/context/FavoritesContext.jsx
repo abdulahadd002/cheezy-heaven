@@ -59,7 +59,7 @@ export function FavoritesProvider({ children }) {
   // Persist to localStorage for guests only
   useEffect(() => {
     if (!isLoggedIn) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites))
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites)) } catch {}
     }
   }, [favorites, isLoggedIn])
 

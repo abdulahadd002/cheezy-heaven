@@ -20,8 +20,8 @@ const categories = [
 export default function HomePage() {
   const { products, loading } = useProducts()
 
-  const featured = useMemo(() => products.filter(p => p.isBestseller).slice(0, 8), [products])
-  const newArrivals = useMemo(() => products.filter(p => p.isNew).slice(0, 4), [products])
+  const featured = useMemo(() => products.filter(p => p.isAvailable !== false && p.isBestseller).slice(0, 8), [products])
+  const newArrivals = useMemo(() => products.filter(p => p.isAvailable !== false && p.isNew).slice(0, 4), [products])
 
   if (loading) {
     return (
