@@ -6,6 +6,8 @@ import MobileNav from './MobileNav'
 import Toast from '../ui/Toast'
 import TrackOrderButton from '../ui/TrackOrderButton'
 import WhatsAppButton from '../ui/WhatsAppButton'
+import OfflineBanner from '../ui/OfflineBanner'
+import UpdatePrompt from '../ui/UpdatePrompt'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -18,6 +20,7 @@ function ScrollToTop() {
 export default function Layout() {
   return (
     <>
+      <OfflineBanner />
       <ScrollToTop />
       <Navbar />
       <main className="page-content">
@@ -28,6 +31,7 @@ export default function Layout() {
       <TrackOrderButton />
       <WhatsAppButton />
       <Toast />
+      <UpdatePrompt />
     </>
   )
 }

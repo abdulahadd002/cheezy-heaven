@@ -1,7 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
-import { getStorage } from 'firebase/storage'
+import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore'
 
 // Firebase configuration loaded from environment variables.
 // These are project identifiers (not secrets) — security is enforced
@@ -23,7 +22,7 @@ export const auth = getAuth(app)
 // Firestore — the main database for products, orders, users, deals
 export const db = getFirestore(app)
 
-// Storage — for product images uploaded by admin
-export const storage = getStorage(app)
+// Enable offline persistence — menu/products cached in IndexedDB
+enableIndexedDbPersistence(db).catch(() => {})
 
 export default app
