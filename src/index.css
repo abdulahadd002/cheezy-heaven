@@ -599,6 +599,73 @@ input, textarea, select {
 }
 
 /* ==========================================
+   PWA Install Prompt
+   ========================================== */
+
+.install-prompt {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-orange);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  z-index: 9999;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.install-prompt-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.install-prompt-content strong {
+  display: block;
+  font-size: 14px;
+  color: var(--color-white);
+}
+
+.install-prompt-content span {
+  font-size: 12px;
+  color: var(--color-gray-1);
+}
+
+.install-prompt-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.install-prompt-btn {
+  background: var(--color-orange);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.install-prompt-close {
+  background: none;
+  border: none;
+  color: var(--color-gray-2);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.install-prompt-close:hover {
+  color: var(--color-white);
+}
+
+/* ==========================================
    Star Rating
    ========================================== */
 

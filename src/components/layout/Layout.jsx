@@ -8,6 +8,7 @@ import TrackOrderButton from '../ui/TrackOrderButton'
 import WhatsAppButton from '../ui/WhatsAppButton'
 import OfflineBanner from '../ui/OfflineBanner'
 import UpdatePrompt from '../ui/UpdatePrompt'
+import InstallPrompt from '../ui/InstallPrompt'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -20,6 +21,7 @@ function ScrollToTop() {
 export default function Layout() {
   return (
     <>
+      <InstallPrompt />
       <OfflineBanner />
       <ScrollToTop />
       <Navbar />
